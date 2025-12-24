@@ -1,0 +1,192 @@
+GLOBAL UI / CSS ENHANCEMENT PROMPT – MIEMPLOYA HR WEBSITE
+
+Improve the overall UI and CSS styling of the Miemploya HR website to make it modern, dynamic, and enterprise-grade, while maintaining clarity and professionalism.
+
+Do not change existing functionality, routes, or content logic.
+This task is purely visual and UX-focused.
+
+1. BRAND & COLOR SYSTEM (MANDATORY)
+
+Replace the basic color usage with a refined, dynamic palette suitable for an HR & workforce-tech platform.
+
+Primary Colors
+
+Deep Blue (Primary brand anchor)
+
+Teal / Cyan accent (for actions and highlights)
+
+Secondary & Neutral Colors
+
+Soft gray backgrounds for sections
+
+Dark gray / near-black for text
+
+Subtle gradients for hero sections and cards
+
+Rules
+
+Avoid flat single-color backgrounds
+
+Use light gradients or layered backgrounds for depth
+
+Maintain strong contrast for readability
+
+2. TYPOGRAPHY & TEXT HIERARCHY
+
+Improve typography for better visual hierarchy:
+
+Use a modern sans-serif font (e.g. Inter-style look)
+
+Clear size differences between:
+
+Headings
+
+Sub-headings
+
+Body text
+
+Increase line spacing for readability
+
+Slight letter-spacing for headings
+
+Text must feel clean, confident, and professional.
+
+3. CARD & SECTION STYLING (VERY IMPORTANT)
+
+Apply modern card design across:
+
+Service cards
+
+Job cards
+
+News feeds
+
+Top Verified candidates
+
+Templates / Books
+
+Card Design Rules
+
+Rounded corners (soft, not exaggerated)
+
+Subtle shadows (no harsh borders)
+
+Hover effects:
+
+Slight lift
+
+Shadow enhancement
+
+Smooth transition
+
+Clear separation between cards and background
+
+4. BUTTON & INTERACTION DESIGN
+
+Enhance all buttons and interactive elements:
+
+Rounded buttons
+
+Gradient or accent color for primary actions
+
+Subtle hover animations:
+
+Color shift
+
+Soft glow or elevation
+
+Clear distinction between:
+
+Primary buttons (Request Service, Apply, Upload)
+
+Secondary buttons (View Details, Learn More)
+
+Buttons should feel clickable and responsive.
+
+5. PAGE FLOW & SPACING
+
+Improve layout spacing to avoid crowded sections:
+
+Increase vertical spacing between sections
+
+Use alternating background colors or gradients per section
+
+Clearly separate:
+
+Hero
+
+Content sections
+
+Footer
+
+The page should breathe and guide the eye naturally.
+
+6. HEADER & FOOTER ENHANCEMENT
+Header
+
+Slight background transparency or gradient
+
+Sticky header behavior (if already implemented)
+
+Clear hover states for menu items
+
+Active page indicator
+
+Footer
+
+Darker background for contrast
+
+Organized columns:
+
+Quick links
+
+Contact info
+
+Social links
+
+Subtle divider lines
+
+Clean typography
+
+7. ANIMATIONS & MICRO-INTERACTIONS (SUBTLE ONLY)
+
+Add light animations:
+
+Fade-in or slide-up on section load
+
+Smooth hover transitions
+
+No heavy or distracting animations
+
+Animations should feel professional, not playful.
+
+8. RESPONSIVENESS & CONSISTENCY
+
+Ensure:
+
+All UI improvements work on mobile and desktop
+
+Cards stack cleanly on smaller screens
+
+Buttons remain accessible
+
+Consistent styling across all pages
+
+9. ACCEPTANCE CRITERIA
+
+This task is complete only when:
+
+The website looks visually modern and polished
+
+UI feels dynamic, not flat
+
+Colors, spacing, and typography are consistent
+
+No functionality is broken
+
+The design reflects a serious HR & workforce-tech brand
+
+Do not change business logic or page structure.
+Focus only on CSS, styling, and UX polish.
+
+END OF PROMPT

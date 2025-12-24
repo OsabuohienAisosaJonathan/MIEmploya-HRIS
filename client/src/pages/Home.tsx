@@ -4,13 +4,14 @@ import { Footer } from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Link } from "wouter";
+import { ArrowRight, Download, Play, CheckCircle, Users, FileText, Briefcase } from "lucide-react";
 
 const SERVICES = [
   "HR Consultancy", "Recruitment", "Training & Development",
   "Onboarding & Offboarding", "Attendance Management", "Payroll Outsourcing",
   "Performance Evaluation", "Audit Support", "Compliance Support",
   "Background & Reference Checks", "MiPayMaster", "OpenClax",
-  "MiStock HQ", "Customized Software", "Candidate Verification"
+  "MiStock HQ", "Customized Software"
 ];
 
 export default function Home() {
@@ -39,21 +40,24 @@ export default function Home() {
     <>
       <Header />
       <div className="w-full">
-        {/* Hero */}
-        <section className="py-20 px-4 bg-gradient-to-r from-blue-600 to-cyan-500 text-white">
-          <div className="container max-w-4xl mx-auto text-center">
-            <h1 className="text-5xl font-bold mb-4">Smart HR. Smarter Workforce Solutions.</h1>
-            <p className="text-xl mb-8 opacity-90 max-w-3xl mx-auto">
+        <section className="relative py-24 md:py-32 px-4 gradient-hero text-white overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black/20" />
+          <div className="container max-w-4xl mx-auto text-center relative z-10">
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 animate-fade-in">
+              Smart HR. Smarter Workforce Solutions.
+            </h1>
+            <p className="text-lg md:text-xl mb-10 opacity-90 max-w-3xl mx-auto animate-fade-in animate-delay-100 leading-relaxed">
               Miemploya HR delivers structured human resource services, workforce support, and digital solutions that help organizations operate efficiently and responsibly. From recruitment and payroll outsourcing to training, compliance, and talent verification, we support businesses and professionals with systems that work.
             </p>
-            <div className="flex flex-wrap justify-center gap-4">
+            <div className="flex flex-wrap justify-center gap-4 animate-fade-in animate-delay-200">
               <Link href="/contact">
-                <Button variant="secondary" size="lg" data-testid="button-request-service">
+                <Button size="lg" variant="secondary" className="font-semibold" data-testid="button-request-service">
                   Request a Service
+                  <ArrowRight className="w-4 h-4 ml-2" />
                 </Button>
               </Link>
               <Link href="/jobs">
-                <Button variant="outline" size="lg" className="bg-white/10 border-white text-white backdrop-blur-sm" data-testid="button-explore-jobs">
+                <Button size="lg" variant="outline" className="bg-white/10 border-white/30 text-white backdrop-blur-sm font-semibold" data-testid="button-explore-jobs">
                   Explore Jobs
                 </Button>
               </Link>
@@ -61,34 +65,87 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Services Grid */}
-        <section className="py-16 px-4">
+        <section className="py-6 px-4 bg-white dark:bg-slate-900 border-b">
           <div className="container max-w-5xl mx-auto">
-            <h2 className="text-3xl font-bold mb-12 text-center">Our Services</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {SERVICES.map((service) => (
-                <Card key={service} className="p-4 hover-elevate">
-                  <p className="font-medium text-foreground">{service}</p>
-                </Card>
-              ))}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
+              <div className="flex flex-col items-center">
+                <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mb-2">
+                  <Users className="w-6 h-6 text-primary" />
+                </div>
+                <p className="text-2xl font-bold">500+</p>
+                <p className="text-sm text-muted-foreground">Clients Served</p>
+              </div>
+              <div className="flex flex-col items-center">
+                <div className="w-12 h-12 rounded-full bg-accent/10 flex items-center justify-center mb-2">
+                  <Briefcase className="w-6 h-6 text-accent" />
+                </div>
+                <p className="text-2xl font-bold">1000+</p>
+                <p className="text-sm text-muted-foreground">Placements Made</p>
+              </div>
+              <div className="flex flex-col items-center">
+                <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mb-2">
+                  <CheckCircle className="w-6 h-6 text-primary" />
+                </div>
+                <p className="text-2xl font-bold">14+</p>
+                <p className="text-sm text-muted-foreground">HR Services</p>
+              </div>
+              <div className="flex flex-col items-center">
+                <div className="w-12 h-12 rounded-full bg-accent/10 flex items-center justify-center mb-2">
+                  <FileText className="w-6 h-6 text-accent" />
+                </div>
+                <p className="text-2xl font-bold">5+</p>
+                <p className="text-sm text-muted-foreground">Years Experience</p>
+              </div>
             </div>
           </div>
         </section>
 
-        {/* News Feeds */}
+        <section className="py-20 px-4">
+          <div className="container max-w-5xl mx-auto">
+            <div className="text-center mb-12">
+              <h2 className="text-3xl font-bold mb-4">Our Services</h2>
+              <p className="text-muted-foreground max-w-2xl mx-auto">
+                Comprehensive HR solutions tailored to your organization's unique needs
+              </p>
+            </div>
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+              {SERVICES.map((service, index) => (
+                <Card 
+                  key={service} 
+                  className="p-4 card-hover text-center"
+                  style={{ animationDelay: `${index * 50}ms` }}
+                >
+                  <p className="font-medium text-foreground text-sm">{service}</p>
+                </Card>
+              ))}
+            </div>
+            <div className="text-center mt-10">
+              <Link href="/services">
+                <Button variant="outline" size="lg">
+                  View All Services
+                  <ArrowRight className="w-4 h-4 ml-2" />
+                </Button>
+              </Link>
+            </div>
+          </div>
+        </section>
+
         {news.length > 0 && (
-          <section className="py-16 px-4 bg-muted">
+          <section className="py-20 px-4 bg-muted/50">
             <div className="container max-w-5xl mx-auto">
-              <h2 className="text-3xl font-bold mb-8">Latest News</h2>
+              <div className="text-center mb-12">
+                <h2 className="text-3xl font-bold mb-4">Latest News</h2>
+                <p className="text-muted-foreground">Stay updated with our latest announcements</p>
+              </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {news.slice(0, 4).map((item: any) => (
-                  <Card key={item.id} className="overflow-hidden hover-elevate">
+                  <Card key={item.id} className="overflow-hidden card-hover">
                     {item.imageUrl && (
-                      <img src={item.imageUrl} alt={item.title} className="w-full h-40 object-cover" />
+                      <img src={item.imageUrl} alt={item.title} className="w-full h-48 object-cover" />
                     )}
-                    <div className="p-4">
-                      <p className="font-bold text-lg">{item.title}</p>
-                      <p className="text-sm text-muted-foreground mt-2">{item.description}</p>
+                    <div className="p-6">
+                      <h3 className="font-bold text-lg mb-2">{item.title}</h3>
+                      <p className="text-sm text-muted-foreground line-clamp-2">{item.description}</p>
                     </div>
                   </Card>
                 ))}
@@ -97,19 +154,19 @@ export default function Home() {
           </section>
         )}
 
-        {/* Videos */}
         {videos.length > 0 && (
-          <section className="py-16 px-4">
+          <section className="py-20 px-4">
             <div className="container max-w-5xl mx-auto">
-              <h2 className="text-3xl font-bold mb-8">Training & Announcement Videos</h2>
+              <div className="text-center mb-12">
+                <h2 className="text-3xl font-bold mb-4">Training & Announcement Videos</h2>
+                <p className="text-muted-foreground">Learn from our professional development content</p>
+              </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {videos.slice(0, 4).map((item: any) => (
-                  <Card key={item.id} className="overflow-hidden hover-elevate">
-                    <div className="bg-slate-300 dark:bg-slate-700 h-48 flex items-center justify-center">
+                  <Card key={item.id} className="overflow-hidden card-hover">
+                    <div className="relative bg-slate-200 dark:bg-slate-800 aspect-video">
                       {item.fileUrl || item.url ? (
                         <video
-                          width="100%"
-                          height="100%"
                           controls
                           className="w-full h-full object-cover"
                         >
@@ -117,11 +174,15 @@ export default function Home() {
                           Your browser does not support the video tag.
                         </video>
                       ) : (
-                        <span className="text-gray-600">Video: {item.title}</span>
+                        <div className="absolute inset-0 flex items-center justify-center">
+                          <div className="w-16 h-16 rounded-full bg-primary/90 flex items-center justify-center">
+                            <Play className="w-8 h-8 text-white ml-1" />
+                          </div>
+                        </div>
                       )}
                     </div>
-                    <div className="p-4">
-                      <p className="font-bold">{item.title}</p>
+                    <div className="p-5">
+                      <h3 className="font-bold">{item.title}</h3>
                     </div>
                   </Card>
                 ))}
@@ -130,22 +191,27 @@ export default function Home() {
           </section>
         )}
 
-        {/* PDFs */}
         {pdfs.length > 0 && (
-          <section className="py-16 px-4 bg-muted">
+          <section className="py-20 px-4 bg-muted/50">
             <div className="container max-w-5xl mx-auto">
-              <h2 className="text-3xl font-bold mb-8">Resources & Materials</h2>
+              <div className="text-center mb-12">
+                <h2 className="text-3xl font-bold mb-4">Resources & Materials</h2>
+                <p className="text-muted-foreground">Download helpful guides and documents</p>
+              </div>
               <div className="space-y-4">
                 {pdfs.map((item: any) => (
-                  <Card key={item.id} className="p-6 hover-elevate">
-                    <div className="flex justify-between items-start">
-                      <div>
-                        <p className="font-bold text-lg">{item.title}</p>
+                  <Card key={item.id} className="p-6 card-hover">
+                    <div className="flex justify-between items-start gap-4">
+                      <div className="flex-1">
+                        <h3 className="font-bold text-lg">{item.title}</h3>
                         {item.description && <p className="text-muted-foreground mt-2">{item.description}</p>}
                       </div>
                       {item.fileUrl && (
-                        <a href={item.fileUrl} download className="text-blue-600 hover:underline">
-                          Download PDF
+                        <a href={item.fileUrl} download>
+                          <Button variant="outline" size="sm">
+                            <Download className="w-4 h-4 mr-2" />
+                            Download
+                          </Button>
                         </a>
                       )}
                     </div>
@@ -156,32 +222,65 @@ export default function Home() {
           </section>
         )}
 
-        {/* Top Verified Candidates */}
         {approvedCandidates.length > 0 && (
-          <section className="py-16 px-4">
+          <section className="py-20 px-4">
             <div className="container max-w-5xl mx-auto">
-              <h2 className="text-3xl font-bold mb-8 text-center">Top Verified Candidates</h2>
+              <div className="text-center mb-12">
+                <h2 className="text-3xl font-bold mb-4">Top Verified Candidates</h2>
+                <p className="text-muted-foreground">Professionally verified and ready for placement</p>
+              </div>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {approvedCandidates.slice(0, 6).map((c: any) => (
-                  <Card key={c.id} className="p-6 text-center hover-elevate">
-                    {c.imageUrl && <img src={c.imageUrl} alt={c.fullName} className="w-20 h-20 rounded-full mx-auto mb-4 object-cover" />}
-                    <p className="font-bold text-lg">{c.fullName}</p>
-                    <p className="text-sm text-blue-600 font-medium">{c.title}</p>
+                  <Card key={c.id} className="p-6 text-center card-hover">
+                    {c.imageUrl && (
+                      <img 
+                        src={c.imageUrl} 
+                        alt={c.fullName} 
+                        className="w-24 h-24 rounded-full mx-auto mb-4 object-cover border-4 border-primary/20" 
+                      />
+                    )}
+                    <h3 className="font-bold text-lg">{c.fullName}</h3>
+                    <p className="text-sm text-primary font-medium">{c.title}</p>
                     {c.company && <p className="text-sm text-muted-foreground">{c.company}</p>}
-                    {c.bio && <p className="text-sm text-foreground mt-2">{c.bio}</p>}
+                    {c.bio && <p className="text-sm text-foreground mt-3 line-clamp-3">{c.bio}</p>}
                   </Card>
                 ))}
               </div>
               {approvedCandidates.length > 6 && (
-                <div className="text-center mt-8">
+                <div className="text-center mt-10">
                   <Link href="/verified">
-                    <Button>View All Verified</Button>
+                    <Button variant="outline" size="lg">
+                      View All Verified
+                      <ArrowRight className="w-4 h-4 ml-2" />
+                    </Button>
                   </Link>
                 </div>
               )}
             </div>
           </section>
         )}
+
+        <section className="py-20 px-4 gradient-hero text-white">
+          <div className="container max-w-3xl mx-auto text-center">
+            <h2 className="text-3xl md:text-4xl font-bold mb-6">Ready to Transform Your Workforce?</h2>
+            <p className="text-lg opacity-90 mb-8">
+              Let us help you build a smarter, more efficient organization with our professional HR solutions.
+            </p>
+            <div className="flex flex-wrap justify-center gap-4">
+              <Link href="/contact">
+                <Button size="lg" variant="secondary" className="font-semibold">
+                  Get Started Today
+                  <ArrowRight className="w-4 h-4 ml-2" />
+                </Button>
+              </Link>
+              <Link href="/about">
+                <Button size="lg" variant="outline" className="bg-white/10 border-white/30 text-white font-semibold">
+                  Learn More
+                </Button>
+              </Link>
+            </div>
+          </div>
+        </section>
       </div>
       <Footer />
     </>

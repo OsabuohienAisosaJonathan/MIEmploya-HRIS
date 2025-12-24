@@ -138,12 +138,12 @@ function ServiceDetailDialog({ service }: { service: ServiceData }) {
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Card 
-          className="p-6 hover-elevate cursor-pointer group" 
+          className="p-6 card-hover cursor-pointer group border-l-4 border-l-transparent hover:border-l-primary" 
           data-testid={`card-service-${service.id}`}
         >
-          <h3 className="text-xl font-bold mb-2">{service.name}</h3>
-          <p className="text-muted-foreground mb-4">{service.shortDesc}</p>
-          <div className="flex items-center gap-1 text-blue-600 font-medium">
+          <h3 className="text-xl font-bold mb-3">{service.name}</h3>
+          <p className="text-muted-foreground mb-4 leading-relaxed">{service.shortDesc}</p>
+          <div className="flex items-center gap-1 text-primary font-medium">
             <span>View Details</span>
             <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
           </div>
@@ -151,32 +151,32 @@ function ServiceDetailDialog({ service }: { service: ServiceData }) {
       </DialogTrigger>
       <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle className="text-2xl">{service.name}</DialogTitle>
+          <DialogTitle className="text-2xl font-bold">{service.name}</DialogTitle>
         </DialogHeader>
         <div className="space-y-6 py-4">
-          <div>
-            <h4 className="font-bold text-lg mb-2">Description</h4>
-            <p className="text-foreground">{service.description}</p>
+          <div className="bg-muted/50 p-4 rounded-lg">
+            <h4 className="font-semibold text-lg mb-2 text-primary">Description</h4>
+            <p className="text-foreground leading-relaxed">{service.description}</p>
           </div>
-          <div>
-            <h4 className="font-bold text-lg mb-2">Purpose</h4>
-            <p className="text-foreground">{service.purpose}</p>
+          <div className="bg-muted/50 p-4 rounded-lg">
+            <h4 className="font-semibold text-lg mb-2 text-primary">Purpose</h4>
+            <p className="text-foreground leading-relaxed">{service.purpose}</p>
           </div>
-          <div>
-            <h4 className="font-bold text-lg mb-2">Benefits</h4>
-            <ul className="space-y-2">
+          <div className="bg-muted/50 p-4 rounded-lg">
+            <h4 className="font-semibold text-lg mb-3 text-primary">Benefits</h4>
+            <ul className="space-y-3">
               {service.benefits.map((benefit, index) => (
-                <li key={index} className="flex items-start gap-2">
-                  <CheckCircle className="w-5 h-5 text-green-600 mt-0.5 flex-shrink-0" />
+                <li key={index} className="flex items-start gap-3">
+                  <CheckCircle className="w-5 h-5 text-accent mt-0.5 flex-shrink-0" />
                   <span className="text-foreground">{benefit}</span>
                 </li>
               ))}
             </ul>
           </div>
-          <div className="pt-4 border-t">
+          <div className="pt-4">
             <Link href={`/contact?service=${encodeURIComponent(service.name)}`}>
               <Button 
-                className="w-full" 
+                className="w-full font-semibold" 
                 size="lg"
                 data-testid={`button-request-${service.id}`}
                 onClick={() => setOpen(false)}
@@ -195,21 +195,27 @@ export default function Services() {
   return (
     <>
       <Header />
-      <div className="min-h-screen py-12 px-4">
-        <div className="container max-w-5xl mx-auto">
-          <div className="text-center mb-12">
-            <h1 className="text-4xl font-bold mb-4">Our Services</h1>
-            <p className="text-lg text-muted-foreground">
+      <div className="min-h-screen">
+        <section className="py-16 px-4 gradient-hero text-white">
+          <div className="container max-w-4xl mx-auto text-center">
+            <h1 className="text-4xl md:text-5xl font-bold mb-4">Our Services</h1>
+            <p className="text-lg opacity-90 max-w-2xl mx-auto">
               Comprehensive HR solutions tailored to your organization's needs. Click on any service to learn more.
             </p>
           </div>
+        </section>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {SERVICES.map((service) => (
-              <ServiceDetailDialog key={service.id} service={service} />
-            ))}
+        <section className="py-16 px-4">
+          <div className="container max-w-5xl mx-auto">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {SERVICES.map((service, index) => (
+                <div key={service.id} className="animate-fade-in" style={{ animationDelay: `${index * 50}ms` }}>
+                  <ServiceDetailDialog service={service} />
+                </div>
+              ))}
+            </div>
           </div>
-        </div>
+        </section>
       </div>
       <Footer />
     </>
