@@ -388,5 +388,113 @@ export async function registerRoutes(
     }
   });
 
+  // ============================================
+  // TEMPLATES ENDPOINTS
+  // ============================================
+  app.get("/api/templates", async (req, res) => {
+    const templates = await storage.getTemplates();
+    res.json(templates);
+  });
+
+  app.get("/api/templates/all", async (req, res) => {
+    const token = req.headers.authorization?.replace("Bearer ", "");
+    let authenticated = false;
+    if (token) {
+      try {
+        const decoded = Buffer.from(token, "base64").toString();
+        authenticated = decoded.startsWith("admin:");
+      } catch {
+        authenticated = false;
+      }
+    }
+    if (!authenticated) {
+      return res.status(401).json({ message: "Unauthorized" });
+    }
+    const templates = await storage.getAllTemplates();
+    res.json(templates);
+  });
+
+  app.post("/api/templates/upload", upload.single("file"), async (req, res) => {
+    const token = req.headers.authorization?.replace("Bearer ", "");
+    let authenticated = false;
+    if (token) {
+      try {
+        const decoded = Buffer.from(token, "base64").toString();
+        authenticated = decoded.startsWith("admin:");
+      } catch {
+        authenticated = false;
+      }
+    }
+    if (!authenticated) {
+      return res.status(401).json({ message: "Unauthorized" });
+    }
+
+    try {
+      if (!req.file) {
+        return res.status(400).json({ message: "No file uploaded" });
+      }
+
+      const { title, description, fileType, isPublished } = req.body;
+      const fileUrl = `/uploads/${req.file.filename}`;
+
+      const template = await storage.createTemplate({
+        title,
+        description: description || "",
+        filename: req.file.filename,
+        fileUrl,
+        fileType: fileType as "pdf" | "docx" | "xlsx",
+        isPublished: isPublished === "true",
+      });
+
+      res.status(201).json(template);
+    } catch (err) {
+      res.status(500).json({ message: "Server error" });
+    }
+  });
+
+  app.patch("/api/templates/:id", async (req, res) => {
+    const token = req.headers.authorization?.replace("Bearer ", "");
+    let authenticated = false;
+    if (token) {
+      try {
+        const decoded = Buffer.from(token, "base64").toString();
+        authenticated = decoded.startsWith("admin:");
+      } catch {
+        authenticated = false;
+      }
+    }
+    if (!authenticated) {
+      return res.status(401).json({ message: "Unauthorized" });
+    }
+    try {
+      const { isPublished } = req.body;
+      const updated = await storage.updateTemplateStatus(Number(req.params.id), isPublished);
+      if (!updated) {
+        return res.status(404).json({ message: "Template not found" });
+      }
+      res.json(updated);
+    } catch (err) {
+      res.status(500).json({ message: "Server error" });
+    }
+  });
+
+  app.delete("/api/templates/:id", async (req, res) => {
+    const token = req.headers.authorization?.replace("Bearer ", "");
+    let authenticated = false;
+    if (token) {
+      try {
+        const decoded = Buffer.from(token, "base64").toString();
+        authenticated = decoded.startsWith("admin:");
+      } catch {
+        authenticated = false;
+      }
+    }
+    if (!authenticated) {
+      return res.status(401).json({ message: "Unauthorized" });
+    }
+    await storage.deleteTemplate(Number(req.params.id));
+    res.status(204).send();
+  });
+
   return httpServer;
 }

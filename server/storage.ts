@@ -3,12 +3,15 @@ import {
   serviceRequests,
   contentItems,
   verifiedCandidates,
+  templates,
   type ServiceRequest,
   type InsertServiceRequest,
   type ContentItem,
   type InsertContentItem,
   type VerifiedCandidate,
   type InsertVerifiedCandidate,
+  type Template,
+  type InsertTemplate,
 } from "@shared/schema";
 import { eq } from "drizzle-orm";
 
@@ -36,6 +39,13 @@ export interface IStorage {
     id: number,
     status: "pending" | "approved" | "rejected"
   ): Promise<VerifiedCandidate | undefined>;
+
+  // Templates
+  getTemplates(): Promise<Template[]>;
+  getAllTemplates(): Promise<Template[]>;
+  createTemplate(template: InsertTemplate): Promise<Template>;
+  updateTemplateStatus(id: number, isPublished: boolean): Promise<Template | undefined>;
+  deleteTemplate(id: number): Promise<void>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -133,6 +143,38 @@ export class DatabaseStorage implements IStorage {
       .where(eq(verifiedCandidates.id, id))
       .returning();
     return updated;
+  }
+
+  async getTemplates(): Promise<Template[]> {
+    return await db
+      .select()
+      .from(templates)
+      .where(eq(templates.isPublished, true));
+  }
+
+  async getAllTemplates(): Promise<Template[]> {
+    return await db.select().from(templates);
+  }
+
+  async createTemplate(template: InsertTemplate): Promise<Template> {
+    const [created] = await db
+      .insert(templates)
+      .values(template)
+      .returning();
+    return created;
+  }
+
+  async updateTemplateStatus(id: number, isPublished: boolean): Promise<Template | undefined> {
+    const [updated] = await db
+      .update(templates)
+      .set({ isPublished })
+      .where(eq(templates.id, id))
+      .returning();
+    return updated;
+  }
+
+  async deleteTemplate(id: number): Promise<void> {
+    await db.delete(templates).where(eq(templates.id, id));
   }
 }
 

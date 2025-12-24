@@ -56,6 +56,20 @@ export const verifiedCandidates = pgTable("verified_candidates", {
 });
 
 // ============================================
+// TEMPLATES
+// ============================================
+export const templates = pgTable("templates", {
+  id: serial("id").primaryKey(),
+  title: text("title").notNull(),
+  description: text("description"),
+  filename: text("filename").notNull(),
+  fileUrl: text("file_url").notNull(),
+  fileType: varchar("file_type", { enum: ["pdf", "docx", "xlsx"] }).notNull(),
+  isPublished: boolean("is_published").default(false),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+// ============================================
 // INSERT SCHEMAS
 // ============================================
 export const insertServiceRequestSchema = createInsertSchema(serviceRequests).omit({
@@ -76,6 +90,11 @@ export const insertVerifiedCandidateSchema = createInsertSchema(verifiedCandidat
   createdAt: true,
 });
 
+export const insertTemplateSchema = createInsertSchema(templates).omit({
+  id: true,
+  createdAt: true,
+});
+
 // ============================================
 // TYPE EXPORTS
 // ============================================
@@ -88,12 +107,16 @@ export type InsertContentItem = z.infer<typeof insertContentItemSchema>;
 export type VerifiedCandidate = typeof verifiedCandidates.$inferSelect;
 export type InsertVerifiedCandidate = z.infer<typeof insertVerifiedCandidateSchema>;
 
+export type Template = typeof templates.$inferSelect;
+export type InsertTemplate = z.infer<typeof insertTemplateSchema>;
+
 // ============================================
 // API REQUEST/RESPONSE TYPES
 // ============================================
 export type ServiceRequestResponse = ServiceRequest;
 export type ContentItemResponse = ContentItem;
 export type VerifiedCandidateResponse = VerifiedCandidate;
+export type TemplateResponse = Template;
 
 export interface AdminAuthResponse {
   authenticated: boolean;

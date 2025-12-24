@@ -1,0 +1,179 @@
+FINAL INSTRUCTION – CONNECT ADMIN CONTENT TO PUBLIC PAGES + ADD TEMPLATES FEATURE
+
+Admin uploads are now working correctly.
+However, admin-published content is not displaying on public pages.
+Proceed to complete the following items.
+
+1. PUBLIC PAGE DATA BINDING (CRITICAL)
+Observed Issue
+
+Admin can upload and publish:
+
+News
+
+Videos
+
+PDFs / Books
+
+Top Verified Candidates
+
+Content exists in database
+
+Home page and Top Verified page do not display this content
+
+This is a frontend data-binding issue, not an admin issue.
+
+Required Fix
+
+Explicitly connect public pages to published admin content.
+
+A. Home Page
+
+Implement and render the following sections on the Home page:
+
+News Feeds
+
+Training & Announcement Videos
+
+PDFs / Books
+
+Top Verified Candidates
+
+Each section must:
+
+Fetch data from the correct public API endpoints
+
+Display only published content
+
+Render media correctly (images, videos, PDF links)
+
+Hide automatically if no content exists
+
+Backend availability without UI rendering is not acceptable.
+
+B. Top Verified Page
+
+Fetch approved / published Top Verified candidates
+
+Display candidate profile image, name, and profession
+
+Do not require authentication
+
+Must match Admin-published records exactly
+
+2. ACCESS CONTROL CONFIRMATION
+
+Apply this rule strictly:
+
+Public (No Login):
+
+View Home page
+
+View News, Videos, PDFs
+
+View Top Verified page
+
+Download templates
+
+Admin Only:
+
+Upload content
+
+Publish / Unpublish
+
+Manage templates
+
+Do not apply admin authorization to public content fetch routes.
+
+3. ADD “TEMPLATES” FEATURE (HEADER MENU ITEM)
+Feature Name
+
+Templates
+
+Location
+
+Add Templates to the main Header navigation
+
+Admin Functionality
+
+Admin must be able to:
+
+Upload templates (PDF, DOCX, XLSX)
+
+Add:
+
+Template title
+
+Short description
+
+Publish / Unpublish templates
+
+Manage templates from Admin dashboard
+
+Public Functionality
+
+Public users must be able to:
+
+View available templates
+
+Download templates without login
+
+See:
+
+Template title
+
+Short description
+
+Download button
+
+Templates Page
+
+Create a public Templates page that:
+
+Lists all published templates
+
+Allows direct download
+
+Hides unpublished templates
+
+4. COMPLETION CRITERIA (MANDATORY)
+
+This task is complete only when:
+
+Admin-uploaded content appears correctly on:
+
+Home page
+
+Top Verified page
+
+Home page displays:
+
+News
+
+Videos
+
+PDFs / Books
+
+Top Verified
+
+Templates menu appears in Header
+
+Admin can upload templates
+
+Public users can download templates
+
+No authorization error appears on public pages
+
+Do not claim completion until visible UI confirmation is achieved.
+
+IMPORTANT
+
+Do not add unrelated features
+
+Do not redesign UI
+
+Do not change admin logic
+
+Focus only on data binding and Templates feature
+
+END OF INSTRUCTION

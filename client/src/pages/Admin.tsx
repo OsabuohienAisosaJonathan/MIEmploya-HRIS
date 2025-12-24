@@ -98,11 +98,12 @@ export default function Admin() {
 
       <div className="container py-8 px-4">
         <Tabs defaultValue="requests" className="w-full">
-          <TabsList className="grid w-full grid-cols-4">
+          <TabsList className="grid w-full grid-cols-5">
             <TabsTrigger value="requests" data-testid="tab-requests">Service Requests</TabsTrigger>
             <TabsTrigger value="news" data-testid="tab-news">News</TabsTrigger>
             <TabsTrigger value="videos" data-testid="tab-videos">Videos</TabsTrigger>
             <TabsTrigger value="candidates" data-testid="tab-candidates">Verified Candidates</TabsTrigger>
+            <TabsTrigger value="templates" data-testid="tab-templates">Templates</TabsTrigger>
           </TabsList>
 
           <TabsContent value="requests" className="space-y-4">
@@ -119,6 +120,10 @@ export default function Admin() {
 
           <TabsContent value="candidates" className="space-y-4">
             <CandidatesTab token={token} />
+          </TabsContent>
+
+          <TabsContent value="templates" className="space-y-4">
+            <TemplatesTab token={token} />
           </TabsContent>
         </Tabs>
       </div>
@@ -559,6 +564,219 @@ function VideosTab({ token }: { token: string }) {
           </div>
         ) : (
           <p className="text-muted-foreground">No videos yet.</p>
+        )}
+      </Card>
+    </div>
+  );
+}
+
+function TemplatesTab({ token }: { token: string }) {
+  const { data: templates, refetch, isLoading } = useQuery({
+    queryKey: ["/api/templates", token],
+    queryFn: () =>
+      fetch("/api/templates/all", {
+        headers: { Authorization: `Bearer ${token}` },
+      }).then((r) => r.json()),
+    enabled: !!token,
+  });
+
+  const [formData, setFormData] = useState({
+    title: "",
+    description: "",
+    file: null as File | null,
+    fileType: "pdf" as "pdf" | "docx" | "xlsx",
+    isPublished: false,
+  });
+  const [submitting, setSubmitting] = useState(false);
+  const { toast } = useToast();
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!formData.file) {
+      toast({ title: "Please select a template file", variant: "destructive" });
+      return;
+    }
+
+    setSubmitting(true);
+    try {
+      const formDataObj = new FormData();
+      formDataObj.append("title", formData.title);
+      formDataObj.append("description", formData.description || "");
+      formDataObj.append("fileType", formData.fileType);
+      formDataObj.append("isPublished", String(formData.isPublished));
+      formDataObj.append("file", formData.file);
+
+      const response = await fetch("/api/templates/upload", {
+        method: "POST",
+        headers: { Authorization: `Bearer ${token}` },
+        body: formDataObj,
+      });
+
+      if (response.ok) {
+        toast({ title: "Template uploaded successfully" });
+        setFormData({
+          title: "",
+          description: "",
+          file: null,
+          fileType: "pdf",
+          isPublished: false,
+        });
+        refetch();
+      } else {
+        const err = await response.json();
+        toast({ title: "Error: " + (err.message || "Unknown error"), variant: "destructive" });
+      }
+    } catch (err) {
+      toast({ title: "Error: " + (err instanceof Error ? err.message : "Unknown error"), variant: "destructive" });
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  const handleDelete = async (id: number) => {
+    try {
+      await fetch(`/api/templates/${id}`, {
+        method: "DELETE",
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      refetch();
+      toast({ title: "Template deleted" });
+    } catch {
+      toast({ title: "Error deleting template", variant: "destructive" });
+    }
+  };
+
+  const handleTogglePublish = async (id: number, isPublished: boolean) => {
+    try {
+      await fetch(`/api/templates/${id}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ isPublished: !isPublished }),
+      });
+      refetch();
+      toast({ title: isPublished ? "Template unpublished" : "Template published" });
+    } catch {
+      toast({ title: "Error updating template", variant: "destructive" });
+    }
+  };
+
+  if (isLoading) return <div className="text-center py-8">Loading...</div>;
+
+  return (
+    <div className="space-y-6">
+      <Card className="p-6">
+        <h2 className="text-2xl font-bold mb-4">Upload Template</h2>
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div>
+            <label className="block text-sm font-medium mb-2">Title</label>
+            <Input
+              value={formData.title}
+              onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+              placeholder="Template title"
+              required
+              data-testid="input-template-title"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium mb-2">Description</label>
+            <Textarea
+              value={formData.description}
+              onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+              placeholder="Template description"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium mb-2">File Type</label>
+            <select
+              value={formData.fileType}
+              onChange={(e) => setFormData({ ...formData, fileType: e.target.value as "pdf" | "docx" | "xlsx" })}
+              className="w-full border rounded px-3 py-2"
+            >
+              <option value="pdf">PDF</option>
+              <option value="docx">Word (DOCX)</option>
+              <option value="xlsx">Excel (XLSX)</option>
+            </select>
+          </div>
+          <div>
+            <label className="block text-sm font-medium mb-2">Template File</label>
+            <input
+              type="file"
+              accept=".pdf,.docx,.xlsx"
+              onChange={(e) => setFormData({ ...formData, file: e.target.files?.[0] || null })}
+              required
+              className="w-full border rounded px-3 py-2"
+              data-testid="input-template-file"
+            />
+          </div>
+          <div className="flex items-center gap-2">
+            <input
+              type="checkbox"
+              id="publish-template"
+              checked={formData.isPublished}
+              onChange={(e) => setFormData({ ...formData, isPublished: e.target.checked })}
+              data-testid="checkbox-template-publish"
+            />
+            <label htmlFor="publish-template" className="text-sm font-medium cursor-pointer">
+              Publish immediately
+            </label>
+          </div>
+          <Button type="submit" disabled={submitting} data-testid="button-add-template">
+            {submitting ? "Uploading..." : "Upload Template"}
+          </Button>
+        </form>
+      </Card>
+
+      <Card className="p-6">
+        <h2 className="text-2xl font-bold mb-4">Templates</h2>
+        {templates && templates.length > 0 ? (
+          <div className="space-y-4">
+            {templates.map((item: any) => (
+              <Card key={item.id} className="p-4" data-testid={`card-template-${item.id}`}>
+                <div className="flex justify-between items-start">
+                  <div className="flex-1">
+                    <p className="font-bold">{item.title}</p>
+                    {item.description && <p className="text-sm text-muted-foreground mt-1">{item.description}</p>}
+                    <div className="flex gap-2 mt-2">
+                      <span className="inline-block px-2 py-1 text-xs bg-blue-100 text-blue-800 rounded">
+                        {item.fileType.toUpperCase()}
+                      </span>
+                      <span
+                        className={`inline-block px-2 py-1 text-xs rounded ${
+                          item.isPublished ? "bg-green-100 text-green-800" : "bg-gray-100 text-gray-800"
+                        }`}
+                        data-testid={`status-template-${item.id}`}
+                      >
+                        {item.isPublished ? "Published" : "Draft"}
+                      </span>
+                    </div>
+                  </div>
+                  <div className="flex gap-2">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => handleTogglePublish(item.id, item.isPublished)}
+                      data-testid={`button-toggle-template-${item.id}`}
+                    >
+                      {item.isPublished ? "Unpublish" : "Publish"}
+                    </Button>
+                    <Button
+                      variant="destructive"
+                      size="sm"
+                      onClick={() => handleDelete(item.id)}
+                      data-testid={`button-delete-template-${item.id}`}
+                    >
+                      Delete
+                    </Button>
+                  </div>
+                </div>
+              </Card>
+            ))}
+          </div>
+        ) : (
+          <p className="text-muted-foreground">No templates yet.</p>
         )}
       </Card>
     </div>

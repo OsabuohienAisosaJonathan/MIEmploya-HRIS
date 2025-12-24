@@ -10,6 +10,7 @@ import About from "@/pages/About";
 import Services from "@/pages/Services";
 import Contact from "@/pages/Contact";
 import Verified from "@/pages/Verified";
+import Templates from "@/pages/Templates";
 import Admin from "@/pages/Admin";
 
 function Router() {
@@ -20,6 +21,7 @@ function Router() {
       <Route path="/services" component={Services} />
       <Route path="/contact" component={Contact} />
       <Route path="/verified" component={Verified} />
+      <Route path="/templates" component={Templates} />
       <Route path="/admin/:path*" component={Admin} />
       <Route component={NotFound} />
     </Switch>

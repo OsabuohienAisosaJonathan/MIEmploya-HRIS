@@ -26,6 +26,9 @@ export function Header() {
           <Link href="/verified" className={`text-sm font-medium ${isActive("/verified") ? "text-blue-600" : "text-foreground"}`}>
             Top Verified
           </Link>
+          <Link href="/templates" className={`text-sm font-medium ${isActive("/templates") ? "text-blue-600" : "text-foreground"}`}>
+            Templates
+          </Link>
           <Link href="/contact" className={`text-sm font-medium ${isActive("/contact") ? "text-blue-600" : "text-foreground"}`}>
             Contact
           </Link>
