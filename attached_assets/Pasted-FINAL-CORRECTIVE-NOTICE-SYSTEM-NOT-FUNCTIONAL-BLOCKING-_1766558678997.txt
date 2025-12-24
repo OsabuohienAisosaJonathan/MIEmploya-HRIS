@@ -1,0 +1,149 @@
+FINAL CORRECTIVE NOTICE – SYSTEM NOT FUNCTIONAL (BLOCKING ISSUES)
+
+MIEMPLOYA HR WEBSITE
+
+The system is still not operational.
+Previous confirmations are invalid based on direct testing.
+
+Proceed to fix the issues below. These are blocking failures.
+
+1. ADMIN UPLOAD – STILL FAILING (UNAUTHORIZED)
+
+Observed (FACT):
+
+Uploading News returns Unauthorized
+
+Uploading Videos returns Unauthorized
+
+Adding Top Verified Candidates returns error
+
+Required Fix:
+
+Admin upload endpoints must:
+
+Accept admin token correctly
+
+Not reject authenticated admin requests
+
+Admin UI must always send the token with uploads
+
+Admin uploads must complete successfully with confirmation
+
+Until uploads work, the content system is broken.
+
+2. SERVICE REQUESTS – NOT APPEARING IN ADMIN DASHBOARD
+
+Observed (FACT):
+
+Public service request form submits
+
+Submission confirmation appears
+
+No requests appear in Admin dashboard
+
+Required Fix:
+
+Ensure service requests:
+
+Are saved to database
+
+Are fetched and displayed in Admin dashboard
+
+Admin dashboard must list:
+
+All submitted requests
+
+Full request details
+
+Uploaded documents
+
+This is a core business function and must work.
+
+3. HOME PAGE – REQUIRED SECTIONS NOT IMPLEMENTED
+
+Observed (FACT):
+The Home page contains NONE of the required sections:
+
+News Feeds
+
+Videos
+
+PDFs / Books
+
+Top Verified Candidates
+
+Required Fix:
+Explicitly implement the following Home page sections:
+
+Latest News Feeds
+
+Training & Announcement Videos
+
+PDFs / Books
+
+Top Verified Candidates
+
+Each section must:
+
+Render visibly on the Home page
+
+Pull data dynamically
+
+Display published content
+
+Hide only if no content exists
+
+Backend endpoints without UI sections do not meet requirements.
+
+4. ACCESS CONTROL RULE (RESET & APPLY)
+
+Apply this rule strictly:
+
+Public (No Login):
+
+View Home page
+
+View News, Videos, PDFs, Top Verified
+
+Admin Only:
+
+Upload content
+
+Publish / Unpublish
+
+View service requests
+
+Do not protect public fetch endpoints with admin authorization.
+
+5. ACCEPTANCE CRITERIA (FINAL)
+
+The system is considered working ONLY when:
+
+Admin uploads News, Videos, PDFs, and Top Verified without Unauthorized errors
+
+Service requests submitted publicly appear immediately in Admin dashboard
+
+Home page visibly displays:
+
+News section
+
+Video section
+
+Top Verified section
+
+Public users see content without login
+
+Do not respond with logs or claims.
+Respond only after visual UI confirmation of the above.
+
+IMPORTANT
+
+Do not introduce new features
+
+Do not restate backend status
+
+Fix UI + auth + data flow only
+
+This is the final corrective instruction before escalation
+
+END OF NOTICE

@@ -35,7 +35,15 @@ export async function registerRoutes(
 
   app.get(api.admin.me.path, (req, res) => {
     const token = req.headers.authorization?.replace("Bearer ", "");
-    const authenticated = !!token && token.startsWith("admin:");
+    let authenticated = false;
+    if (token) {
+      try {
+        const decoded = Buffer.from(token, "base64").toString();
+        authenticated = decoded.startsWith("admin:");
+      } catch {
+        authenticated = false;
+      }
+    }
     res.json({ authenticated });
   });
 
@@ -60,7 +68,15 @@ export async function registerRoutes(
 
   app.get(api.serviceRequests.list.path, async (req, res) => {
     const token = req.headers.authorization?.replace("Bearer ", "");
-    const authenticated = !!token && token.startsWith("admin:");
+    let authenticated = false;
+    if (token) {
+      try {
+        const decoded = Buffer.from(token, "base64").toString();
+        authenticated = decoded.startsWith("admin:");
+      } catch {
+        authenticated = false;
+      }
+    }
     if (!authenticated) {
       return res.status(401).json({ message: "Unauthorized" });
     }
@@ -70,7 +86,15 @@ export async function registerRoutes(
 
   app.get(api.serviceRequests.get.path, async (req, res) => {
     const token = req.headers.authorization?.replace("Bearer ", "");
-    const authenticated = !!token && token.startsWith("admin:");
+    let authenticated = false;
+    if (token) {
+      try {
+        const decoded = Buffer.from(token, "base64").toString();
+        authenticated = decoded.startsWith("admin:");
+      } catch {
+        authenticated = false;
+      }
+    }
     if (!authenticated) {
       return res.status(401).json({ message: "Unauthorized" });
     }
@@ -83,7 +107,15 @@ export async function registerRoutes(
 
   app.patch(api.serviceRequests.update.path, async (req, res) => {
     const token = req.headers.authorization?.replace("Bearer ", "");
-    const authenticated = !!token && token.startsWith("admin:");
+    let authenticated = false;
+    if (token) {
+      try {
+        const decoded = Buffer.from(token, "base64").toString();
+        authenticated = decoded.startsWith("admin:");
+      } catch {
+        authenticated = false;
+      }
+    }
     if (!authenticated) {
       return res.status(401).json({ message: "Unauthorized" });
     }
@@ -116,7 +148,15 @@ export async function registerRoutes(
 
   app.post(api.content.create.path, async (req, res) => {
     const token = req.headers.authorization?.replace("Bearer ", "");
-    const authenticated = !!token && token.startsWith("admin:");
+    let authenticated = false;
+    if (token) {
+      try {
+        const decoded = Buffer.from(token, "base64").toString();
+        authenticated = decoded.startsWith("admin:");
+      } catch {
+        authenticated = false;
+      }
+    }
     if (!authenticated) {
       return res.status(401).json({ message: "Unauthorized" });
     }
@@ -144,7 +184,15 @@ export async function registerRoutes(
   // File upload endpoint for content
   app.post("/api/content/upload", uploadAny, async (req, res) => {
     const token = req.headers.authorization?.replace("Bearer ", "");
-    const authenticated = !!token && token.startsWith("admin:");
+    let authenticated = false;
+    if (token) {
+      try {
+        const decoded = Buffer.from(token, "base64").toString();
+        authenticated = decoded.startsWith("admin:");
+      } catch {
+        authenticated = false;
+      }
+    }
     if (!authenticated) {
       return res.status(401).json({ message: "Unauthorized" });
     }
@@ -179,7 +227,15 @@ export async function registerRoutes(
 
   app.patch(api.content.update.path, async (req, res) => {
     const token = req.headers.authorization?.replace("Bearer ", "");
-    const authenticated = !!token && token.startsWith("admin:");
+    let authenticated = false;
+    if (token) {
+      try {
+        const decoded = Buffer.from(token, "base64").toString();
+        authenticated = decoded.startsWith("admin:");
+      } catch {
+        authenticated = false;
+      }
+    }
     if (!authenticated) {
       return res.status(401).json({ message: "Unauthorized" });
     }
@@ -197,7 +253,15 @@ export async function registerRoutes(
 
   app.delete(api.content.delete.path, async (req, res) => {
     const token = req.headers.authorization?.replace("Bearer ", "");
-    const authenticated = !!token && token.startsWith("admin:");
+    let authenticated = false;
+    if (token) {
+      try {
+        const decoded = Buffer.from(token, "base64").toString();
+        authenticated = decoded.startsWith("admin:");
+      } catch {
+        authenticated = false;
+      }
+    }
     if (!authenticated) {
       return res.status(401).json({ message: "Unauthorized" });
     }
@@ -210,7 +274,15 @@ export async function registerRoutes(
   // ============================================
   app.get(api.verifiedCandidates.list.path, async (req, res) => {
     const token = req.headers.authorization?.replace("Bearer ", "");
-    const authenticated = !!token && token.startsWith("admin:");
+    let authenticated = false;
+    if (token) {
+      try {
+        const decoded = Buffer.from(token, "base64").toString();
+        authenticated = decoded.startsWith("admin:");
+      } catch {
+        authenticated = false;
+      }
+    }
     
     const candidates = authenticated
       ? await storage.getAllVerifiedCandidates()
@@ -220,7 +292,15 @@ export async function registerRoutes(
 
   app.post(api.verifiedCandidates.create.path, async (req, res) => {
     const token = req.headers.authorization?.replace("Bearer ", "");
-    const authenticated = !!token && token.startsWith("admin:");
+    let authenticated = false;
+    if (token) {
+      try {
+        const decoded = Buffer.from(token, "base64").toString();
+        authenticated = decoded.startsWith("admin:");
+      } catch {
+        authenticated = false;
+      }
+    }
     if (!authenticated) {
       return res.status(401).json({ message: "Unauthorized" });
     }
@@ -242,7 +322,15 @@ export async function registerRoutes(
   // File upload endpoint for verified candidates
   app.post("/api/verified-candidates/upload", upload.single("image"), async (req, res) => {
     const token = req.headers.authorization?.replace("Bearer ", "");
-    const authenticated = !!token && token.startsWith("admin:");
+    let authenticated = false;
+    if (token) {
+      try {
+        const decoded = Buffer.from(token, "base64").toString();
+        authenticated = decoded.startsWith("admin:");
+      } catch {
+        authenticated = false;
+      }
+    }
     if (!authenticated) {
       return res.status(401).json({ message: "Unauthorized" });
     }
@@ -273,7 +361,15 @@ export async function registerRoutes(
 
   app.patch(api.verifiedCandidates.update.path, async (req, res) => {
     const token = req.headers.authorization?.replace("Bearer ", "");
-    const authenticated = !!token && token.startsWith("admin:");
+    let authenticated = false;
+    if (token) {
+      try {
+        const decoded = Buffer.from(token, "base64").toString();
+        authenticated = decoded.startsWith("admin:");
+      } catch {
+        authenticated = false;
+      }
+    }
     if (!authenticated) {
       return res.status(401).json({ message: "Unauthorized" });
     }
