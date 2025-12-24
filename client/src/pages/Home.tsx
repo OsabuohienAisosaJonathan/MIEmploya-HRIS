@@ -13,20 +13,26 @@ const SERVICES = [
 ];
 
 export default function Home() {
-  const { data: content, isLoading: contentLoading } = useQuery({
+  const { data: content = [] } = useQuery({
     queryKey: ["/api/content"],
-    queryFn: () => fetch("/api/content").then((r) => r.json()),
+    queryFn: () => fetch("/api/content").then((r) => {
+      if (!r.ok) return [];
+      return r.json();
+    }).catch(() => []),
   });
 
-  const { data: candidates, isLoading: candidatesLoading } = useQuery({
+  const { data: candidates = [] } = useQuery({
     queryKey: ["/api/verified-candidates"],
-    queryFn: () => fetch("/api/verified-candidates").then((r) => r.json()),
+    queryFn: () => fetch("/api/verified-candidates").then((r) => {
+      if (!r.ok) return [];
+      return r.json();
+    }).catch(() => []),
   });
 
-  const news = content?.filter((c: any) => c.type === "news" && c.isPublished) || [];
-  const videos = content?.filter((c: any) => c.type === "video" && c.isPublished) || [];
-  const pdfs = content?.filter((c: any) => c.type === "pdf" && c.isPublished) || [];
-  const approvedCandidates = candidates?.filter((c: any) => c.status === "approved") || [];
+  const news = Array.isArray(content) ? content.filter((c: any) => c.type === "news" && c.isPublished) : [];
+  const videos = Array.isArray(content) ? content.filter((c: any) => c.type === "video" && c.isPublished) : [];
+  const pdfs = Array.isArray(content) ? content.filter((c: any) => c.type === "pdf" && c.isPublished) : [];
+  const approvedCandidates = Array.isArray(candidates) ? candidates.filter((c: any) => c.status === "approved") : [];
 
   return (
     <>
