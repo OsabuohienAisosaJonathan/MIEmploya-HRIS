@@ -1,0 +1,114 @@
+Miemploya Website
+________________________________________
+Objective
+Build a professional HR services website for Miemploya HR that allows public users (no login or signup required) to request HR services and verification, while enabling Miemploya HR to operate as Super Admin with full control over content, approvals, and publications.
+The home page should have section of; News feeds and upload of videos and PDF and another section of top verified
+Use miemploya logo as my company logo
+________________________________________
+User Access Rules
+Public Users
+•	No login or signup required
+•	Can view all pages
+•	Can submit service requests
+•	Can upload documents
+•	Must identify their status and location
+Super Admin (Miemploya HR)
+•	Full content and request control
+•	Reviews and approves verification requests
+•	Publishes approved content
+________________________________________
+Website Pages
+•	Home
+•	About
+•	Services
+•	Contact
+•	Top Verified
+________________________________________
+SERVICES (REQUEST-BASED)
+Users can request the following Miemploya HR services:
+1.	HR Consultancy
+2.	Recruitment
+3.	Training & Development
+4.	Onboarding & Offboarding Services
+5.	Attendance Management
+6.	Payroll Outsourcing Services
+7.	Performance Evaluation
+8.	Audit Support
+9.	Compliance Support
+10.	Background & Reference Checks
+11.	MiPayMaster Application
+12.	OpenClax Application
+13.	MiStock HQ Application
+14.	Customized Software Development
+15.	Candidate Verification (Top Verified)
+________________________________________
+UNIFIED SERVICE REQUEST FORM (NO LOGIN REQUIRED)
+Personal & Contact Details
+•	Title (Mr / Mrs / Miss / Dr / Engr / Other)
+•	Full Name
+•	Email Address
+•	Phone Number
+Location Information
+•	State
+•	City
+User Classification
+•	User Status (Required)
+o	Employer
+o	Candidate
+Organization Information
+•	Organization / Company Name
+(Required if Employer; Optional if Candidate)
+Service Details
+•	Requested Service (Dropdown)
+•	Description of Request / Verification Purpose
+Document Upload Section
+Allow multiple file uploads for:
+•	Identification documents
+•	Certificates
+•	Employment letters
+•	References
+•	Any supporting documents
+________________________________________
+Submission
+•	Submit button
+•	On-screen confirmation message
+•	Request forwarded to Super Admin dashboard
+________________________________________
+CANDIDATE VERIFICATION FLOW
+•	Candidate selects Candidate Verification as service
+•	Selects User Status: Candidate
+•	Uploads credentials
+•	Admin reviews and approves
+•	Approved candidates appear on:
+o	Home Page
+o	Top Verified Page
+________________________________________
+SUPER ADMIN FUNCTIONS
+Content Management
+•	Upload training and announcement videos
+•	Upload books and learning materials
+•	Post news and upcoming events
+•	Publish Top Verified candidates
+Service Request Management
+•	View all service requests
+•	Filter by service, status, state, and city
+•	Download uploaded documents
+•	Track request status
+•	Contact requesters externally
+________________________________________
+HOME PAGE CONTENT
+•	Miemploya HR introduction
+•	Services overview
+•	Latest videos
+•	Featured books
+•	Upcoming events
+•	Top Verified candidates
+________________________________________
+DESIGN & BEHAVIOUR
+•	Clean professional UI
+•	Mobile responsive
+•	No user accounts
+•	Admin-only dashboard
+•	Secure document handling
+________________________________________
+END OF PROMPT
