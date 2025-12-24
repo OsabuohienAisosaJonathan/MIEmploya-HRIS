@@ -1,0 +1,146 @@
+FINAL INSTRUCTION – ADMIN JOB MANAGEMENT + RENAME TEMPLATES
+
+Proceed with the following updates.
+Do not redesign the UI and do not change existing public job pages.
+
+1. CONNECT JOB POSTING TO ADMIN BACKEND (CRITICAL)
+Current State
+
+Job listings and Job page exist on the Home page and Header
+
+Public Job page displays correctly
+
+No Admin control exists for creating or managing jobs
+
+This is incomplete.
+
+Required Fix
+
+Implement full Admin-managed Job Posting functionality.
+
+A. Admin Job Management (Backend + UI)
+
+Admin must be able to:
+
+Create a new job posting
+
+Edit an existing job posting
+
+Publish / Unpublish job postings
+
+Close or delete job postings
+
+View all job applications
+
+Download uploaded CVs
+
+B. Job Fields (Mandatory)
+
+Each job posting must include:
+
+Job Title
+
+Company Name
+
+Job Description
+
+Job Requirements
+
+Job Location (State & City)
+
+Job Category (optional)
+
+Publish Status (Published / Unpublished)
+
+C. Admin Job Pages
+
+Add to Admin dashboard:
+
+Jobs Management Page
+
+“Add Job” button
+
+Jobs table/list
+
+Job Applications Page
+
+List of applicants per job
+
+Applicant details
+
+CV download
+
+D. Data Flow Rule
+
+Jobs displayed publicly must be created and published by Admin only
+
+Public users must not be able to post jobs
+
+Public users can:
+
+View jobs
+
+Apply for jobs
+
+E. Public Job Application
+
+Ensure job applications:
+
+Submit successfully
+
+Are saved to database
+
+Appear in Admin dashboard under the relevant job
+
+Allow Admin to download CVs
+
+2. RENAME “TEMPLATES” TO “BOOKS & TEMPLATES”
+Required Change
+
+Update Header menu label:
+
+From Templates
+
+To Books & Templates
+
+Scope of Rename
+
+Header navigation
+
+Page title
+
+Admin dashboard references (if any)
+
+URLs may remain unchanged if already working
+
+Functionality
+
+Admin uploads:
+
+Books (PDFs)
+
+Templates (DOCX, XLSX, PDF)
+
+Public users:
+
+View Books & Templates
+
+Download files without login
+
+COMPLETION CRITERIA (MANDATORY)
+
+This task is complete only when:
+
+Admin can fully manage job postings from dashboard
+
+Public job listings come only from Admin-posted jobs
+
+Job applications are visible to Admin
+
+Header displays Books & Templates
+
+Existing Job page remains functional
+
+Do not declare completion until all items above are verified visually.
+
+END OF INSTRUCTION
