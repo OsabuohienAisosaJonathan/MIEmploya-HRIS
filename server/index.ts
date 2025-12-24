@@ -24,6 +24,10 @@ app.use(
 
 app.use(express.urlencoded({ extended: false }));
 
+// Serve uploads directory for media files (images, videos, PDFs)
+const uploadsDir = path.join(process.cwd(), "client", "public", "uploads");
+app.use("/uploads", express.static(uploadsDir));
+
 // Setup multer for file uploads
 const storage = multer.diskStorage({
   destination: path.join(process.cwd(), "client", "public", "uploads"),

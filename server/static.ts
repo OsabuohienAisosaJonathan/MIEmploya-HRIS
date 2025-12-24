@@ -10,6 +10,12 @@ export function serveStatic(app: Express) {
     );
   }
 
+  // Serve uploads directory for media files in production
+  const uploadsDir = path.resolve(process.cwd(), "client", "public", "uploads");
+  if (fs.existsSync(uploadsDir)) {
+    app.use("/uploads", express.static(uploadsDir));
+  }
+
   app.use(express.static(distPath));
 
   // fall through to index.html if the file doesn't exist
