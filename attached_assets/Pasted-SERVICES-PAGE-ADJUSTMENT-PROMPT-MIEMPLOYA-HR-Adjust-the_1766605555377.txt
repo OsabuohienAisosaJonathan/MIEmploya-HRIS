@@ -1,0 +1,338 @@
+SERVICES PAGE ADJUSTMENT PROMPT – MIEMPLOYA HR
+
+Adjust the Services page to follow a structured, professional, and user-guided flow.
+Users must read service details first before submitting a service request.
+
+A. SERVICES PAGE UX & INTERACTION RULES (MANDATORY)
+
+Implement the Services page with the following behavior:
+
+Display services as clickable service cards
+
+Each service card must show:
+
+Service title
+
+Short professional summary
+
+“View Details” action
+
+Clicking a service card must:
+
+Open a dedicated service detail page or modal
+
+The “Request Service” button must appear only on the service detail page
+
+Users must not access the service request form directly from the card view
+
+This flow is required:
+Service Card → Service Details → Request Service
+
+B. SERVICE CARD CONTENT (SHORT FORM)
+
+Use the following short write-ups on each service card.
+
+1. HR Consultancy
+
+Professional HR advisory services to help organizations structure, manage, and improve their workforce systems.
+
+2. Recruitment
+
+End-to-end recruitment support to help organizations attract, assess, and hire suitable candidates.
+
+3. Training & Development
+
+Workforce training solutions designed to improve employee skills, performance, and professional growth.
+
+4. Onboarding & Offboarding Services
+
+Structured processes to manage employee entry and exit professionally and compliantly.
+
+5. Attendance Management
+
+Systems and processes to monitor employee attendance, work hours, and workforce discipline.
+
+6. Payroll Outsourcing Services
+
+Complete payroll processing and salary administration handled accurately and confidentially.
+
+7. Performance Evaluation
+
+Structured performance assessment tools to measure productivity, competence, and growth.
+
+8. Audit Support
+
+HR and payroll audit support services to assist organizations during internal or statutory reviews.
+
+9. Compliance Support
+
+Guidance and support to help organizations align HR practices with applicable regulations.
+
+10. Background & Reference Checks
+
+Verification services to confirm candidate credentials, employment history, and references.
+
+11. MiPayMaster Application
+
+A payroll and salary management application designed to simplify employee payment processes.
+
+12. OpenClax Application
+
+A learning, training, and assessment platform supporting workforce development and certification.
+
+13. MiStock HQ Application
+
+An inventory and asset management solution for improved operational control and accountability.
+
+14. Customized Software
+
+Tailored software solutions developed to meet specific organizational and operational needs.
+
+C. SERVICE DETAIL PAGE CONTENT (FULL WRITE-UP)
+
+Each service detail page must display three sections:
+Description | Purpose | Benefits, followed by Request Service button.
+
+1. HR Consultancy
+
+Description
+Miemploya HR provides professional HR consultancy services to help organizations design, implement, and manage effective human resource systems.
+
+Purpose
+To support organizations in building structured HR frameworks that promote compliance, efficiency, and workforce stability.
+
+Benefits
+
+Improved HR structure and clarity
+
+Better employee relations
+
+Compliance-focused HR practices
+
+2. Recruitment
+
+Description
+Our recruitment service supports organizations in sourcing, screening, and selecting qualified candidates across various roles.
+
+Purpose
+To reduce hiring risks and ensure organizations engage competent and suitable employees.
+
+Benefits
+
+Access to qualified candidates
+
+Reduced recruitment errors
+
+Time-efficient hiring process
+
+3. Training & Development
+
+Description
+We provide training programs designed to enhance employee knowledge, skills, and workplace effectiveness.
+
+Purpose
+To improve workforce performance and support continuous professional development.
+
+Benefits
+
+Skilled and productive employees
+
+Improved job performance
+
+Professional growth opportunities
+
+4. Onboarding & Offboarding Services
+
+Description
+Structured onboarding and offboarding services that manage employee entry and exit professionally.
+
+Purpose
+To ensure smooth employee transitions while protecting organizational interests.
+
+Benefits
+
+Organized onboarding process
+
+Proper exit documentation
+
+Reduced compliance risks
+
+5. Attendance Management
+
+Description
+Attendance management solutions to monitor employee punctuality, work hours, and attendance records.
+
+Purpose
+To promote discipline and accurate workforce tracking.
+
+Benefits
+
+Improved attendance accountability
+
+Reliable attendance records
+
+Better workforce planning
+
+6. Payroll Outsourcing Services
+
+Description
+We manage payroll processing, salary computation, and related administrative tasks on behalf of organizations.
+
+Purpose
+To ensure accurate and timely salary administration while reducing internal workload.
+
+Benefits
+
+Accurate payroll processing
+
+Confidential handling of salaries
+
+Reduced administrative burden
+
+7. Performance Evaluation
+
+Description
+Performance evaluation services that assess employee productivity, competence, and contribution.
+
+Purpose
+To support fair appraisal, growth planning, and workforce improvement.
+
+Benefits
+
+Objective performance assessment
+
+Improved employee motivation
+
+Better management decisions
+
+8. Audit Support
+
+Description
+HR and payroll audit support services that assist organizations during review and compliance exercises.
+
+Purpose
+To ensure HR records and payroll processes meet audit requirements.
+
+Benefits
+
+Organized documentation
+
+Audit readiness
+
+Reduced audit risks
+
+9. Compliance Support
+
+Description
+Compliance support services that guide organizations on HR-related regulatory obligations.
+
+Purpose
+To help organizations align HR practices with applicable laws and standards.
+
+Benefits
+
+Reduced compliance risks
+
+Proper documentation
+
+Professional guidance
+
+10. Background & Reference Checks
+
+Description
+Verification services to confirm candidate credentials, employment history, and references.
+
+Purpose
+To support informed hiring decisions and reduce employment risks.
+
+Benefits
+
+Verified candidate information
+
+Reduced hiring fraud
+
+Improved recruitment confidence
+
+11. MiPayMaster Application
+
+Description
+MiPayMaster is a payroll application that supports salary processing and workforce payment management.
+
+Purpose
+To simplify payroll administration through digital solutions.
+
+Benefits
+
+Efficient salary processing
+
+Improved payroll accuracy
+
+Centralized payroll management
+
+12. OpenClax Application
+
+Description
+OpenClax is a learning and assessment platform supporting training, certification, and knowledge development.
+
+Purpose
+To promote continuous learning and workforce capacity building.
+
+Benefits
+
+Accessible training resources
+
+Structured assessments
+
+Professional certification support
+
+13. MiStock HQ Application
+
+Description
+MiStock HQ provides inventory and asset management tools for operational efficiency.
+
+Purpose
+To support proper tracking and control of organizational resources.
+
+Benefits
+
+Improved inventory control
+
+Reduced losses
+
+Better operational visibility
+
+14. Customized Software
+
+Description
+We develop customized software solutions tailored to specific organizational needs.
+
+Purpose
+To address unique operational challenges through technology.
+
+Benefits
+
+Tailored functionality
+
+Improved efficiency
+
+Scalable solutions
+
+D. FINAL ACTION BUTTON
+
+Each service detail page must end with:
+
+Button: Request This Service
+
+COMPLETION CRITERIA
+
+This task is complete only when:
+
+Service cards are clickable
+
+Service details display description, purpose, and benefits
+
+Request button appears only on detail view
+
+Users cannot bypass service details
+
+END OF PROMPT
