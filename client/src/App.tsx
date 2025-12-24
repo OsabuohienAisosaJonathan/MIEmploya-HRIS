@@ -26,7 +26,7 @@ function Router() {
       <Route path="/templates" component={Templates} />
       <Route path="/jobs" component={Jobs} />
       <Route path="/jobs/:id" component={JobDetail} />
-      <Route path="/admin/:path*" component={Admin} />
+      <Route path="/admin" component={Admin} />
       <Route component={NotFound} />
     </Switch>
   );
