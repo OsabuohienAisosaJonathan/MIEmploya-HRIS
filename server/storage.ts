@@ -30,6 +30,7 @@ export interface IStorage {
 
   // Verified Candidates
   getVerifiedCandidates(): Promise<VerifiedCandidate[]>;
+  getAllVerifiedCandidates(): Promise<VerifiedCandidate[]>;
   createVerifiedCandidate(candidate: InsertVerifiedCandidate): Promise<VerifiedCandidate>;
   updateVerifiedCandidateStatus(
     id: number,
@@ -106,6 +107,10 @@ export class DatabaseStorage implements IStorage {
       .select()
       .from(verifiedCandidates)
       .where(eq(verifiedCandidates.status, "approved"));
+  }
+
+  async getAllVerifiedCandidates(): Promise<VerifiedCandidate[]> {
+    return await db.select().from(verifiedCandidates);
   }
 
   async createVerifiedCandidate(

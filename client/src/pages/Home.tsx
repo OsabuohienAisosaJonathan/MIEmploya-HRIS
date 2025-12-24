@@ -23,9 +23,10 @@ export default function Home() {
     queryFn: () => fetch("/api/verified-candidates").then((r) => r.json()),
   });
 
+  const news = content?.filter((c: any) => c.type === "news") || [];
   const videos = content?.filter((c: any) => c.type === "video") || [];
   const pdfs = content?.filter((c: any) => c.type === "pdf") || [];
-  const events = content?.filter((c: any) => c.type === "event") || [];
+  const approvedCandidates = candidates?.filter((c: any) => c.status === "approved") || [];
 
   return (
     <>
@@ -60,38 +61,54 @@ export default function Home() {
           </div>
         </section>
 
+        {/* News Feeds */}
+        {news.length > 0 && (
+          <section className="py-16 px-4 bg-muted">
+            <div className="container max-w-5xl mx-auto">
+              <h2 className="text-3xl font-bold mb-8">Latest News</h2>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {news.slice(0, 4).map((item: any) => (
+                  <Card key={item.id} className="overflow-hidden hover-elevate">
+                    {item.imageUrl && (
+                      <img src={item.imageUrl} alt={item.title} className="w-full h-40 object-cover" />
+                    )}
+                    <div className="p-4">
+                      <p className="font-bold text-lg">{item.title}</p>
+                      <p className="text-sm text-muted-foreground mt-2">{item.description}</p>
+                    </div>
+                  </Card>
+                ))}
+              </div>
+            </div>
+          </section>
+        )}
+
         {/* Videos */}
         {videos.length > 0 && (
-          <section className="py-16 px-4 bg-muted">
-            <div className="container max-w-5xl mx-auto">
-              <h2 className="text-3xl font-bold mb-8">Latest Videos</h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {videos.map((v: any) => (
-                  <Card key={v.id} className="overflow-hidden">
-                    <div className="bg-slate-300 h-48 flex items-center justify-center">
-                      <span className="text-gray-600">Video: {v.title}</span>
-                    </div>
-                    <div className="p-4">
-                      <p className="font-medium">{v.title}</p>
-                      <p className="text-sm text-muted-foreground mt-2">{v.description}</p>
-                    </div>
-                  </Card>
-                ))}
-              </div>
-            </div>
-          </section>
-        )}
-
-        {/* Events */}
-        {events.length > 0 && (
           <section className="py-16 px-4">
             <div className="container max-w-5xl mx-auto">
-              <h2 className="text-3xl font-bold mb-8">Upcoming Events</h2>
-              <div className="space-y-4">
-                {events.map((e: any) => (
-                  <Card key={e.id} className="p-6 hover-elevate">
-                    <h3 className="font-bold text-lg">{e.title}</h3>
-                    <p className="text-muted-foreground mt-2">{e.description}</p>
+              <h2 className="text-3xl font-bold mb-8">Training & Announcement Videos</h2>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {videos.slice(0, 4).map((item: any) => (
+                  <Card key={item.id} className="overflow-hidden hover-elevate">
+                    <div className="bg-slate-300 dark:bg-slate-700 h-48 flex items-center justify-center">
+                      {item.url && item.url.includes("youtube") ? (
+                        <iframe
+                          width="100%"
+                          height="100%"
+                          src={item.url}
+                          frameBorder="0"
+                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                          allowFullScreen
+                          title={item.title}
+                        />
+                      ) : (
+                        <span className="text-gray-600">Video: {item.title}</span>
+                      )}
+                    </div>
+                    <div className="p-4">
+                      <p className="font-bold">{item.title}</p>
+                    </div>
                   </Card>
                 ))}
               </div>
@@ -99,26 +116,55 @@ export default function Home() {
           </section>
         )}
 
-        {/* Top Verified */}
-        {candidates && candidates.length > 0 && (
+        {/* PDFs */}
+        {pdfs.length > 0 && (
           <section className="py-16 px-4 bg-muted">
+            <div className="container max-w-5xl mx-auto">
+              <h2 className="text-3xl font-bold mb-8">Resources & Materials</h2>
+              <div className="space-y-4">
+                {pdfs.map((item: any) => (
+                  <Card key={item.id} className="p-6 hover-elevate">
+                    <div className="flex justify-between items-start">
+                      <div>
+                        <p className="font-bold text-lg">{item.title}</p>
+                        {item.description && <p className="text-muted-foreground mt-2">{item.description}</p>}
+                      </div>
+                      {item.fileUrl && (
+                        <a href={item.fileUrl} download className="text-blue-600 hover:underline">
+                          Download PDF
+                        </a>
+                      )}
+                    </div>
+                  </Card>
+                ))}
+              </div>
+            </div>
+          </section>
+        )}
+
+        {/* Top Verified Candidates */}
+        {approvedCandidates.length > 0 && (
+          <section className="py-16 px-4">
             <div className="container max-w-5xl mx-auto">
               <h2 className="text-3xl font-bold mb-8 text-center">Top Verified Candidates</h2>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {candidates.slice(0, 6).map((c: any) => (
+                {approvedCandidates.slice(0, 6).map((c: any) => (
                   <Card key={c.id} className="p-6 text-center hover-elevate">
-                    {c.imageUrl && <img src={c.imageUrl} alt={c.fullName} className="w-20 h-20 rounded-full mx-auto mb-4" />}
+                    {c.imageUrl && <img src={c.imageUrl} alt={c.fullName} className="w-20 h-20 rounded-full mx-auto mb-4 object-cover" />}
                     <p className="font-bold text-lg">{c.fullName}</p>
-                    <p className="text-sm text-blue-600">{c.title}</p>
+                    <p className="text-sm text-blue-600 font-medium">{c.title}</p>
                     {c.company && <p className="text-sm text-muted-foreground">{c.company}</p>}
+                    {c.bio && <p className="text-sm text-foreground mt-2">{c.bio}</p>}
                   </Card>
                 ))}
               </div>
-              <div className="text-center mt-8">
-                <Link href="/verified">
-                  <Button>View All Verified</Button>
-                </Link>
-              </div>
+              {approvedCandidates.length > 6 && (
+                <div className="text-center mt-8">
+                  <Link href="/verified">
+                    <Button>View All Verified</Button>
+                  </Link>
+                </div>
+              )}
             </div>
           </section>
         )}

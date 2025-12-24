@@ -105,7 +105,11 @@ export async function registerRoutes(
   // CONTENT ENDPOINTS
   // ============================================
   app.get(api.content.list.path, async (req, res) => {
-    const content = await storage.getContentItems();
+    const type = req.query.type as string | undefined;
+    let content = await storage.getContentItems();
+    if (type) {
+      content = content.filter((c) => c.type === type);
+    }
     res.json(content);
   });
 
@@ -162,7 +166,12 @@ export async function registerRoutes(
   // VERIFIED CANDIDATES ENDPOINTS
   // ============================================
   app.get(api.verifiedCandidates.list.path, async (req, res) => {
-    const candidates = await storage.getVerifiedCandidates();
+    const token = req.headers.authorization?.replace("Bearer ", "");
+    const authenticated = !!token && token.startsWith("admin:");
+    
+    const candidates = authenticated
+      ? await storage.getAllVerifiedCandidates()
+      : await storage.getVerifiedCandidates();
     res.json(candidates);
   });
 

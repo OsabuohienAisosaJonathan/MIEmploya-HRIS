@@ -1,0 +1,131 @@
+CORRECTIVE PROMPT TO AI APP BUILDER – MIEMPLOYA HR WEBSITE
+The build is not yet compliant with the initial prompt.
+Proceed to fix and complete the items below. These are mandatory corrections, not new features.
+________________________________________
+1. ADMIN CONTENT MANAGEMENT – MISSING UPLOAD CONTROLS (CRITICAL)
+Issue
+The Admin dashboard currently has no functional buttons or forms to upload:
+•	News feeds (with title and image)
+•	Videos (with title)
+•	PDFs / books (with title)
+•	Top Verified candidates (with profile details)
+Every upload from admin should display on the home page on their respective sections
+________________________________________
+Required Fix
+Under Admin Content Management, add clearly visible buttons and upload forms for:
+A. News Feeds
+Admin must be able to:
+•	Click “Add News Feed”
+•	Enter:
+o	Title
+o	Short description
+o	Upload image
+•	Publish / Unpublish
+News feeds must appear on:
+•	Home page (News section)
+•	News listing page (if applicable)
+________________________________________
+B. Videos
+Admin must be able to:
+•	Click “Upload Video”
+•	Enter:
+o	Video title
+o	Upload video file (or video URL if supported)
+•	Publish / Unpublish
+Videos must appear on:
+•	Home page (Videos section)
+________________________________________
+C. PDFs / Books
+Admin must be able to:
+•	Click “Upload PDF / Book”
+•	Enter:
+o	Title
+o	Description (optional)
+o	Upload PDF file
+•	Publish / Unpublish
+PDFs must appear on:
+•	Home page (PDF / Books section)
+________________________________________
+D. Top Verified Candidates
+Admin must be able to:
+•	Click “Add Top Verified Candidate”
+•	Enter:
+o	Full Name
+o	Profession / Industry
+o	Short profile description
+o	Upload profile image
+•	Publish / Unpublish
+Top Verified candidates must appear on:
+•	Home page (Top Verified section)
+•	Top Verified page
+________________________________________
+2. HOME PAGE – MISSING SECTIONS (CRITICAL)
+Issue
+The Home page does not display the required sections.
+________________________________________
+Required Fix
+Add and render the following sections on the Home page:
+1.	Latest News Feeds
+2.	Training & Announcement Videos
+3.	PDFs / Books
+4.	Top Verified Candidates
+Each section must:
+•	Pull data dynamically from Admin uploads
+•	Display only published content
+•	Be hidden if no content exists
+________________________________________
+3. SERVICE REQUEST FORM – NOT SUBMITTING (BLOCKER BUG)
+Issue
+The service request form does submit, but submitted requests do not appear in the Admin dashboard.
+________________________________________
+Required Fix
+Immediately debug and fix:
+•	Ensure the form:
+o	Submits successfully
+o	Saves data to the PostgreSQL database
+o	Stores uploaded documents correctly
+•	Ensure:
+o	Submitted requests appear in Admin dashboard
+o	Admin can view full request details
+o	Admin can download uploaded files
+This is a core functionality and must work before any deployment.
+________________________________________
+4. BRANDING – LOGO NOT USED (VISUAL ISSUE)
+Issue
+The Miemploya company logo is not currently used.
+________________________________________
+Required Fix
+•	Replace placeholder branding with the Miemploya logo
+•	Use logo consistently:
+o	Header
+o	Admin dashboard
+o	Public pages
+•	Logo should link back to Home page
+________________________________________
+5. ADMIN PASSWORD – UPDATE REQUIRED
+Issue
+Admin password does not match requirement.
+________________________________________
+Required Fix
+Set Admin login password to:
+Adminclk780424$
+Ensure it is:
+•	Stored securely (environment variable or hashed)
+•	Changeable later for production
+________________________________________
+6. COMPLETION REQUIREMENT
+After implementing the fixes above, confirm:
+•	Admin can upload:
+o	News feeds (with image & title)
+o	Videos (with title)
+o	PDFs (with title)
+o	Top Verified candidates
+•	Home page displays all content sections
+•	Service request form submits and appears in Admin dashboard
+•	Miemploya logo is active
+•	Admin password updated
+Only after this confirmation should the build be considered ready for final testing.
+________________________________________
+IMPORTANT
+Do not introduce new features.
+Only complete and fix the above items to match the original prompt.
