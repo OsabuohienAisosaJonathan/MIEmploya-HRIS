@@ -9,6 +9,8 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { useState } from "react";
+import { Phone, Mail, MapPin, MessageCircle } from "lucide-react";
+import { SiInstagram, SiFacebook, SiTiktok } from "react-icons/si";
 
 const SERVICES = [
   "HR Consultancy",
@@ -94,11 +96,106 @@ export default function Contact() {
     }
   };
 
+  const WHATSAPP_NUMBER = "2349037162950";
+  const WHATSAPP_MESSAGE = "Hello Miemploya HR, I would like to make an enquiry about your services.";
+  const whatsappUrl = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(WHATSAPP_MESSAGE)}`;
+
   return (
     <>
       <Header />
       <div className="min-h-screen bg-muted py-12 px-4">
-        <div className="container max-w-2xl mx-auto">
+        <div className="container max-w-4xl mx-auto">
+          {/* Contact Info Section */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+            <Card className="p-6">
+              <h2 className="text-xl font-bold mb-4">Contact Information</h2>
+              <div className="space-y-4">
+                <div className="flex items-center gap-3">
+                  <Phone className="w-5 h-5 text-blue-600" />
+                  <div>
+                    <p className="font-medium">+234 903 716 2950</p>
+                    <p className="text-sm text-muted-foreground">WhatsApp & Calls</p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-3">
+                  <Phone className="w-5 h-5 text-blue-600" />
+                  <div>
+                    <p className="font-medium">+234 706 666 2597</p>
+                    <p className="text-sm text-muted-foreground">Alternative Line</p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-3">
+                  <Mail className="w-5 h-5 text-blue-600" />
+                  <div>
+                    <p className="font-medium">miemploya@gmail.com</p>
+                    <p className="text-sm text-muted-foreground">Email Us</p>
+                  </div>
+                </div>
+                <a
+                  href="https://maps.app.goo.gl/yED68YGDYjPF4qZY7"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-3 hover:text-blue-600"
+                  data-testid="link-google-maps"
+                >
+                  <MapPin className="w-5 h-5 text-blue-600" />
+                  <div>
+                    <p className="font-medium">Head Office Location</p>
+                    <p className="text-sm text-muted-foreground">View on Google Maps</p>
+                  </div>
+                </a>
+              </div>
+            </Card>
+
+            <Card className="p-6">
+              <h2 className="text-xl font-bold mb-4">Quick Connect</h2>
+              <a
+                href={whatsappUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center justify-center gap-2 bg-green-500 hover:bg-green-600 text-white px-6 py-3 rounded-md font-medium mb-6"
+                data-testid="button-whatsapp-contact"
+              >
+                <MessageCircle className="w-5 h-5" />
+                Chat with Miemploya HR on WhatsApp
+              </a>
+              
+              <h3 className="font-semibold mb-3">Follow Us</h3>
+              <div className="flex items-center gap-4">
+                <a
+                  href="https://instagram.com/miemployaesl"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-2 text-muted-foreground hover:text-pink-500"
+                  data-testid="link-instagram-contact"
+                >
+                  <SiInstagram className="w-6 h-6" />
+                  <span className="text-sm">Miemploya Esl</span>
+                </a>
+                <a
+                  href="https://facebook.com/miemployaesl"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-2 text-muted-foreground hover:text-blue-600"
+                  data-testid="link-facebook-contact"
+                >
+                  <SiFacebook className="w-6 h-6" />
+                  <span className="text-sm">Miemploya Esl</span>
+                </a>
+                <a
+                  href="https://tiktok.com/@miemployahr"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-2 text-muted-foreground hover:text-foreground"
+                  data-testid="link-tiktok-contact"
+                >
+                  <SiTiktok className="w-6 h-6" />
+                  <span className="text-sm">Miemploya HR</span>
+                </a>
+              </div>
+            </Card>
+          </div>
+
           <Card className="p-8">
             <h1 className="text-3xl font-bold mb-2">Request Our Services</h1>
             <p className="text-muted-foreground mb-8">
