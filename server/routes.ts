@@ -565,9 +565,17 @@ export async function registerRoutes(
       return res.status(401).json({ message: "Unauthorized" });
     }
     try {
-      const updated = await storage.updateJobStatus(Number(req.params.id), req.body.isPublished);
-      if (!updated) return res.status(404).json({ message: "Job not found" });
-      res.json(updated);
+      // If only isPublished is being updated, use the simple status update
+      if (Object.keys(req.body).length === 1 && req.body.isPublished !== undefined) {
+        const updated = await storage.updateJobStatus(Number(req.params.id), req.body.isPublished);
+        if (!updated) return res.status(404).json({ message: "Job not found" });
+        res.json(updated);
+      } else {
+        // Full job update
+        const updated = await storage.updateJob(Number(req.params.id), req.body);
+        if (!updated) return res.status(404).json({ message: "Job not found" });
+        res.json(updated);
+      }
     } catch (err) {
       res.status(500).json({ message: "Server error" });
     }
@@ -612,6 +620,25 @@ export async function registerRoutes(
     } catch (err) {
       res.status(500).json({ message: "Server error" });
     }
+  });
+
+  // Admin: Get all job applications
+  app.get("/api/admin/job-applications", async (req, res) => {
+    const token = req.headers.authorization?.replace("Bearer ", "");
+    let authenticated = false;
+    if (token) {
+      try {
+        const decoded = Buffer.from(token, "base64").toString();
+        authenticated = decoded.startsWith("admin:");
+      } catch {
+        authenticated = false;
+      }
+    }
+    if (!authenticated) {
+      return res.status(401).json({ message: "Unauthorized" });
+    }
+    const applications = await storage.getJobApplications();
+    res.json(applications);
   });
 
   return httpServer;

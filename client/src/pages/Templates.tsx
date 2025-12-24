@@ -20,9 +20,9 @@ export default function Templates() {
       <div className="min-h-screen py-12 px-4">
         <div className="container max-w-5xl mx-auto">
           <div className="text-center mb-12">
-            <h1 className="text-4xl font-bold mb-4">Download Templates</h1>
+            <h1 className="text-4xl font-bold mb-4">Books & Templates</h1>
             <p className="text-lg text-muted-foreground">
-              Get access to our professional HR templates
+              Download our professional HR books and templates
             </p>
           </div>
 

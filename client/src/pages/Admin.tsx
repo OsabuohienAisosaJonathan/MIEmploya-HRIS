@@ -98,12 +98,14 @@ export default function Admin() {
 
       <div className="container py-8 px-4">
         <Tabs defaultValue="requests" className="w-full">
-          <TabsList className="grid w-full grid-cols-5">
+          <TabsList className="flex flex-wrap gap-1 h-auto p-1">
             <TabsTrigger value="requests" data-testid="tab-requests">Service Requests</TabsTrigger>
             <TabsTrigger value="news" data-testid="tab-news">News</TabsTrigger>
             <TabsTrigger value="videos" data-testid="tab-videos">Videos</TabsTrigger>
             <TabsTrigger value="candidates" data-testid="tab-candidates">Verified Candidates</TabsTrigger>
-            <TabsTrigger value="templates" data-testid="tab-templates">Templates</TabsTrigger>
+            <TabsTrigger value="templates" data-testid="tab-templates">Books & Templates</TabsTrigger>
+            <TabsTrigger value="jobs" data-testid="tab-jobs">Jobs</TabsTrigger>
+            <TabsTrigger value="applications" data-testid="tab-applications">Job Applications</TabsTrigger>
           </TabsList>
 
           <TabsContent value="requests" className="space-y-4">
@@ -124,6 +126,14 @@ export default function Admin() {
 
           <TabsContent value="templates" className="space-y-4">
             <TemplatesTab token={token} />
+          </TabsContent>
+
+          <TabsContent value="jobs" className="space-y-4">
+            <JobsTab token={token} />
+          </TabsContent>
+
+          <TabsContent value="applications" className="space-y-4">
+            <JobApplicationsTab token={token} />
           </TabsContent>
         </Tabs>
       </div>
@@ -780,6 +790,391 @@ function TemplatesTab({ token }: { token: string }) {
         )}
       </Card>
     </div>
+  );
+}
+
+function JobsTab({ token }: { token: string }) {
+  const { data: jobs, refetch, isLoading } = useQuery({
+    queryKey: ["/api/admin/jobs", token],
+    queryFn: () =>
+      fetch("/api/admin/jobs", {
+        headers: { Authorization: `Bearer ${token}` },
+      }).then((r) => r.json()),
+    enabled: !!token,
+  });
+
+  const [formData, setFormData] = useState({
+    title: "",
+    company: "",
+    description: "",
+    requirements: "",
+    location: "",
+    state: "",
+    city: "",
+    category: "",
+    isPublished: false,
+  });
+  const [editingId, setEditingId] = useState<number | null>(null);
+  const [submitting, setSubmitting] = useState(false);
+  const { toast } = useToast();
+
+  const resetForm = () => {
+    setFormData({
+      title: "",
+      company: "",
+      description: "",
+      requirements: "",
+      location: "",
+      state: "",
+      city: "",
+      category: "",
+      isPublished: false,
+    });
+    setEditingId(null);
+  };
+
+  const handleEdit = (job: any) => {
+    setFormData({
+      title: job.title,
+      company: job.company,
+      description: job.description,
+      requirements: job.requirements,
+      location: job.location,
+      state: job.state,
+      city: job.city,
+      category: job.category || "",
+      isPublished: job.isPublished,
+    });
+    setEditingId(job.id);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setSubmitting(true);
+    try {
+      const url = editingId ? `/api/admin/jobs/${editingId}` : "/api/admin/jobs";
+      const method = editingId ? "PATCH" : "POST";
+      
+      const response = await fetch(url, {
+        method,
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(formData),
+      });
+
+      if (response.ok) {
+        toast({ title: editingId ? "Job updated successfully" : "Job posted successfully" });
+        resetForm();
+        refetch();
+      } else {
+        const err = await response.json();
+        toast({ title: "Error: " + (err.message || "Unknown error"), variant: "destructive" });
+      }
+    } catch (err) {
+      toast({ title: "Error: " + (err instanceof Error ? err.message : "Unknown error"), variant: "destructive" });
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  const handleDelete = async (id: number) => {
+    try {
+      await fetch(`/api/admin/jobs/${id}`, {
+        method: "DELETE",
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      refetch();
+      toast({ title: "Job deleted" });
+    } catch {
+      toast({ title: "Error deleting job", variant: "destructive" });
+    }
+  };
+
+  const handleTogglePublish = async (id: number, isPublished: boolean) => {
+    try {
+      await fetch(`/api/admin/jobs/${id}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ isPublished: !isPublished }),
+      });
+      refetch();
+      toast({ title: isPublished ? "Job unpublished" : "Job published" });
+    } catch {
+      toast({ title: "Error updating job", variant: "destructive" });
+    }
+  };
+
+  if (isLoading) return <div className="text-center py-8">Loading...</div>;
+
+  return (
+    <div className="space-y-6">
+      <Card className="p-6">
+        <div className="flex justify-between items-center mb-4">
+          <h2 className="text-2xl font-bold">{editingId ? "Edit Job Posting" : "Add Job Posting"}</h2>
+          {editingId && (
+            <Button variant="outline" size="sm" onClick={resetForm} data-testid="button-cancel-edit-job">
+              Cancel Edit
+            </Button>
+          )}
+        </div>
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label className="block text-sm font-medium mb-2">Job Title</label>
+              <Input
+                value={formData.title}
+                onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+                placeholder="e.g., Senior HR Manager"
+                required
+                data-testid="input-job-title"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium mb-2">Company Name</label>
+              <Input
+                value={formData.company}
+                onChange={(e) => setFormData({ ...formData, company: e.target.value })}
+                placeholder="Company name"
+                required
+                data-testid="input-job-company"
+              />
+            </div>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div>
+              <label className="block text-sm font-medium mb-2">State</label>
+              <Input
+                value={formData.state}
+                onChange={(e) => setFormData({ ...formData, state: e.target.value })}
+                placeholder="State"
+                required
+                data-testid="input-job-state"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium mb-2">City</label>
+              <Input
+                value={formData.city}
+                onChange={(e) => setFormData({ ...formData, city: e.target.value })}
+                placeholder="City"
+                required
+                data-testid="input-job-city"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium mb-2">Category</label>
+              <Input
+                value={formData.category}
+                onChange={(e) => setFormData({ ...formData, category: e.target.value })}
+                placeholder="e.g., Human Resources"
+                data-testid="input-job-category"
+              />
+            </div>
+          </div>
+          <div>
+            <label className="block text-sm font-medium mb-2">Location (Display)</label>
+            <Input
+              value={formData.location}
+              onChange={(e) => setFormData({ ...formData, location: e.target.value })}
+              placeholder="e.g., Lagos, Nigeria"
+              required
+              data-testid="input-job-location"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium mb-2">Job Description</label>
+            <Textarea
+              value={formData.description}
+              onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+              placeholder="Detailed job description..."
+              required
+              data-testid="input-job-description"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium mb-2">Requirements</label>
+            <Textarea
+              value={formData.requirements}
+              onChange={(e) => setFormData({ ...formData, requirements: e.target.value })}
+              placeholder="Job requirements and qualifications..."
+              required
+              data-testid="input-job-requirements"
+            />
+          </div>
+          <div className="flex items-center gap-2">
+            <input
+              type="checkbox"
+              id="publish-job"
+              checked={formData.isPublished}
+              onChange={(e) => setFormData({ ...formData, isPublished: e.target.checked })}
+              data-testid="checkbox-job-publish"
+            />
+            <label htmlFor="publish-job" className="text-sm font-medium cursor-pointer">
+              Publish immediately
+            </label>
+          </div>
+          <Button type="submit" disabled={submitting} data-testid="button-add-job">
+            {submitting ? (editingId ? "Updating..." : "Posting...") : (editingId ? "Update Job" : "Post Job")}
+          </Button>
+        </form>
+      </Card>
+
+      <Card className="p-6">
+        <h2 className="text-2xl font-bold mb-4">Job Postings</h2>
+        {jobs && jobs.length > 0 ? (
+          <div className="space-y-4">
+            {jobs.map((job: any) => (
+              <Card key={job.id} className="p-4" data-testid={`card-admin-job-${job.id}`}>
+                <div className="flex justify-between items-start">
+                  <div className="flex-1">
+                    <p className="font-bold text-lg">{job.title}</p>
+                    <p className="text-blue-600">{job.company}</p>
+                    <p className="text-sm text-muted-foreground mt-1">{job.location}</p>
+                    <div className="flex gap-2 mt-2">
+                      {job.category && (
+                        <span className="inline-block px-2 py-1 text-xs bg-blue-100 text-blue-800 rounded">
+                          {job.category}
+                        </span>
+                      )}
+                      <span
+                        className={`inline-block px-2 py-1 text-xs rounded ${
+                          job.isPublished ? "bg-green-100 text-green-800" : "bg-gray-100 text-gray-800"
+                        }`}
+                        data-testid={`status-job-${job.id}`}
+                      >
+                        {job.isPublished ? "Published" : "Draft"}
+                      </span>
+                    </div>
+                  </div>
+                  <div className="flex gap-2">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => handleEdit(job)}
+                      data-testid={`button-edit-job-${job.id}`}
+                    >
+                      Edit
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => handleTogglePublish(job.id, job.isPublished)}
+                      data-testid={`button-toggle-job-${job.id}`}
+                    >
+                      {job.isPublished ? "Unpublish" : "Publish"}
+                    </Button>
+                    <Button
+                      variant="destructive"
+                      size="sm"
+                      onClick={() => handleDelete(job.id)}
+                      data-testid={`button-delete-job-${job.id}`}
+                    >
+                      Delete
+                    </Button>
+                  </div>
+                </div>
+              </Card>
+            ))}
+          </div>
+        ) : (
+          <p className="text-muted-foreground">No job postings yet.</p>
+        )}
+      </Card>
+    </div>
+  );
+}
+
+function JobApplicationsTab({ token }: { token: string }) {
+  const { data: applications, isLoading } = useQuery({
+    queryKey: ["/api/admin/job-applications", token],
+    queryFn: () =>
+      fetch("/api/admin/job-applications", {
+        headers: { Authorization: `Bearer ${token}` },
+      }).then((r) => r.json()),
+    enabled: !!token,
+  });
+
+  const { data: jobs } = useQuery({
+    queryKey: ["/api/admin/jobs", token],
+    queryFn: () =>
+      fetch("/api/admin/jobs", {
+        headers: { Authorization: `Bearer ${token}` },
+      }).then((r) => r.json()),
+    enabled: !!token,
+  });
+
+  const getJobTitle = (jobId: number) => {
+    const job = jobs?.find((j: any) => j.id === jobId);
+    return job?.title || `Job #${jobId}`;
+  };
+
+  if (isLoading) return <div className="text-center py-8">Loading...</div>;
+
+  return (
+    <Card className="p-6">
+      <h2 className="text-2xl font-bold mb-4">Job Applications</h2>
+      {applications && applications.length > 0 ? (
+        <div className="space-y-4">
+          {applications.map((app: any) => (
+            <Card key={app.id} className="p-4" data-testid={`card-application-${app.id}`}>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
+                <div>
+                  <p className="text-sm text-muted-foreground">Applicant</p>
+                  <p className="font-medium">{app.fullName}</p>
+                </div>
+                <div>
+                  <p className="text-sm text-muted-foreground">Applied For</p>
+                  <p className="font-medium text-blue-600">{getJobTitle(app.jobId)}</p>
+                </div>
+                <div>
+                  <p className="text-sm text-muted-foreground">Email</p>
+                  <p className="font-medium text-sm">{app.email}</p>
+                </div>
+                <div>
+                  <p className="text-sm text-muted-foreground">Phone</p>
+                  <p className="font-medium">{app.phone}</p>
+                </div>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                <div>
+                  <p className="text-sm text-muted-foreground">State</p>
+                  <p className="font-medium">{app.state}</p>
+                </div>
+                <div>
+                  <p className="text-sm text-muted-foreground">City</p>
+                  <p className="font-medium">{app.city}</p>
+                </div>
+                <div>
+                  <p className="text-sm text-muted-foreground">CV</p>
+                  <a
+                    href={app.cvUrl}
+                    download={app.cvFileName}
+                    className="text-blue-600 font-medium hover:underline"
+                    data-testid={`link-download-cv-${app.id}`}
+                  >
+                    Download CV
+                  </a>
+                </div>
+              </div>
+              {app.coverNote && (
+                <div>
+                  <p className="text-sm text-muted-foreground mb-1">Cover Note</p>
+                  <p className="text-sm">{app.coverNote}</p>
+                </div>
+              )}
+            </Card>
+          ))}
+        </div>
+      ) : (
+        <p className="text-muted-foreground">No job applications yet.</p>
+      )}
+    </Card>
   );
 }
 

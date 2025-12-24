@@ -59,6 +59,7 @@ export interface IStorage {
   getJobById(id: number): Promise<JobPosting | undefined>;
   createJob(job: InsertJobPosting): Promise<JobPosting>;
   updateJobStatus(id: number, isPublished: boolean): Promise<JobPosting | undefined>;
+  updateJob(id: number, data: Partial<InsertJobPosting>): Promise<JobPosting | undefined>;
   deleteJob(id: number): Promise<void>;
 
   // Job Applications
@@ -226,6 +227,15 @@ export class DatabaseStorage implements IStorage {
     const [updated] = await db
       .update(jobPostings)
       .set({ isPublished })
+      .where(eq(jobPostings.id, id))
+      .returning();
+    return updated;
+  }
+
+  async updateJob(id: number, data: Partial<InsertJobPosting>): Promise<JobPosting | undefined> {
+    const [updated] = await db
+      .update(jobPostings)
+      .set(data)
       .where(eq(jobPostings.id, id))
       .returning();
     return updated;
