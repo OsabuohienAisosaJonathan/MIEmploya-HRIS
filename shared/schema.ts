@@ -70,6 +70,40 @@ export const templates = pgTable("templates", {
 });
 
 // ============================================
+// JOB POSTINGS
+// ============================================
+export const jobPostings = pgTable("job_postings", {
+  id: serial("id").primaryKey(),
+  title: text("title").notNull(),
+  company: text("company").notNull(),
+  description: text("description").notNull(),
+  requirements: text("requirements").notNull(),
+  location: text("location").notNull(),
+  state: text("state").notNull(),
+  city: text("city").notNull(),
+  category: text("category").notNull(),
+  isPublished: boolean("is_published").default(false),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+// ============================================
+// JOB APPLICATIONS
+// ============================================
+export const jobApplications = pgTable("job_applications", {
+  id: serial("id").primaryKey(),
+  jobId: serial("job_id").notNull(),
+  fullName: text("full_name").notNull(),
+  email: text("email").notNull(),
+  phone: text("phone").notNull(),
+  state: text("state").notNull(),
+  city: text("city").notNull(),
+  cvFileName: text("cv_filename").notNull(),
+  cvUrl: text("cv_url").notNull(),
+  coverNote: text("cover_note"),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+// ============================================
 // INSERT SCHEMAS
 // ============================================
 export const insertServiceRequestSchema = createInsertSchema(serviceRequests).omit({
@@ -95,6 +129,16 @@ export const insertTemplateSchema = createInsertSchema(templates).omit({
   createdAt: true,
 });
 
+export const insertJobPostingSchema = createInsertSchema(jobPostings).omit({
+  id: true,
+  createdAt: true,
+});
+
+export const insertJobApplicationSchema = createInsertSchema(jobApplications).omit({
+  id: true,
+  createdAt: true,
+});
+
 // ============================================
 // TYPE EXPORTS
 // ============================================
@@ -110,6 +154,12 @@ export type InsertVerifiedCandidate = z.infer<typeof insertVerifiedCandidateSche
 export type Template = typeof templates.$inferSelect;
 export type InsertTemplate = z.infer<typeof insertTemplateSchema>;
 
+export type JobPosting = typeof jobPostings.$inferSelect;
+export type InsertJobPosting = z.infer<typeof insertJobPostingSchema>;
+
+export type JobApplication = typeof jobApplications.$inferSelect;
+export type InsertJobApplication = z.infer<typeof insertJobApplicationSchema>;
+
 // ============================================
 // API REQUEST/RESPONSE TYPES
 // ============================================
@@ -117,6 +167,8 @@ export type ServiceRequestResponse = ServiceRequest;
 export type ContentItemResponse = ContentItem;
 export type VerifiedCandidateResponse = VerifiedCandidate;
 export type TemplateResponse = Template;
+export type JobPostingResponse = JobPosting;
+export type JobApplicationResponse = JobApplication;
 
 export interface AdminAuthResponse {
   authenticated: boolean;

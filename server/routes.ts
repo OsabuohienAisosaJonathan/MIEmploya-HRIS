@@ -496,5 +496,123 @@ export async function registerRoutes(
     res.status(204).send();
   });
 
+  // ============================================
+  // JOB POSTINGS ENDPOINTS
+  // ============================================
+  app.get("/api/jobs", async (req, res) => {
+    const jobs = await storage.getJobs();
+    res.json(jobs);
+  });
+
+  app.get("/api/jobs/:id", async (req, res) => {
+    const job = await storage.getJobById(Number(req.params.id));
+    if (!job) return res.status(404).json({ message: "Job not found" });
+    res.json(job);
+  });
+
+  app.get("/api/admin/jobs", async (req, res) => {
+    const token = req.headers.authorization?.replace("Bearer ", "");
+    let authenticated = false;
+    if (token) {
+      try {
+        const decoded = Buffer.from(token, "base64").toString();
+        authenticated = decoded.startsWith("admin:");
+      } catch {
+        authenticated = false;
+      }
+    }
+    if (!authenticated) {
+      return res.status(401).json({ message: "Unauthorized" });
+    }
+    const jobs = await storage.getAllJobs();
+    res.json(jobs);
+  });
+
+  app.post("/api/admin/jobs", async (req, res) => {
+    const token = req.headers.authorization?.replace("Bearer ", "");
+    let authenticated = false;
+    if (token) {
+      try {
+        const decoded = Buffer.from(token, "base64").toString();
+        authenticated = decoded.startsWith("admin:");
+      } catch {
+        authenticated = false;
+      }
+    }
+    if (!authenticated) {
+      return res.status(401).json({ message: "Unauthorized" });
+    }
+    try {
+      const job = await storage.createJob(req.body);
+      res.status(201).json(job);
+    } catch (err) {
+      res.status(500).json({ message: "Server error" });
+    }
+  });
+
+  app.patch("/api/admin/jobs/:id", async (req, res) => {
+    const token = req.headers.authorization?.replace("Bearer ", "");
+    let authenticated = false;
+    if (token) {
+      try {
+        const decoded = Buffer.from(token, "base64").toString();
+        authenticated = decoded.startsWith("admin:");
+      } catch {
+        authenticated = false;
+      }
+    }
+    if (!authenticated) {
+      return res.status(401).json({ message: "Unauthorized" });
+    }
+    try {
+      const updated = await storage.updateJobStatus(Number(req.params.id), req.body.isPublished);
+      if (!updated) return res.status(404).json({ message: "Job not found" });
+      res.json(updated);
+    } catch (err) {
+      res.status(500).json({ message: "Server error" });
+    }
+  });
+
+  app.delete("/api/admin/jobs/:id", async (req, res) => {
+    const token = req.headers.authorization?.replace("Bearer ", "");
+    let authenticated = false;
+    if (token) {
+      try {
+        const decoded = Buffer.from(token, "base64").toString();
+        authenticated = decoded.startsWith("admin:");
+      } catch {
+        authenticated = false;
+      }
+    }
+    if (!authenticated) {
+      return res.status(401).json({ message: "Unauthorized" });
+    }
+    await storage.deleteJob(Number(req.params.id));
+    res.status(204).send();
+  });
+
+  app.post("/api/jobs/apply", upload.single("cv"), async (req, res) => {
+    try {
+      if (!req.file) {
+        return res.status(400).json({ message: "CV is required" });
+      }
+      const cvUrl = `/uploads/${req.file.filename}`;
+      const application = await storage.createJobApplication({
+        jobId: Number(req.body.jobId),
+        fullName: req.body.fullName,
+        email: req.body.email,
+        phone: req.body.phone,
+        state: req.body.state,
+        city: req.body.city,
+        cvFileName: req.file.filename,
+        cvUrl,
+        coverNote: req.body.coverNote || "",
+      });
+      res.status(201).json(application);
+    } catch (err) {
+      res.status(500).json({ message: "Server error" });
+    }
+  });
+
   return httpServer;
 }

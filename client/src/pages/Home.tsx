@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { Header } from "@/components/Header";
+import { Footer } from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Link } from "wouter";
@@ -175,6 +176,7 @@ export default function Home() {
           </section>
         )}
       </div>
+      <Footer />
     </>
   );
 }

@@ -1,4 +1,5 @@
 import { Header } from "@/components/Header";
+import { Footer } from "@/components/Footer";
 import { Card } from "@/components/ui/card";
 
 export default function About() {
@@ -51,6 +52,7 @@ export default function About() {
           </Card>
         </div>
       </div>
+      <Footer />
     </>
   );
 }

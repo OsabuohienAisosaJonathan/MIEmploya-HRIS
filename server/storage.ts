@@ -4,6 +4,8 @@ import {
   contentItems,
   verifiedCandidates,
   templates,
+  jobPostings,
+  jobApplications,
   type ServiceRequest,
   type InsertServiceRequest,
   type ContentItem,
@@ -12,6 +14,10 @@ import {
   type InsertVerifiedCandidate,
   type Template,
   type InsertTemplate,
+  type JobPosting,
+  type InsertJobPosting,
+  type JobApplication,
+  type InsertJobApplication,
 } from "@shared/schema";
 import { eq } from "drizzle-orm";
 
@@ -46,6 +52,18 @@ export interface IStorage {
   createTemplate(template: InsertTemplate): Promise<Template>;
   updateTemplateStatus(id: number, isPublished: boolean): Promise<Template | undefined>;
   deleteTemplate(id: number): Promise<void>;
+
+  // Jobs
+  getJobs(): Promise<JobPosting[]>;
+  getAllJobs(): Promise<JobPosting[]>;
+  getJobById(id: number): Promise<JobPosting | undefined>;
+  createJob(job: InsertJobPosting): Promise<JobPosting>;
+  updateJobStatus(id: number, isPublished: boolean): Promise<JobPosting | undefined>;
+  deleteJob(id: number): Promise<void>;
+
+  // Job Applications
+  createJobApplication(app: InsertJobApplication): Promise<JobApplication>;
+  getJobApplications(): Promise<JobApplication[]>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -175,6 +193,58 @@ export class DatabaseStorage implements IStorage {
 
   async deleteTemplate(id: number): Promise<void> {
     await db.delete(templates).where(eq(templates.id, id));
+  }
+
+  async getJobs(): Promise<JobPosting[]> {
+    return await db
+      .select()
+      .from(jobPostings)
+      .where(eq(jobPostings.isPublished, true));
+  }
+
+  async getAllJobs(): Promise<JobPosting[]> {
+    return await db.select().from(jobPostings);
+  }
+
+  async getJobById(id: number): Promise<JobPosting | undefined> {
+    const [job] = await db
+      .select()
+      .from(jobPostings)
+      .where(eq(jobPostings.id, id));
+    return job;
+  }
+
+  async createJob(job: InsertJobPosting): Promise<JobPosting> {
+    const [created] = await db
+      .insert(jobPostings)
+      .values(job)
+      .returning();
+    return created;
+  }
+
+  async updateJobStatus(id: number, isPublished: boolean): Promise<JobPosting | undefined> {
+    const [updated] = await db
+      .update(jobPostings)
+      .set({ isPublished })
+      .where(eq(jobPostings.id, id))
+      .returning();
+    return updated;
+  }
+
+  async deleteJob(id: number): Promise<void> {
+    await db.delete(jobPostings).where(eq(jobPostings.id, id));
+  }
+
+  async createJobApplication(app: InsertJobApplication): Promise<JobApplication> {
+    const [created] = await db
+      .insert(jobApplications)
+      .values(app)
+      .returning();
+    return created;
+  }
+
+  async getJobApplications(): Promise<JobApplication[]> {
+    return await db.select().from(jobApplications);
   }
 }
 
