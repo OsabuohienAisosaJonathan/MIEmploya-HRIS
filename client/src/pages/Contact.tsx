@@ -96,7 +96,7 @@ export default function Contact() {
     }
   };
 
-  const WHATSAPP_NUMBER = "2349037162950";
+  const WHATSAPP_NUMBER = "2349063337173";
   const WHATSAPP_MESSAGE = "Hello Miemploya HR, I would like to make an enquiry about your services.";
   const whatsappUrl = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(WHATSAPP_MESSAGE)}`;
 

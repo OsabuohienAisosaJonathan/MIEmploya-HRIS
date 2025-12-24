@@ -2,7 +2,7 @@ import { Link } from "wouter";
 import { Mail, Phone, MapPin, MessageCircle } from "lucide-react";
 import { SiInstagram, SiFacebook, SiTiktok } from "react-icons/si";
 
-const WHATSAPP_NUMBER = "2349037162950";
+const WHATSAPP_NUMBER = "2349063337173";
 const WHATSAPP_MESSAGE = "Hello Miemploya HR, I would like to make an enquiry about your services.";
 
 export function Footer() {
