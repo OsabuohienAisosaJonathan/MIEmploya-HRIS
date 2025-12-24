@@ -1,0 +1,158 @@
+JOB FEATURES – FUNCTIONAL SPECIFICATION (AI-READY)
+JOB MODULE – MIEMPLOYA HR WEBSITE
+Purpose
+
+The Job feature enables organizations to post job openings and allows candidates to view and apply for jobs through Miemploya HR. This module supports recruitment visibility while maintaining administrative control and quality assurance.
+
+Public (No Login Required)
+
+View all published job listings
+
+Filter jobs by:
+
+Job title
+
+Location (State / City)
+
+Industry
+
+View job details:
+
+Job title
+
+Company name
+
+Location
+
+Job description
+
+Requirements
+
+Application instructions
+
+Apply for jobs via a form:
+
+Full name
+
+Email
+
+Phone number
+
+State
+
+City
+
+Upload CV
+
+Optional cover note
+
+Admin (Miemploya HR)
+
+Admin must be able to:
+
+Create job postings
+
+Add:
+
+Job title
+
+Company name
+
+Job description
+
+Requirements
+
+Location (State / City)
+
+Job category
+
+Publish / Unpublish jobs
+
+View job applications
+
+Download submitted CVs
+
+Close job listings when filled
+
+Pages Required
+
+Jobs (Public Listing Page)
+
+Job Details Page
+
+Admin Jobs Management Page
+
+Access Control
+
+Jobs are publicly viewable
+
+Job posting and management is Admin only
+
+Job applications are stored and visible to Admin
+
+Completion Criteria
+
+Jobs display publicly
+
+Applications submit without error
+
+Admin can manage postings and applications
+
+2️⃣ ABOUT US PAGE – PROFESSIONAL WRITE-UP
+About Miemploya HR
+
+Miemploya HR is a human resource and workforce support company focused on delivering structured, compliant, and people-centered HR solutions to organizations across Nigeria.
+
+We support businesses with essential HR services including recruitment, payroll outsourcing, training and development, compliance support, and workforce advisory. Our approach is rooted in professionalism, transparency, and operational efficiency, helping organizations manage people effectively while remaining compliant with regulatory requirements.
+
+Miemploya HR also provides digital platforms and tools that enhance workforce management, learning, and operational control. Through our applications and content-driven services, we bridge the gap between employers, professionals, and structured HR processes.
+
+Our mission is to simplify human resource management while supporting workforce quality, accountability, and sustainable organizational growth.
+
+3️⃣ SERVICES PAGE – SERVICE CARD WRITE-UP + UX INSTRUCTION
+SERVICE CARD SHORT WRITE-UP (FOR CARDS VIEW)
+
+Each service card should display:
+
+Example: HR Consultancy
+
+Structured HR advisory services designed to help organizations establish compliant and efficient people-management systems.
+
+Button: View Details
+
+(Repeat same pattern for all services.)
+
+FULL SERVICE CONTENT (DETAIL VIEW – BEFORE REQUEST)
+Example: HR Consultancy
+
+Overview
+Miemploya HR provides structured HR consultancy services to support organizations in developing compliant, efficient, and well-governed human resource systems.
+
+Scope of Support
+This service may include HR policy development, workforce planning, employee relations advisory, and HR process optimization, depending on organizational needs.
+
+Engagement Process
+Organizations may submit a request for HR consultancy after reviewing service details. Each request is assessed before engagement.
+
+UX & AI INSTRUCTION – VERY IMPORTANT
+INSTRUCTION TO AI APP BUILDER
+
+Implement the Services page with the following interaction flow:
+
+Display services as clickable service cards
+
+Each service card must have a “View Details” action
+
+Clicking “View Details” opens:
+
+A dedicated service details page OR
+
+A modal with full service description
+
+The “Request Service” button must appear only on the service detail view
+
+Users must read service details before submitting a request
+
+The service request form must not be accessible directly from the card view
+
+This ensures clarity, professionalism, and informed service requests
