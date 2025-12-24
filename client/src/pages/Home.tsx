@@ -13,19 +13,19 @@ const SERVICES = [
 ];
 
 export default function Home() {
-  const { data: content } = useQuery({
+  const { data: content, isLoading: contentLoading } = useQuery({
     queryKey: ["/api/content"],
     queryFn: () => fetch("/api/content").then((r) => r.json()),
   });
 
-  const { data: candidates } = useQuery({
+  const { data: candidates, isLoading: candidatesLoading } = useQuery({
     queryKey: ["/api/verified-candidates"],
     queryFn: () => fetch("/api/verified-candidates").then((r) => r.json()),
   });
 
-  const news = content?.filter((c: any) => c.type === "news") || [];
-  const videos = content?.filter((c: any) => c.type === "video") || [];
-  const pdfs = content?.filter((c: any) => c.type === "pdf") || [];
+  const news = content?.filter((c: any) => c.type === "news" && c.isPublished) || [];
+  const videos = content?.filter((c: any) => c.type === "video" && c.isPublished) || [];
+  const pdfs = content?.filter((c: any) => c.type === "pdf" && c.isPublished) || [];
   const approvedCandidates = candidates?.filter((c: any) => c.status === "approved") || [];
 
   return (
@@ -92,16 +92,16 @@ export default function Home() {
                 {videos.slice(0, 4).map((item: any) => (
                   <Card key={item.id} className="overflow-hidden hover-elevate">
                     <div className="bg-slate-300 dark:bg-slate-700 h-48 flex items-center justify-center">
-                      {item.url && item.url.includes("youtube") ? (
-                        <iframe
+                      {item.fileUrl || item.url ? (
+                        <video
                           width="100%"
                           height="100%"
-                          src={item.url}
-                          frameBorder="0"
-                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                          allowFullScreen
-                          title={item.title}
-                        />
+                          controls
+                          className="w-full h-full object-cover"
+                        >
+                          <source src={item.fileUrl || item.url} type="video/mp4" />
+                          Your browser does not support the video tag.
+                        </video>
                       ) : (
                         <span className="text-gray-600">Video: {item.title}</span>
                       )}
