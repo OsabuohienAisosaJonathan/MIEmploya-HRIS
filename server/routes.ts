@@ -3,6 +3,7 @@ import type { Server } from "http";
 import { storage } from "./storage";
 import { api } from "@shared/routes";
 import { z } from "zod";
+import { upload } from "./index";
 
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || "admin123";
 
@@ -134,6 +135,39 @@ export async function registerRoutes(
     }
   });
 
+  // File upload endpoint for content
+  app.post("/api/content/upload", upload.single("image") || upload.single("video"), async (req, res) => {
+    const token = req.headers.authorization?.replace("Bearer ", "");
+    const authenticated = !!token && token.startsWith("admin:");
+    if (!authenticated) {
+      return res.status(401).json({ message: "Unauthorized" });
+    }
+
+    try {
+      if (!req.file) {
+        return res.status(400).json({ message: "No file uploaded" });
+      }
+
+      const { title, description, type, isPublished } = req.body;
+      const fileUrl = `/uploads/${req.file.filename}`;
+
+      const item = await storage.createContentItem({
+        type: type || "news",
+        title,
+        description: description || "",
+        url: fileUrl,
+        imageUrl: type === "news" ? fileUrl : undefined,
+        fileUrl: type !== "news" ? fileUrl : undefined,
+        filename: req.file.filename,
+        isPublished: isPublished === "true",
+      });
+
+      res.status(201).json(item);
+    } catch (err) {
+      res.status(500).json({ message: "Server error" });
+    }
+  });
+
   app.patch(api.content.update.path, async (req, res) => {
     const token = req.headers.authorization?.replace("Bearer ", "");
     const authenticated = !!token && token.startsWith("admin:");
@@ -192,6 +226,38 @@ export async function registerRoutes(
           field: err.errors[0].path.join("."),
         });
       }
+      res.status(500).json({ message: "Server error" });
+    }
+  });
+
+  // File upload endpoint for verified candidates
+  app.post("/api/verified-candidates/upload", upload.single("image"), async (req, res) => {
+    const token = req.headers.authorization?.replace("Bearer ", "");
+    const authenticated = !!token && token.startsWith("admin:");
+    if (!authenticated) {
+      return res.status(401).json({ message: "Unauthorized" });
+    }
+
+    try {
+      if (!req.file) {
+        return res.status(400).json({ message: "No image uploaded" });
+      }
+
+      const { fullName, title, company, bio, service, status } = req.body;
+      const imageUrl = `/uploads/${req.file.filename}`;
+
+      const candidate = await storage.createVerifiedCandidate({
+        fullName,
+        title,
+        company: company || "",
+        bio,
+        service: service || "Candidate Verification",
+        imageUrl,
+        status: (status as "pending" | "approved" | "rejected") || "pending",
+      });
+
+      res.status(201).json(candidate);
+    } catch (err) {
       res.status(500).json({ message: "Server error" });
     }
   });

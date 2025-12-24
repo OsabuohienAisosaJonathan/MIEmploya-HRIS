@@ -1,0 +1,148 @@
+FINAL CORRECTION PROMPT – FORCE FILE UPLOAD (NO URL INPUTS)
+
+MIEMPLOYA HR WEBSITE
+
+Proceed to correct the content management system as follows.
+This instruction overrides any previous URL-based implementation.
+
+1. REMOVE ALL IMAGE / MEDIA URL FIELDS (MANDATORY)
+Issue
+
+Image URL and Media URL inputs are causing validation errors and preventing content from posting.
+
+Required Fix
+
+Completely remove all URL input fields for media
+
+Replace with file upload inputs only
+
+This applies to:
+
+News Feeds
+
+Videos
+
+PDFs / Books
+
+Top Verified Candidates
+
+2. FILE UPLOAD IMPLEMENTATION (REQUIRED STANDARD)
+A. News Feeds
+
+Admin must upload:
+
+Title
+
+Short description
+
+Image file upload (jpg / png / webp)
+
+Publish / Unpublish toggle
+
+B. Videos
+
+Admin must upload:
+
+Video title
+
+Video file upload (mp4 / webm)
+
+Publish / Unpublish toggle
+
+C. PDFs / Books
+
+Admin must upload:
+
+Title
+
+Optional description
+
+PDF file upload
+
+Publish / Unpublish toggle
+
+D. Top Verified Candidates
+
+Admin must upload:
+
+Full name
+
+Profession / industry
+
+Short profile description
+
+Profile image file upload
+
+Publish / Unpublish toggle
+
+3. BACKEND REQUIREMENTS (NON-NEGOTIABLE)
+
+Store uploaded files securely (local storage or cloud)
+
+Save file paths in PostgreSQL
+
+Link uploaded files correctly to records
+
+Ensure published content is retrievable by frontend
+
+4. FRONTEND RENDERING (CRITICAL)
+
+Confirm:
+
+Uploaded images render correctly
+
+Uploaded videos play correctly
+
+Uploaded PDFs are downloadable or viewable
+
+Uploaded profile images display correctly
+
+Only published content appears publicly
+
+5. HOME PAGE SECTIONS (RECONFIRM)
+
+Home page must dynamically display:
+
+News Feeds (with images)
+
+Videos
+
+PDFs / Books
+
+Top Verified Candidates
+
+Sections must hide automatically if no published content exists.
+
+6. BRANDING (RECONFIRM)
+
+Apply Miemploya logo to:
+
+Website header
+
+Admin dashboard
+
+Logo must link to Home page
+
+7. VALIDATION REQUIREMENT
+
+After implementing:
+
+Upload one item for each content type
+
+Publish each item
+
+Confirm all appear correctly on Home page
+
+Confirm no upload errors occur
+
+IMPORTANT
+
+Do not use URLs for media
+
+Do not add new features
+
+Do not redesign UI
+
+Focus only on fixing uploads, publishing, and rendering
+
+END OF PROMPT

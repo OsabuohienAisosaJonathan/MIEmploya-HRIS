@@ -49,7 +49,7 @@ export default function Admin() {
       <div className="min-h-screen flex items-center justify-center px-4">
         <Card className="w-full max-w-md p-8">
           <div className="text-center mb-8">
-            <div className="text-3xl font-bold text-blue-600 mx-auto mb-4">Miemploya</div>
+            <img src="/logo.png" alt="Miemploya" className="h-12 mx-auto mb-4" />
             <h1 className="text-2xl font-bold">Admin Login</h1>
           </div>
 
@@ -62,9 +62,10 @@ export default function Admin() {
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="Enter admin password"
                 required
+                data-testid="input-admin-password"
               />
             </div>
-            <Button type="submit" disabled={loading} className="w-full">
+            <Button type="submit" disabled={loading} className="w-full" data-testid="button-admin-login">
               {loading ? "Logging in..." : "Login"}
             </Button>
           </form>
@@ -75,10 +76,10 @@ export default function Admin() {
 
   return (
     <div className="min-h-screen bg-muted">
-      <header className="border-b bg-white dark:bg-slate-950 sticky top-0">
+      <header className="border-b bg-white dark:bg-slate-950 sticky top-0 z-40">
         <div className="container flex items-center justify-between h-16 px-4">
           <div className="flex items-center gap-2">
-            <span className="text-xl font-bold text-blue-600">Miemploya</span>
+            <img src="/logo.png" alt="Miemploya" className="h-8" />
             <span className="font-bold">Admin</span>
           </div>
           <Button
@@ -88,6 +89,7 @@ export default function Admin() {
               setToken("");
               setLocation("/");
             }}
+            data-testid="button-admin-logout"
           >
             Logout
           </Button>
@@ -97,10 +99,10 @@ export default function Admin() {
       <div className="container py-8 px-4">
         <Tabs defaultValue="requests" className="w-full">
           <TabsList className="grid w-full grid-cols-4">
-            <TabsTrigger value="requests">Service Requests</TabsTrigger>
-            <TabsTrigger value="news">News</TabsTrigger>
-            <TabsTrigger value="videos">Videos</TabsTrigger>
-            <TabsTrigger value="candidates">Verified Candidates</TabsTrigger>
+            <TabsTrigger value="requests" data-testid="tab-requests">Service Requests</TabsTrigger>
+            <TabsTrigger value="news" data-testid="tab-news">News</TabsTrigger>
+            <TabsTrigger value="videos" data-testid="tab-videos">Videos</TabsTrigger>
+            <TabsTrigger value="candidates" data-testid="tab-candidates">Verified Candidates</TabsTrigger>
           </TabsList>
 
           <TabsContent value="requests" className="space-y-4">
@@ -160,7 +162,7 @@ function ServiceRequestsTab({ token }: { token: string }) {
       {requests && requests.length > 0 ? (
         <div className="space-y-4">
           {requests.map((req: any) => (
-            <Card key={req.id} className="p-4">
+            <Card key={req.id} className="p-4" data-testid={`card-request-${req.id}`}>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
                 <div>
                   <p className="text-sm text-muted-foreground">Name</p>
@@ -176,6 +178,7 @@ function ServiceRequestsTab({ token }: { token: string }) {
                     value={req.status}
                     onChange={(e) => handleStatusChange(req.id, e.target.value)}
                     className="text-sm font-medium border rounded px-2 py-1"
+                    data-testid={`select-status-${req.id}`}
                   >
                     <option value="pending">Pending</option>
                     <option value="reviewed">Reviewed</option>
@@ -209,30 +212,41 @@ function NewsTab({ token }: { token: string }) {
       }).then((r) => r.json()),
   });
 
-  const [formData, setFormData] = useState({ title: "", description: "", imageUrl: "", isPublished: false });
+  const [formData, setFormData] = useState({ title: "", description: "", image: null as File | null, isPublished: false });
   const [submitting, setSubmitting] = useState(false);
   const { toast } = useToast();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!formData.image) {
+      toast({ title: "Please select an image file", variant: "destructive" });
+      return;
+    }
+
     setSubmitting(true);
     try {
-      const response = await fetch("/api/content", {
+      const formDataObj = new FormData();
+      formDataObj.append("title", formData.title);
+      formDataObj.append("description", formData.description || "");
+      formDataObj.append("image", formData.image);
+      formDataObj.append("isPublished", String(formData.isPublished));
+      formDataObj.append("type", "news");
+
+      const response = await fetch("/api/content/upload", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({ ...formData, type: "news" }),
+        headers: { Authorization: `Bearer ${token}` },
+        body: formDataObj,
       });
 
       if (response.ok) {
         toast({ title: "News added successfully" });
-        setFormData({ title: "", description: "", imageUrl: "", isPublished: false });
+        setFormData({ title: "", description: "", image: null, isPublished: false });
         refetch();
       } else {
         toast({ title: "Error adding news", variant: "destructive" });
       }
+    } catch (err) {
+      toast({ title: "Error: " + (err instanceof Error ? err.message : "Unknown error"), variant: "destructive" });
     } finally {
       setSubmitting(false);
     }
@@ -282,6 +296,7 @@ function NewsTab({ token }: { token: string }) {
               onChange={(e) => setFormData({ ...formData, title: e.target.value })}
               placeholder="News title"
               required
+              data-testid="input-news-title"
             />
           </div>
           <div>
@@ -290,17 +305,17 @@ function NewsTab({ token }: { token: string }) {
               value={formData.description}
               onChange={(e) => setFormData({ ...formData, description: e.target.value })}
               placeholder="News description"
-              required
             />
           </div>
           <div>
-            <label className="block text-sm font-medium mb-2">Image URL</label>
-            <Input
-              type="url"
-              value={formData.imageUrl}
-              onChange={(e) => setFormData({ ...formData, imageUrl: e.target.value })}
-              placeholder="https://example.com/image.jpg"
+            <label className="block text-sm font-medium mb-2">Image File (jpg, png, webp)</label>
+            <input
+              type="file"
+              accept="image/*"
+              onChange={(e) => setFormData({ ...formData, image: e.target.files?.[0] || null })}
               required
+              className="w-full border rounded px-3 py-2"
+              data-testid="input-news-image"
             />
           </div>
           <div className="flex items-center gap-2">
@@ -309,12 +324,13 @@ function NewsTab({ token }: { token: string }) {
               id="publish"
               checked={formData.isPublished}
               onChange={(e) => setFormData({ ...formData, isPublished: e.target.checked })}
+              data-testid="checkbox-news-publish"
             />
             <label htmlFor="publish" className="text-sm font-medium cursor-pointer">
               Publish immediately
             </label>
           </div>
-          <Button type="submit" disabled={submitting}>
+          <Button type="submit" disabled={submitting} data-testid="button-add-news">
             {submitting ? "Adding..." : "Add News"}
           </Button>
         </form>
@@ -325,12 +341,20 @@ function NewsTab({ token }: { token: string }) {
         {news && news.length > 0 ? (
           <div className="space-y-4">
             {news.map((item: any) => (
-              <Card key={item.id} className="p-4">
-                <div className="flex justify-between items-start">
+              <Card key={item.id} className="p-4" data-testid={`card-news-${item.id}`}>
+                <div className="flex gap-4">
+                  {item.imageUrl && (
+                    <img src={item.imageUrl} alt={item.title} className="w-20 h-20 object-cover rounded" />
+                  )}
                   <div className="flex-1">
                     <p className="font-bold">{item.title}</p>
                     <p className="text-sm text-muted-foreground mt-1">{item.description}</p>
-                    <span className={`inline-block mt-2 px-2 py-1 text-xs rounded ${item.isPublished ? "bg-green-100 text-green-800" : "bg-gray-100 text-gray-800"}`}>
+                    <span
+                      className={`inline-block mt-2 px-2 py-1 text-xs rounded ${
+                        item.isPublished ? "bg-green-100 text-green-800" : "bg-gray-100 text-gray-800"
+                      }`}
+                      data-testid={`status-news-${item.id}`}
+                    >
                       {item.isPublished ? "Published" : "Draft"}
                     </span>
                   </div>
@@ -339,6 +363,7 @@ function NewsTab({ token }: { token: string }) {
                       variant="outline"
                       size="sm"
                       onClick={() => handleTogglePublish(item.id, item.isPublished)}
+                      data-testid={`button-toggle-news-${item.id}`}
                     >
                       {item.isPublished ? "Unpublish" : "Publish"}
                     </Button>
@@ -346,6 +371,7 @@ function NewsTab({ token }: { token: string }) {
                       variant="destructive"
                       size="sm"
                       onClick={() => handleDelete(item.id)}
+                      data-testid={`button-delete-news-${item.id}`}
                     >
                       Delete
                     </Button>
@@ -371,30 +397,40 @@ function VideosTab({ token }: { token: string }) {
       }).then((r) => r.json()),
   });
 
-  const [formData, setFormData] = useState({ title: "", url: "", isPublished: false });
+  const [formData, setFormData] = useState({ title: "", video: null as File | null, isPublished: false });
   const [submitting, setSubmitting] = useState(false);
   const { toast } = useToast();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!formData.video) {
+      toast({ title: "Please select a video file", variant: "destructive" });
+      return;
+    }
+
     setSubmitting(true);
     try {
-      const response = await fetch("/api/content", {
+      const formDataObj = new FormData();
+      formDataObj.append("title", formData.title);
+      formDataObj.append("video", formData.video);
+      formDataObj.append("isPublished", String(formData.isPublished));
+      formDataObj.append("type", "video");
+
+      const response = await fetch("/api/content/upload", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({ ...formData, type: "video" }),
+        headers: { Authorization: `Bearer ${token}` },
+        body: formDataObj,
       });
 
       if (response.ok) {
         toast({ title: "Video added successfully" });
-        setFormData({ title: "", url: "", isPublished: false });
+        setFormData({ title: "", video: null, isPublished: false });
         refetch();
       } else {
         toast({ title: "Error adding video", variant: "destructive" });
       }
+    } catch (err) {
+      toast({ title: "Error: " + (err instanceof Error ? err.message : "Unknown error"), variant: "destructive" });
     } finally {
       setSubmitting(false);
     }
@@ -444,16 +480,18 @@ function VideosTab({ token }: { token: string }) {
               onChange={(e) => setFormData({ ...formData, title: e.target.value })}
               placeholder="Video title"
               required
+              data-testid="input-video-title"
             />
           </div>
           <div>
-            <label className="block text-sm font-medium mb-2">Video URL</label>
-            <Input
-              type="url"
-              value={formData.url}
-              onChange={(e) => setFormData({ ...formData, url: e.target.value })}
-              placeholder="https://youtube.com/embed/... or video file URL"
+            <label className="block text-sm font-medium mb-2">Video File (mp4, webm)</label>
+            <input
+              type="file"
+              accept="video/*"
+              onChange={(e) => setFormData({ ...formData, video: e.target.files?.[0] || null })}
               required
+              className="w-full border rounded px-3 py-2"
+              data-testid="input-video-file"
             />
           </div>
           <div className="flex items-center gap-2">
@@ -462,12 +500,13 @@ function VideosTab({ token }: { token: string }) {
               id="publish-video"
               checked={formData.isPublished}
               onChange={(e) => setFormData({ ...formData, isPublished: e.target.checked })}
+              data-testid="checkbox-video-publish"
             />
             <label htmlFor="publish-video" className="text-sm font-medium cursor-pointer">
               Publish immediately
             </label>
           </div>
-          <Button type="submit" disabled={submitting}>
+          <Button type="submit" disabled={submitting} data-testid="button-add-video">
             {submitting ? "Adding..." : "Add Video"}
           </Button>
         </form>
@@ -478,11 +517,16 @@ function VideosTab({ token }: { token: string }) {
         {videos && videos.length > 0 ? (
           <div className="space-y-4">
             {videos.map((item: any) => (
-              <Card key={item.id} className="p-4">
+              <Card key={item.id} className="p-4" data-testid={`card-video-${item.id}`}>
                 <div className="flex justify-between items-start">
                   <div className="flex-1">
                     <p className="font-bold">{item.title}</p>
-                    <span className={`inline-block mt-2 px-2 py-1 text-xs rounded ${item.isPublished ? "bg-green-100 text-green-800" : "bg-gray-100 text-gray-800"}`}>
+                    <span
+                      className={`inline-block mt-2 px-2 py-1 text-xs rounded ${
+                        item.isPublished ? "bg-green-100 text-green-800" : "bg-gray-100 text-gray-800"
+                      }`}
+                      data-testid={`status-video-${item.id}`}
+                    >
                       {item.isPublished ? "Published" : "Draft"}
                     </span>
                   </div>
@@ -491,6 +535,7 @@ function VideosTab({ token }: { token: string }) {
                       variant="outline"
                       size="sm"
                       onClick={() => handleTogglePublish(item.id, item.isPublished)}
+                      data-testid={`button-toggle-video-${item.id}`}
                     >
                       {item.isPublished ? "Unpublish" : "Publish"}
                     </Button>
@@ -498,6 +543,7 @@ function VideosTab({ token }: { token: string }) {
                       variant="destructive"
                       size="sm"
                       onClick={() => handleDelete(item.id)}
+                      data-testid={`button-delete-video-${item.id}`}
                     >
                       Delete
                     </Button>
@@ -517,7 +563,10 @@ function VideosTab({ token }: { token: string }) {
 function CandidatesTab({ token }: { token: string }) {
   const { data: candidates, refetch, isLoading } = useQuery({
     queryKey: ["/api/verified-candidates"],
-    queryFn: () => fetch("/api/verified-candidates").then((r) => r.json()),
+    queryFn: () => {
+      const authHeader = token ? { Authorization: `Bearer ${token}` } : {};
+      return fetch("/api/verified-candidates", { headers: authHeader }).then((r) => r.json());
+    },
   });
 
   const [formData, setFormData] = useState({
@@ -525,23 +574,34 @@ function CandidatesTab({ token }: { token: string }) {
     title: "",
     company: "",
     bio: "",
-    imageUrl: "",
-    status: "pending",
+    image: null as File | null,
+    status: "approved",
   });
   const [submitting, setSubmitting] = useState(false);
   const { toast } = useToast();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!formData.image) {
+      toast({ title: "Please select a profile image", variant: "destructive" });
+      return;
+    }
+
     setSubmitting(true);
     try {
-      const response = await fetch("/api/verified-candidates", {
+      const formDataObj = new FormData();
+      formDataObj.append("fullName", formData.fullName);
+      formDataObj.append("title", formData.title);
+      formDataObj.append("company", formData.company || "");
+      formDataObj.append("bio", formData.bio);
+      formDataObj.append("image", formData.image);
+      formDataObj.append("service", "Candidate Verification");
+      formDataObj.append("status", formData.status);
+
+      const response = await fetch("/api/verified-candidates/upload", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({ ...formData, service: "Candidate Verification" }),
+        headers: { Authorization: `Bearer ${token}` },
+        body: formDataObj,
       });
 
       if (response.ok) {
@@ -551,13 +611,15 @@ function CandidatesTab({ token }: { token: string }) {
           title: "",
           company: "",
           bio: "",
-          imageUrl: "",
-          status: "pending",
+          image: null,
+          status: "approved",
         });
         refetch();
       } else {
         toast({ title: "Error adding candidate", variant: "destructive" });
       }
+    } catch (err) {
+      toast({ title: "Error: " + (err instanceof Error ? err.message : "Unknown error"), variant: "destructive" });
     } finally {
       setSubmitting(false);
     }
@@ -594,6 +656,7 @@ function CandidatesTab({ token }: { token: string }) {
               onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
               placeholder="Candidate full name"
               required
+              data-testid="input-candidate-name"
             />
           </div>
           <div>
@@ -603,6 +666,7 @@ function CandidatesTab({ token }: { token: string }) {
               onChange={(e) => setFormData({ ...formData, title: e.target.value })}
               placeholder="e.g., HR Manager, Software Developer"
               required
+              data-testid="input-candidate-title"
             />
           </div>
           <div>
@@ -611,6 +675,7 @@ function CandidatesTab({ token }: { token: string }) {
               value={formData.company}
               onChange={(e) => setFormData({ ...formData, company: e.target.value })}
               placeholder="Current or last company"
+              data-testid="input-candidate-company"
             />
           </div>
           <div>
@@ -620,16 +685,18 @@ function CandidatesTab({ token }: { token: string }) {
               onChange={(e) => setFormData({ ...formData, bio: e.target.value })}
               placeholder="Brief professional description"
               required
+              data-testid="input-candidate-bio"
             />
           </div>
           <div>
-            <label className="block text-sm font-medium mb-2">Profile Image URL</label>
-            <Input
-              type="url"
-              value={formData.imageUrl}
-              onChange={(e) => setFormData({ ...formData, imageUrl: e.target.value })}
-              placeholder="https://example.com/image.jpg"
+            <label className="block text-sm font-medium mb-2">Profile Image File (jpg, png, webp)</label>
+            <input
+              type="file"
+              accept="image/*"
+              onChange={(e) => setFormData({ ...formData, image: e.target.files?.[0] || null })}
               required
+              className="w-full border rounded px-3 py-2"
+              data-testid="input-candidate-image"
             />
           </div>
           <div>
@@ -638,13 +705,14 @@ function CandidatesTab({ token }: { token: string }) {
               value={formData.status}
               onChange={(e) => setFormData({ ...formData, status: e.target.value })}
               className="w-full border rounded px-3 py-2"
+              data-testid="select-candidate-status"
             >
               <option value="pending">Pending Review</option>
               <option value="approved">Approved</option>
               <option value="rejected">Rejected</option>
             </select>
           </div>
-          <Button type="submit" disabled={submitting}>
+          <Button type="submit" disabled={submitting} data-testid="button-add-candidate">
             {submitting ? "Adding..." : "Add Candidate"}
           </Button>
         </form>
@@ -655,8 +723,11 @@ function CandidatesTab({ token }: { token: string }) {
         {candidates && candidates.length > 0 ? (
           <div className="space-y-4">
             {candidates.map((cand: any) => (
-              <Card key={cand.id} className="p-4">
-                <div className="flex justify-between items-start">
+              <Card key={cand.id} className="p-4" data-testid={`card-candidate-${cand.id}`}>
+                <div className="flex gap-4">
+                  {cand.imageUrl && (
+                    <img src={cand.imageUrl} alt={cand.fullName} className="w-16 h-16 rounded-full object-cover" />
+                  )}
                   <div className="flex-1">
                     <p className="font-bold">{cand.fullName}</p>
                     <p className="text-sm text-blue-600">{cand.title}</p>
@@ -666,6 +737,7 @@ function CandidatesTab({ token }: { token: string }) {
                     value={cand.status}
                     onChange={(e) => handleStatusChange(cand.id, e.target.value)}
                     className="text-sm border rounded px-2 py-1"
+                    data-testid={`select-candidate-status-${cand.id}`}
                   >
                     <option value="pending">Pending</option>
                     <option value="approved">Approved</option>
