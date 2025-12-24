@@ -128,11 +128,12 @@ export default function Admin() {
 
 function ServiceRequestsTab({ token }: { token: string }) {
   const { data: requests, refetch, isLoading } = useQuery({
-    queryKey: ["/api/requests"],
+    queryKey: ["/api/requests", token],
     queryFn: () =>
       fetch("/api/requests", {
         headers: { Authorization: `Bearer ${token}` },
       }).then((r) => r.json()),
+    enabled: !!token,
   });
 
   const { toast } = useToast();
@@ -205,11 +206,12 @@ function ServiceRequestsTab({ token }: { token: string }) {
 
 function NewsTab({ token }: { token: string }) {
   const { data: news, refetch, isLoading } = useQuery({
-    queryKey: ["/api/content-news"],
+    queryKey: ["/api/content-news", token],
     queryFn: () =>
       fetch("/api/content?type=news", {
         headers: { Authorization: `Bearer ${token}` },
       }).then((r) => r.json()),
+    enabled: !!token,
   });
 
   const [formData, setFormData] = useState({ title: "", description: "", image: null as File | null, isPublished: false });
@@ -391,11 +393,12 @@ function NewsTab({ token }: { token: string }) {
 
 function VideosTab({ token }: { token: string }) {
   const { data: videos, refetch, isLoading } = useQuery({
-    queryKey: ["/api/content-videos"],
+    queryKey: ["/api/content-videos", token],
     queryFn: () =>
       fetch("/api/content?type=video", {
         headers: { Authorization: `Bearer ${token}` },
       }).then((r) => r.json()),
+    enabled: !!token,
   });
 
   const [formData, setFormData] = useState({ title: "", video: null as File | null, isPublished: false });
@@ -564,11 +567,12 @@ function VideosTab({ token }: { token: string }) {
 
 function CandidatesTab({ token }: { token: string }) {
   const { data: candidates, refetch, isLoading } = useQuery({
-    queryKey: ["/api/verified-candidates"],
+    queryKey: ["/api/verified-candidates", token],
     queryFn: () => {
       const authHeader = token ? { Authorization: `Bearer ${token}` } : {};
       return fetch("/api/verified-candidates", { headers: authHeader }).then((r) => r.json());
     },
+    enabled: !!token,
   });
 
   const [formData, setFormData] = useState({

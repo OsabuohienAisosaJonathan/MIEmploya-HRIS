@@ -1,0 +1,111 @@
+VERIFICATION FAILURE NOTICE – UI NOT ALIGNED WITH BACKEND CLAIMS
+
+Your confirmation is not accepted.
+
+While backend endpoints may return 200, the user-facing Home page does not reflect the required functionality, and Admin uploads still trigger authorization errors at the UI level.
+
+Proceed to correct the following UI-LEVEL FAILURES. These are not backend-only issues.
+
+1. HOME PAGE SECTIONS ARE MISSING (NOT IMPLEMENTED)
+
+Observed Issue (FACTUAL):
+The Home page does not display the following required sections:
+
+News Feeds
+
+Videos
+
+PDFs / Books
+
+Top Verified Candidates
+
+This is a UI implementation failure, not an API issue.
+
+Required Fix:
+
+Explicitly add UI sections for:
+
+News Feeds
+
+Videos
+
+PDFs / Books
+
+Top Verified Candidates
+
+Bind each section to its corresponding public endpoint
+
+Render published content visibly on the Home page
+
+Backend availability without UI rendering does not meet requirements.
+
+2. ADMIN UPLOAD STILL FAILS WITH “AUTHORIZED / UNAUTHORIZED” ERROR
+
+Observed Issue (FACTUAL):
+
+Admin upload actions for News, Videos, and Top Verified still fail
+
+Error occurs at submission from Admin UI
+
+Required Fix:
+
+Ensure Admin upload requests:
+
+Always attach the admin token
+
+Are routed only through admin-protected endpoints
+
+Ensure public endpoints are never reused for admin uploads
+
+Confirm Admin upload success produces:
+
+No authorization errors
+
+Visible confirmation
+
+Persisted data
+
+3. CLAIMED “RESOLVED” STATUS IS INVALID WITHOUT UI PROOF
+
+Clarification:
+
+API returning 200 is not sufficient
+
+“Home page queries execute successfully” is not sufficient
+
+Visible UI sections populated with real content is the acceptance standard
+
+4. ACCEPTANCE CRITERIA (NON-NEGOTIABLE)
+
+This task is considered complete ONLY when:
+
+Admin uploads News / Video / PDF / Top Verified without error
+
+Uploaded content is visible:
+
+Immediately on the Home page
+
+In the correct section
+
+Home page contains all four required sections
+
+No authorization error appears during admin uploads
+
+Public users can view content without login
+
+Until these conditions are met, the system is not operational.
+
+INSTRUCTION
+
+Do not proceed with further verification claims.
+Do not state “resolved” again without visible UI confirmation.
+
+Proceed to:
+
+Implement missing Home page sections
+
+Fix Admin UI upload authorization
+
+Re-verify visually, not just via logs
+
+END OF RESPONSE
