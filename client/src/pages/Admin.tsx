@@ -228,9 +228,9 @@ function NewsTab({ token }: { token: string }) {
       const formDataObj = new FormData();
       formDataObj.append("title", formData.title);
       formDataObj.append("description", formData.description || "");
-      formDataObj.append("image", formData.image);
-      formDataObj.append("isPublished", String(formData.isPublished));
       formDataObj.append("type", "news");
+      formDataObj.append("isPublished", String(formData.isPublished));
+      formDataObj.append("image", formData.image);
 
       const response = await fetch("/api/content/upload", {
         method: "POST",
@@ -243,7 +243,8 @@ function NewsTab({ token }: { token: string }) {
         setFormData({ title: "", description: "", image: null, isPublished: false });
         refetch();
       } else {
-        toast({ title: "Error adding news", variant: "destructive" });
+        const err = await response.json();
+        toast({ title: "Error: " + (err.message || "Unknown error"), variant: "destructive" });
       }
     } catch (err) {
       toast({ title: "Error: " + (err instanceof Error ? err.message : "Unknown error"), variant: "destructive" });
@@ -412,9 +413,9 @@ function VideosTab({ token }: { token: string }) {
     try {
       const formDataObj = new FormData();
       formDataObj.append("title", formData.title);
-      formDataObj.append("video", formData.video);
-      formDataObj.append("isPublished", String(formData.isPublished));
       formDataObj.append("type", "video");
+      formDataObj.append("isPublished", String(formData.isPublished));
+      formDataObj.append("video", formData.video);
 
       const response = await fetch("/api/content/upload", {
         method: "POST",
@@ -427,7 +428,8 @@ function VideosTab({ token }: { token: string }) {
         setFormData({ title: "", video: null, isPublished: false });
         refetch();
       } else {
-        toast({ title: "Error adding video", variant: "destructive" });
+        const err = await response.json();
+        toast({ title: "Error: " + (err.message || "Unknown error"), variant: "destructive" });
       }
     } catch (err) {
       toast({ title: "Error: " + (err instanceof Error ? err.message : "Unknown error"), variant: "destructive" });

@@ -135,8 +135,14 @@ export async function registerRoutes(
     }
   });
 
+  // Custom middleware to handle both image and video uploads
+  const uploadAny = upload.fields([
+    { name: "image", maxCount: 1 },
+    { name: "video", maxCount: 1 },
+  ]);
+
   // File upload endpoint for content
-  app.post("/api/content/upload", upload.single("image") || upload.single("video"), async (req, res) => {
+  app.post("/api/content/upload", uploadAny, async (req, res) => {
     const token = req.headers.authorization?.replace("Bearer ", "");
     const authenticated = !!token && token.startsWith("admin:");
     if (!authenticated) {
@@ -144,12 +150,15 @@ export async function registerRoutes(
     }
 
     try {
-      if (!req.file) {
+      const files = req.files as { [key: string]: Express.Multer.File[] };
+      const file = files?.image?.[0] || files?.video?.[0];
+
+      if (!file) {
         return res.status(400).json({ message: "No file uploaded" });
       }
 
       const { title, description, type, isPublished } = req.body;
-      const fileUrl = `/uploads/${req.file.filename}`;
+      const fileUrl = `/uploads/${file.filename}`;
 
       const item = await storage.createContentItem({
         type: type || "news",
@@ -158,7 +167,7 @@ export async function registerRoutes(
         url: fileUrl,
         imageUrl: type === "news" ? fileUrl : undefined,
         fileUrl: type !== "news" ? fileUrl : undefined,
-        filename: req.file.filename,
+        filename: file.filename,
         isPublished: isPublished === "true",
       });
 
