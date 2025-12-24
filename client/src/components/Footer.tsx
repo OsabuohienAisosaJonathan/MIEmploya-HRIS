@@ -21,7 +21,7 @@ export function Footer() {
             <div className="flex flex-col gap-2 text-sm">
               <div className="flex items-center gap-2">
                 <Mail className="w-4 h-4" />
-                <span>miemploya@gmail.com</span>
+                <span>info@miemploya.com</span>
               </div>
               <div className="flex items-center gap-2">
                 <Phone className="w-4 h-4" />
@@ -107,32 +107,32 @@ export function Footer() {
             </a>
             <div className="flex items-center gap-4 mt-4">
               <a
-                href="https://instagram.com/miemployaesl"
+                href="https://www.instagram.com/miemploya?igsh=b2NnbHZla2tzMnl5"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-muted-foreground hover:text-pink-500"
                 data-testid="link-instagram"
-                title="Instagram: Miemploya Esl"
+                title="Instagram: Miemploya"
               >
                 <SiInstagram className="w-5 h-5" />
               </a>
               <a
-                href="https://facebook.com/miemployaesl"
+                href="https://www.facebook.com/share/1Bt9zVema9/"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-muted-foreground hover:text-blue-600"
                 data-testid="link-facebook"
-                title="Facebook: Miemploya Esl"
+                title="Facebook: Miemploya"
               >
                 <SiFacebook className="w-5 h-5" />
               </a>
               <a
-                href="https://tiktok.com/@miemployahr"
+                href="https://www.tiktok.com/@miemploya?_r=1&_t=ZS-92UtzlgKmd2"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-muted-foreground hover:text-foreground"
                 data-testid="link-tiktok"
-                title="TikTok: Miemploya HR"
+                title="TikTok: Miemploya"
               >
                 <SiTiktok className="w-5 h-5" />
               </a>

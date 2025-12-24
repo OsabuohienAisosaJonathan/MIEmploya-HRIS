@@ -42,15 +42,22 @@ export default function Home() {
         {/* Hero */}
         <section className="py-20 px-4 bg-gradient-to-r from-blue-600 to-cyan-500 text-white">
           <div className="container max-w-4xl mx-auto text-center">
-            <h1 className="text-5xl font-bold mb-4">Welcome to Miemploya HR</h1>
-            <p className="text-xl mb-8 opacity-90">
-              Professional HR services and talent verification solutions
+            <h1 className="text-5xl font-bold mb-4">Smart HR. Smarter Workforce Solutions.</h1>
+            <p className="text-xl mb-8 opacity-90 max-w-3xl mx-auto">
+              Miemploya HR delivers structured human resource services, workforce support, and digital solutions that help organizations operate efficiently and responsibly. From recruitment and payroll outsourcing to training, compliance, and talent verification, we support businesses and professionals with systems that work.
             </p>
-            <Link href="/contact">
-              <Button variant="secondary" size="lg">
-                Request a Service
-              </Button>
-            </Link>
+            <div className="flex flex-wrap justify-center gap-4">
+              <Link href="/contact">
+                <Button variant="secondary" size="lg" data-testid="button-request-service">
+                  Request a Service
+                </Button>
+              </Link>
+              <Link href="/jobs">
+                <Button variant="outline" size="lg" className="bg-white/10 border-white text-white backdrop-blur-sm" data-testid="button-explore-jobs">
+                  Explore Jobs
+                </Button>
+              </Link>
+            </div>
           </div>
         </section>
 

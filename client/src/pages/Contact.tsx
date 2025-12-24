@@ -127,7 +127,7 @@ export default function Contact() {
                 <div className="flex items-center gap-3">
                   <Mail className="w-5 h-5 text-blue-600" />
                   <div>
-                    <p className="font-medium">miemploya@gmail.com</p>
+                    <p className="font-medium">info@miemploya.com</p>
                     <p className="text-sm text-muted-foreground">Email Us</p>
                   </div>
                 </div>
@@ -163,34 +163,34 @@ export default function Contact() {
               <h3 className="font-semibold mb-3">Follow Us</h3>
               <div className="flex items-center gap-4">
                 <a
-                  href="https://instagram.com/miemployaesl"
+                  href="https://www.instagram.com/miemploya?igsh=b2NnbHZla2tzMnl5"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex items-center gap-2 text-muted-foreground hover:text-pink-500"
                   data-testid="link-instagram-contact"
                 >
                   <SiInstagram className="w-6 h-6" />
-                  <span className="text-sm">Miemploya Esl</span>
+                  <span className="text-sm">Miemploya</span>
                 </a>
                 <a
-                  href="https://facebook.com/miemployaesl"
+                  href="https://www.facebook.com/share/1Bt9zVema9/"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex items-center gap-2 text-muted-foreground hover:text-blue-600"
                   data-testid="link-facebook-contact"
                 >
                   <SiFacebook className="w-6 h-6" />
-                  <span className="text-sm">Miemploya Esl</span>
+                  <span className="text-sm">Miemploya</span>
                 </a>
                 <a
-                  href="https://tiktok.com/@miemployahr"
+                  href="https://www.tiktok.com/@miemploya?_r=1&_t=ZS-92UtzlgKmd2"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex items-center gap-2 text-muted-foreground hover:text-foreground"
                   data-testid="link-tiktok-contact"
                 >
                   <SiTiktok className="w-6 h-6" />
-                  <span className="text-sm">Miemploya HR</span>
+                  <span className="text-sm">Miemploya</span>
                 </a>
               </div>
             </Card>

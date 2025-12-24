@@ -1,0 +1,104 @@
+GLOBAL CONTACT UPDATE + HOME PAGE TEXT REFINEMENT PROMPT – MIEMPLOYA HR
+
+Proceed to apply the following updates across the Miemploya HR website and application. These are content and configuration changes only. Do not alter functionality or layout unless stated.
+
+1. UPDATE WHATSAPP NUMBER (MANDATORY)
+Required Change
+
+Remove WhatsApp number: +2349037162950
+
+Replace with WhatsApp number: +2349063337173
+
+Apply this change to all locations, including:
+
+WhatsApp Messenger button
+
+Floating WhatsApp widget
+
+Contact page
+
+Footer
+
+Header (if applicable)
+
+Pre-filled WhatsApp chat links
+
+Any chatbot or messaging integrations
+
+Ensure no reference to the old number remains anywhere in the app.
+
+2. UPDATE OFFICIAL EMAIL ADDRESS
+Required Change
+
+Replace any existing contact email with:
+info@miemploya.com
+
+Apply this email consistently across:
+
+Contact page
+
+Footer
+
+About page (if displayed)
+
+Any forms or system emails referencing the company email
+
+3. UPDATE SOCIAL MEDIA LINKS
+
+Replace existing social media links with the following official URLs:
+
+Facebook:
+https://www.facebook.com/share/1Bt9zVema9/
+
+Instagram:
+https://www.instagram.com/miemploya?igsh=b2NnbHZla2tzMnl5
+
+TikTok:
+https://www.tiktok.com/@miemploya?_r=1&_t=ZS-92UtzlgKmd2
+
+Ensure:
+
+Links open in a new tab
+
+Icons are correctly mapped to the updated URLs
+
+Old links are completely removed
+
+4. HOME PAGE HERO TEXT – CONTENT REPLACEMENT (IMPORTANT)
+Remove the existing text:
+
+“Welcome to Miemploya HR – Professional HR services and talent verification solutions”
+
+Replace with the following engaging Home page text:
+
+Primary Headline
+
+Smart HR. Smarter Workforce Solutions.
+
+Supporting Text
+
+Miemploya HR delivers structured human resource services, workforce support, and digital solutions that help organizations operate efficiently and responsibly. From recruitment and payroll outsourcing to training, compliance, and talent verification, we support businesses and professionals with systems that work.
+
+Call-to-Action Buttons
+
+Request a Service
+
+Explore Jobs
+
+Ensure this text appears prominently on the Home page hero section and is mobile responsive.
+
+5. VERIFICATION REQUIREMENT
+
+After implementing the above:
+
+Confirm WhatsApp opens chat with +2349063337173
+
+Confirm email displays as info@miemploya.com
+
+Confirm all social links open correctly
+
+Confirm new Home page text is visible and replaces the old text completely
+
+Do not proceed with other changes until these updates are confirmed.
+
+END OF PROMPT
