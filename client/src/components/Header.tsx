@@ -56,12 +56,6 @@ export function Header() {
             {theme === "light" ? <Moon className="w-5 h-5" /> : <Sun className="w-5 h-5" />}
           </Button>
 
-          <Link href="/admin/login" className="hidden sm:block">
-            <Button variant="outline" size="sm" data-testid="button-admin">
-              Admin
-            </Button>
-          </Link>
-
           <Button
             variant="ghost"
             size="icon"
@@ -91,11 +85,6 @@ export function Header() {
                 {link.label}
               </Link>
             ))}
-            <Link href="/admin/login" className="sm:hidden" onClick={() => setMobileMenuOpen(false)}>
-              <Button variant="outline" size="sm" className="w-full mt-2">
-                Admin
-              </Button>
-            </Link>
           </nav>
         </div>
       )}
