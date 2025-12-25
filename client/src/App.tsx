@@ -13,6 +13,7 @@ import Verified from "@/pages/Verified";
 import Templates from "@/pages/Templates";
 import Jobs from "@/pages/Jobs";
 import JobDetail from "@/pages/JobDetail";
+import NewsDetail from "@/pages/NewsDetail";
 import Admin from "@/pages/Admin";
 import { WhatsAppButton } from "@/components/WhatsAppButton";
 
@@ -27,6 +28,7 @@ function Router() {
       <Route path="/templates" component={Templates} />
       <Route path="/jobs" component={Jobs} />
       <Route path="/jobs/:id" component={JobDetail} />
+      <Route path="/news/:id" component={NewsDetail} />
       <Route path="/admin/*?" component={Admin} />
       <Route component={NotFound} />
     </Switch>

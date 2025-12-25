@@ -139,15 +139,31 @@ export default function Home() {
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {news.slice(0, 4).map((item: any) => (
-                  <Card key={item.id} className="overflow-hidden card-hover">
-                    {item.imageUrl && (
-                      <img src={item.imageUrl} alt={item.title} className="w-full h-48 object-cover" />
-                    )}
-                    <div className="p-6">
-                      <h3 className="font-bold text-lg mb-2">{item.title}</h3>
-                      <p className="text-sm text-muted-foreground line-clamp-2">{item.description}</p>
-                    </div>
-                  </Card>
+                  <Link key={item.id} href={`/news/${item.id}`}>
+                    <Card className="overflow-hidden card-hover cursor-pointer h-full" data-testid={`card-news-${item.id}`}>
+                      <div className="w-full h-[200px] md:h-[280px] bg-slate-100 dark:bg-slate-800">
+                        {item.imageUrl ? (
+                          <img 
+                            src={item.imageUrl} 
+                            alt={item.title} 
+                            className="w-full h-full object-cover" 
+                          />
+                        ) : (
+                          <div className="w-full h-full flex items-center justify-center">
+                            <FileText className="w-16 h-16 text-muted-foreground/30" />
+                          </div>
+                        )}
+                      </div>
+                      <div className="p-6">
+                        <h3 className="font-bold text-lg mb-3">{item.title}</h3>
+                        <p className="text-sm text-muted-foreground line-clamp-3 mb-4">{item.description}</p>
+                        <span className="text-primary font-medium text-sm flex items-center gap-1">
+                          Read More
+                          <ArrowRight className="w-4 h-4" />
+                        </span>
+                      </div>
+                    </Card>
+                  </Link>
                 ))}
               </div>
             </div>

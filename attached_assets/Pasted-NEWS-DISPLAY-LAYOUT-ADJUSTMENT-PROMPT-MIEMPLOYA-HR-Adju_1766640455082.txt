@@ -1,0 +1,134 @@
+NEWS DISPLAY & LAYOUT ADJUSTMENT PROMPT – MIEMPLOYA HR
+
+Adjust the News section on the Home page and related News view to improve content readability, image visibility, and user experience, without modifying any Super Admin upload interface or backend logic.
+
+1. HOME PAGE NEWS SECTION – PREVIEW LAYOUT (MANDATORY)
+Observed Issue
+
+News content is truncated excessively
+
+News images do not display fully
+
+Users cannot read full news content directly
+
+Required Fix – News Preview Card
+
+On the Home page, display each News item as a preview card with the following layout:
+
+A. News Image
+
+Display the featured image prominently
+
+Image must:
+
+Fill the container proportionally
+
+Maintain original aspect ratio
+
+Use object-fit: cover
+
+Image container must be:
+
+Full-width of the card
+
+Fixed professional height (recommended: 260px – 300px on desktop, 200px on mobile)
+
+B. News Content Preview
+
+Each News card should display:
+
+News title (full title, not truncated)
+
+Short excerpt (first 2–3 lines only)
+
+“Read More” link or button
+
+Do not display full content on the Home page.
+
+2. FULL NEWS VIEW PAGE (CRITICAL)
+Required Behavior
+
+When a user clicks any News feed, open a dedicated News Detail page that displays the full content and image.
+
+News Detail Page Layout
+A. Featured Image (Top Section)
+
+Display the full news image at the top
+
+Image must:
+
+Be centered
+
+Span the content width
+
+Maintain clarity and aspect ratio
+
+Recommended height:
+
+400px – 500px on desktop
+
+250px – 300px on mobile
+
+B. News Content Section
+
+Display:
+
+Full news title
+
+Publication date (optional)
+
+Full body content (no truncation)
+
+Proper spacing and readable typography
+
+Content must be:
+
+Left-aligned
+
+Clearly readable
+
+Free of overflow or clipping
+
+3. IMAGE HANDLING RULES (VERY IMPORTANT)
+
+Images uploaded by Super Admin must:
+
+Display fully without cropping important areas
+
+Scale responsively across devices
+
+Avoid:
+
+Fixed-width distortion
+
+Image stretching
+
+Use consistent aspect ratios across news items
+
+4. DESIGN CONSTRAINT (NON-NEGOTIABLE)
+
+Do NOT modify:
+
+Super Admin dashboard
+
+Admin upload forms
+
+Admin workflow
+
+This change is frontend display only
+
+5. ACCEPTANCE CRITERIA
+
+This task is complete only when:
+
+News images display fully on the Home page
+
+News content preview is clean and readable
+
+Clicking a news item opens a full News Detail page
+
+Full image and full content display correctly
+
+Super Admin interface remains unchanged
+
+END OF PROMPT
