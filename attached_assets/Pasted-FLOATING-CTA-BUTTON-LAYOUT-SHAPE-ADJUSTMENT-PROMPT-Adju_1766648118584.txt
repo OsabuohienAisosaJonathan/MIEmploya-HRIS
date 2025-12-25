@@ -1,0 +1,100 @@
+FLOATING CTA BUTTON LAYOUT & SHAPE ADJUSTMENT PROMPT
+
+Adjust the existing floating CTA button with the text “Free Training!!! Register Now.” as follows.
+This is a UI / CSS-only adjustment. Do not change functionality, routing, or admin logic.
+
+1. TEXT STRUCTURE (MANDATORY)
+Required Text Layout
+
+Split the text into two lines:
+
+Line 1 (Top):
+Free Training!!!
+
+Line 2 (Below):
+Register Now
+
+Rules
+
+“Register Now” must appear directly below “Free Training!!!”
+
+Both lines must be:
+
+Center-aligned horizontally
+
+Center-aligned vertically within the button
+
+Maintain the previously applied 150% font size increase
+
+2. BUTTON SHAPE & DIMENSIONS (CRITICAL)
+Required Shape
+
+Change the button shape to a horizontal oval (pill-shaped) design
+
+Use full border-radius to achieve a smooth oval appearance
+
+Dimension Requirement
+
+The floating CTA button must:
+
+Match the same height and width as the WhatsApp floating icon currently visible on the page
+
+Maintain consistent padding and proportions
+
+This ensures visual harmony between the CTA and WhatsApp button.
+
+3. FONT & VISUAL CONSISTENCY
+
+The CTA button must:
+
+Use the same font size scale as the WhatsApp floating icon
+
+Maintain bold, readable text
+
+Text color should remain white
+
+Background color should remain the existing CTA accent color
+
+4. POSITION & BEHAVIOR (UNCHANGED)
+
+Keep the button:
+
+Fixed at the bottom-left of the screen
+
+With existing animation behavior (periodic enlargement)
+
+Do not alter:
+
+Click action
+
+Navigation destination
+
+Animation timing logic
+
+5. RESPONSIVENESS
+
+Ensure the two-line text:
+
+Does not overflow the oval container
+
+Scales properly on mobile devices
+
+Maintain clean spacing between the two lines
+
+6. ACCEPTANCE CRITERIA
+
+This task is complete only when:
+
+“Free Training!!!” appears on the first line
+
+“Register Now” appears directly below it
+
+Button has an oval (pill) shape
+
+Button matches the WhatsApp floating icon’s height and width
+
+Font size and overall scale are visually consistent
+
+No functionality or animation is broken
+
+END OF PROMPT
