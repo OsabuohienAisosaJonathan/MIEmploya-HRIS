@@ -13,31 +13,38 @@ export function Footer() {
       <div className="container py-16 px-4">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
           <div>
-            <h3 className="font-bold text-xl text-white mb-4">Miemploya HR</h3>
+            <Link href="/" data-testid="link-footer-logo">
+              <img src="/logo.png" alt="Miemploya" className="h-14 mb-4 brightness-0 invert" />
+            </Link>
             <p className="text-sm text-slate-400 mb-6 leading-relaxed">
               Professional HR services and workforce solutions for organizations across Nigeria. Building smarter workforces.
             </p>
             <div className="flex flex-col gap-3 text-sm">
               <div className="flex items-center gap-3">
-                <Mail className="w-4 h-4 text-teal-400" />
+                <Mail className="w-4 h-4 text-teal-400 flex-shrink-0" />
                 <span>info@miemploya.com</span>
               </div>
               <div className="flex items-center gap-3">
-                <Phone className="w-4 h-4 text-teal-400" />
+                <Phone className="w-4 h-4 text-teal-400 flex-shrink-0" />
                 <span>+234 903 716 2950</span>
               </div>
               <div className="flex items-center gap-3">
-                <Phone className="w-4 h-4 text-teal-400" />
+                <Phone className="w-4 h-4 text-teal-400 flex-shrink-0" />
                 <span>+234 706 666 2597</span>
+              </div>
+              <div className="flex items-start gap-3">
+                <MapPin className="w-4 h-4 text-teal-400 flex-shrink-0 mt-0.5" />
+                <span className="leading-relaxed">
+                  19 Adesuwa Road, After Zone 5 Police Station, G.R.A., Benin City, Edo State, Nigeria.
+                </span>
               </div>
               <a
                 href="https://maps.app.goo.gl/yED68YGDYjPF4qZY7"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-3 hover:text-teal-400 transition-colors"
+                className="flex items-center gap-3 hover:text-teal-400 transition-colors ml-7"
               >
-                <MapPin className="w-4 h-4 text-teal-400" />
-                <span>View Head Office Location</span>
+                <span className="underline">View on Google Maps</span>
               </a>
             </div>
           </div>

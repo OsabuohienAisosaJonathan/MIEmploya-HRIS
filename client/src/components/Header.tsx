@@ -1,11 +1,13 @@
 import { Link, useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
-import { Menu, X } from "lucide-react";
+import { Menu, X, Moon, Sun } from "lucide-react";
 import { useState } from "react";
+import { useTheme } from "@/components/theme-provider";
 
 export function Header() {
   const [location] = useLocation();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const { theme, toggleTheme } = useTheme();
 
   const isActive = (path: string) => location === path;
 
@@ -23,7 +25,7 @@ export function Header() {
     <header className="border-b bg-white/95 dark:bg-slate-950/95 backdrop-blur-sm sticky top-0 z-50 shadow-sm">
       <div className="container flex items-center justify-between h-16 px-4">
         <Link href="/" className="flex items-center gap-2">
-          <img src="/logo.png" alt="Miemploya" className="h-10" />
+          <img src="/logo.png" alt="Miemploya" className="h-14" />
         </Link>
 
         <nav className="hidden lg:flex items-center gap-1">
@@ -44,6 +46,16 @@ export function Header() {
         </nav>
 
         <div className="flex items-center gap-2">
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={toggleTheme}
+            data-testid="button-theme-toggle"
+            title={theme === "light" ? "Switch to dark mode" : "Switch to light mode"}
+          >
+            {theme === "light" ? <Moon className="w-5 h-5" /> : <Sun className="w-5 h-5" />}
+          </Button>
+
           <Link href="/admin/login" className="hidden sm:block">
             <Button variant="outline" size="sm" data-testid="button-admin">
               Admin

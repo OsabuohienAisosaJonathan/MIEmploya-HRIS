@@ -1,0 +1,197 @@
+UI / CSS ENHANCEMENT PROMPT – LOGO, DYNAMIC PAGES, DARK MODE & FOOTER UPDATE (MIEMPLOYA HR)
+
+Apply the following design-only adjustments across the Miemploya HR website.
+Do not modify backend logic, routes, APIs, admin workflows, or data structures.
+
+1. LOGO SIZE ADJUSTMENT (GLOBAL)
+Required Change
+
+Increase the size of the Miemploya logo by 40% across:
+
+Header
+
+Footer
+
+Admin dashboard (if logo is present)
+
+Rules
+
+Maintain aspect ratio
+
+Do not distort or stretch the logo
+
+Ensure responsiveness on mobile and desktop
+
+Logo must remain clickable and linked to the Home page
+
+2. DYNAMIC UI & CSS ENHANCEMENT (CRITICAL)
+
+Improve the visual depth, interaction, and polish of the following pages while keeping content and behavior unchanged:
+
+A. Books & Templates Page
+
+Enhance with:
+
+Card-based layout
+
+Gradient or layered backgrounds
+
+Subtle hover effects:
+
+Elevation (lift)
+
+Shadow enhancement
+
+Clear download CTA styling
+
+File-type indicators (PDF, DOCX, XLSX)
+
+Smooth transitions
+
+Cards should feel modern, premium, and interactive, not flat.
+
+B. Jobs Page
+
+Enhance with:
+
+Modern job cards with depth
+
+Clear hierarchy:
+
+Job title
+
+Company
+
+Location
+
+Hover interaction:
+
+Highlight border or glow
+
+Soft animation
+
+Clearly styled “Apply” or “View Details” CTA
+
+Section spacing that improves readability
+
+Jobs must feel professional and enterprise-ready, not basic listings.
+
+C. Top Verified Page
+
+Enhance with:
+
+Profile cards with:
+
+Rounded image containers
+
+Soft shadows
+
+Hover effect:
+
+Card elevation
+
+Subtle glow or border accent
+
+Clean typography for names and professions
+
+Balanced spacing and alignment
+
+Top Verified profiles should feel prestigious and trusted.
+
+3. DARK MODE VARIANT (NEW – UI ONLY)
+
+Implement a Dark Mode theme that users can toggle.
+
+Dark Mode Requirements
+
+Backgrounds:
+
+Deep charcoal / near-black
+
+Text:
+
+Light gray / white for readability
+
+Cards:
+
+Slightly lighter dark tone
+
+Soft shadow or border
+
+Accent colors:
+
+Teal / cyan highlights remain consistent
+
+Maintain contrast and accessibility
+
+Rules
+
+Dark mode must:
+
+Not affect data or logic
+
+Respect existing layout
+
+Work on all enhanced pages (Books & Templates, Jobs, Top Verified)
+
+Toggle state should persist during navigation
+
+4. FOOTER UPDATE – ADDRESS ADDITION
+
+Add the following physical office address to the footer:
+
+Address:
+19 Adesuwa Road,
+After Zone 5 Police Station,
+G.R.A., Benin City,
+Edo State, Nigeria.
+
+Footer Rules
+
+Display address clearly and professionally
+
+Maintain clean spacing and readability
+
+Footer must remain responsive
+
+Footer styling should adapt to both light and dark modes
+
+5. DESIGN CONSTRAINTS (NON-NEGOTIABLE)
+
+Do NOT change:
+
+Existing functionality
+
+Routes or URLs
+
+Content logic
+
+Admin workflows
+
+All changes must be:
+
+CSS / UI / UX only
+
+Backward-compatible
+
+Focus on visual polish and interaction quality
+
+6. ACCEPTANCE CRITERIA
+
+This task is complete only when:
+
+Logo appears visibly larger (≈40%) and clean
+
+Books & Templates page looks dynamic and modern
+
+Jobs page has improved card design and interaction
+
+Top Verified page feels premium and engaging
+
+Dark mode works cleanly across enhanced pages
+
+Footer displays the new address correctly
+
+No existing feature is broken
+
+END OF PROMPT
