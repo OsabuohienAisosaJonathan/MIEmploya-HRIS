@@ -100,6 +100,7 @@ export default function Admin() {
         <Tabs defaultValue="requests" className="w-full">
           <TabsList className="flex flex-wrap gap-1 h-auto p-1">
             <TabsTrigger value="requests" data-testid="tab-requests">Service Requests</TabsTrigger>
+            <TabsTrigger value="training" data-testid="tab-training">Training Requests</TabsTrigger>
             <TabsTrigger value="news" data-testid="tab-news">News</TabsTrigger>
             <TabsTrigger value="videos" data-testid="tab-videos">Videos</TabsTrigger>
             <TabsTrigger value="candidates" data-testid="tab-candidates">Verified Candidates</TabsTrigger>
@@ -110,6 +111,10 @@ export default function Admin() {
 
           <TabsContent value="requests" className="space-y-4">
             <ServiceRequestsTab token={token} />
+          </TabsContent>
+
+          <TabsContent value="training" className="space-y-4">
+            <TrainingRequestsTab token={token} />
           </TabsContent>
 
           <TabsContent value="news" className="space-y-4">
@@ -1371,5 +1376,120 @@ function CandidatesTab({ token }: { token: string }) {
         )}
       </Card>
     </div>
+  );
+}
+
+function TrainingRequestsTab({ token }: { token: string }) {
+  const { data: requests, refetch, isLoading } = useQuery({
+    queryKey: ["/api/admin/training-requests", token],
+    queryFn: () =>
+      fetch("/api/admin/training-requests", {
+        headers: { Authorization: `Bearer ${token}` },
+      }).then((r) => r.json()),
+    enabled: !!token,
+  });
+
+  const { toast } = useToast();
+
+  const handleStatusChange = async (id: number, newStatus: string) => {
+    try {
+      await fetch(`/api/admin/training-requests/${id}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ status: newStatus }),
+      });
+      refetch();
+      toast({ title: "Status updated" });
+    } catch {
+      toast({ title: "Error updating status", variant: "destructive" });
+    }
+  };
+
+  if (isLoading) return <div className="text-center py-8">Loading...</div>;
+
+  return (
+    <Card className="p-6">
+      <h2 className="text-2xl font-bold mb-4">Training Requests</h2>
+      <p className="text-muted-foreground mb-6">
+        View and manage training registration requests from users.
+      </p>
+      {requests && requests.length > 0 ? (
+        <div className="space-y-4">
+          {requests.map((req: any) => (
+            <Card key={req.id} className="p-4" data-testid={`card-training-${req.id}`}>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                <div>
+                  <p className="text-sm text-muted-foreground">Full Name</p>
+                  <p className="font-medium">{req.fullName}</p>
+                </div>
+                <div>
+                  <p className="text-sm text-muted-foreground">Email</p>
+                  <p className="font-medium text-sm">{req.email}</p>
+                </div>
+                <div>
+                  <p className="text-sm text-muted-foreground">Phone</p>
+                  <p className="font-medium text-sm">{req.phone}</p>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                <div>
+                  <p className="text-sm text-muted-foreground">Interested Training</p>
+                  <p className="font-medium text-primary">{req.interestedTraining}</p>
+                </div>
+                <div>
+                  <p className="text-sm text-muted-foreground">Preferred Start Date</p>
+                  <p className="font-medium">{req.preferredStartDate || "Not specified"}</p>
+                </div>
+                <div>
+                  <p className="text-sm text-muted-foreground">Status</p>
+                  <select
+                    value={req.status}
+                    onChange={(e) => handleStatusChange(req.id, e.target.value)}
+                    className="text-sm font-medium border rounded px-2 py-1"
+                    data-testid={`select-training-status-${req.id}`}
+                  >
+                    <option value="new">New</option>
+                    <option value="reviewed">Reviewed</option>
+                    <option value="contacted">Contacted</option>
+                  </select>
+                </div>
+              </div>
+
+              {(req.employmentStatus || req.organizationName || req.role) && (
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4 pt-4 border-t">
+                  <div>
+                    <p className="text-sm text-muted-foreground">Employment Status</p>
+                    <p className="font-medium text-sm">{req.employmentStatus || "-"}</p>
+                  </div>
+                  <div>
+                    <p className="text-sm text-muted-foreground">Organization</p>
+                    <p className="font-medium text-sm">{req.organizationName || "-"}</p>
+                  </div>
+                  <div>
+                    <p className="text-sm text-muted-foreground">Role</p>
+                    <p className="font-medium text-sm">{req.role || "-"}</p>
+                  </div>
+                </div>
+              )}
+
+              <div className="flex gap-4 pt-2">
+                <span className={`text-xs px-2 py-1 rounded ${req.certificationRequired ? "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400" : "bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-400"}`}>
+                  Certification: {req.certificationRequired ? "Yes" : "No"}
+                </span>
+                <span className={`text-xs px-2 py-1 rounded ${req.verifiedShortlist ? "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400" : "bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-400"}`}>
+                  Verified Shortlist: {req.verifiedShortlist ? "Yes" : "No"}
+                </span>
+              </div>
+            </Card>
+          ))}
+        </div>
+      ) : (
+        <p className="text-muted-foreground">No training requests yet.</p>
+      )}
+    </Card>
   );
 }

@@ -14,8 +14,10 @@ import Templates from "@/pages/Templates";
 import Jobs from "@/pages/Jobs";
 import JobDetail from "@/pages/JobDetail";
 import NewsDetail from "@/pages/NewsDetail";
+import TrainingRegistration from "@/pages/TrainingRegistration";
 import Admin from "@/pages/Admin";
 import { WhatsAppButton } from "@/components/WhatsAppButton";
+import { FloatingTrainingButton } from "@/components/FloatingTrainingButton";
 
 function Router() {
   return (
@@ -29,6 +31,7 @@ function Router() {
       <Route path="/jobs" component={Jobs} />
       <Route path="/jobs/:id" component={JobDetail} />
       <Route path="/news/:id" component={NewsDetail} />
+      <Route path="/training" component={TrainingRegistration} />
       <Route path="/admin/*?" component={Admin} />
       <Route component={NotFound} />
     </Switch>
@@ -43,6 +46,7 @@ function App() {
           <Toaster />
           <Router />
           <WhatsAppButton />
+          <FloatingTrainingButton />
         </TooltipProvider>
       </QueryClientProvider>
     </ThemeProvider>
