@@ -33,10 +33,10 @@ export function FloatingTrainingButton() {
             }}
           >
             <GraduationCap className="w-3 h-3" />
-            <div className="writing-mode-vertical text-[6px] font-bold tracking-wide whitespace-nowrap">
+            <div className="writing-mode-vertical text-[15px] font-bold tracking-wide whitespace-nowrap">
               Free Training!!!
             </div>
-            <div className="writing-mode-vertical text-[5px] font-medium opacity-90 whitespace-nowrap">
+            <div className="writing-mode-vertical text-[12px] font-medium opacity-90 whitespace-nowrap">
               Register Now
             </div>
           </div>
