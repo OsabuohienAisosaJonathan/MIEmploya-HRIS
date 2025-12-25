@@ -6,6 +6,7 @@ import {
   templates,
   jobPostings,
   jobApplications,
+  trainingRequests,
   type ServiceRequest,
   type InsertServiceRequest,
   type ContentItem,
@@ -18,6 +19,8 @@ import {
   type InsertJobPosting,
   type JobApplication,
   type InsertJobApplication,
+  type TrainingRequest,
+  type InsertTrainingRequest,
 } from "@shared/schema";
 import { eq } from "drizzle-orm";
 
@@ -65,6 +68,11 @@ export interface IStorage {
   // Job Applications
   createJobApplication(app: InsertJobApplication): Promise<JobApplication>;
   getJobApplications(): Promise<JobApplication[]>;
+
+  // Training Requests
+  createTrainingRequest(request: InsertTrainingRequest): Promise<TrainingRequest>;
+  getTrainingRequests(): Promise<TrainingRequest[]>;
+  updateTrainingRequestStatus(id: number, status: "new" | "reviewed" | "contacted"): Promise<TrainingRequest | undefined>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -255,6 +263,30 @@ export class DatabaseStorage implements IStorage {
 
   async getJobApplications(): Promise<JobApplication[]> {
     return await db.select().from(jobApplications);
+  }
+
+  async createTrainingRequest(request: InsertTrainingRequest): Promise<TrainingRequest> {
+    const [created] = await db
+      .insert(trainingRequests)
+      .values(request)
+      .returning();
+    return created;
+  }
+
+  async getTrainingRequests(): Promise<TrainingRequest[]> {
+    return await db.select().from(trainingRequests);
+  }
+
+  async updateTrainingRequestStatus(
+    id: number,
+    status: "new" | "reviewed" | "contacted"
+  ): Promise<TrainingRequest | undefined> {
+    const [updated] = await db
+      .update(trainingRequests)
+      .set({ status })
+      .where(eq(trainingRequests.id, id))
+      .returning();
+    return updated;
   }
 }
 

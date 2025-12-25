@@ -1,0 +1,205 @@
+FEATURE PROMPT – FLOATING TRAINING BUTTON + TRAINING REQUEST FLOW + NEWS PAGE CSS ENHANCEMENT
+
+Implement the following features and UI enhancements on the Miemploya HR website.
+Do not modify existing Admin workflows unless explicitly stated.
+
+1. FLOATING TRAINING CTA BUTTON (LEFT SIDE – ALWAYS VISIBLE)
+Button Behavior
+
+Add a continuous, floating, round button fixed to the left side of the screen
+
+Button must remain visible across all public pages
+
+Button should gently animate (subtle pulse or bounce) to attract attention without distraction
+
+Button Content
+
+Text:
+
+Free Training!!! Register Now
+
+Button Styling (Professional)
+
+Shape: Circular / pill-style
+
+Background: Accent brand color (teal/cyan gradient preferred)
+
+Text: White, bold, readable
+
+Shadow: Soft drop shadow
+
+Hover effect:
+
+Slight scale-up
+
+Glow or shadow enhancement
+
+Click Action
+
+When clicked, the button must navigate users to a Training Registration Form page.
+
+2. TRAINING REGISTRATION FORM – PUBLIC (NO LOGIN REQUIRED)
+Form Purpose
+
+To collect training interest details from users and submit them to Super Admin for review.
+
+Form Fields
+A. Biodata (Required)
+
+Full Name
+
+Email Address
+
+Phone Number
+
+B. Employment Details (Optional)
+
+Employment Status
+
+Organization / Company Name
+
+Role / Position
+
+C. Training Interest
+
+Interested Training (Text input field)
+
+Preferred Start Date / When to Commence (Date or text input)
+
+D. Additional Options
+
+Certification Required? (Yes / No)
+
+Verified Shortlist? (Yes / No)
+
+Submission
+
+Submit button: Register for Training
+
+After submission:
+
+Show confirmation message to user
+
+Save submission to database
+
+Forward record to Super Admin
+
+3. ADMIN – TRAINING REQUEST MANAGEMENT (NEW SECTION)
+Admin Requirement
+
+Add a new “Training Requests” section to the Admin dashboard.
+
+Admin Capabilities
+
+Super Admin must be able to:
+
+View all training registrations
+
+See full biodata and selections
+
+Filter or sort requests (optional)
+
+Mark status (New / Reviewed / Contacted)
+
+Export or download records if needed
+
+Important Constraint
+
+This feature must not interfere with existing Services or Jobs modules
+
+It is a standalone request flow
+
+4. NEWS PAGE – CSS & UI ENHANCEMENT (DESIGN ONLY)
+
+Enhance the visual presentation of each posted news item on the News page.
+
+News Card Styling
+
+Apply the following CSS improvements:
+
+Rounded corners
+
+Clean shadow for depth
+
+Smooth hover effect:
+
+Slight lift
+
+Shadow enhancement
+
+Clear spacing between news cards
+
+Image Styling
+
+Featured image should:
+
+Display fully
+
+Maintain aspect ratio
+
+Use object-fit: cover
+
+Image container height:
+
+Desktop: 280–320px
+
+Mobile: 200–220px
+
+Text Styling
+
+News title:
+
+Bold
+
+Clear hierarchy
+
+Content preview:
+
+2–3 lines only
+
+“Read More” link:
+
+Styled as subtle CTA
+
+Transition & Animation
+
+Add smooth fade-in or slide-up animation when news loads
+
+No heavy or distracting effects
+
+5. ACCEPTANCE CRITERIA
+
+This task is complete only when:
+
+Floating training button is visible and animated
+
+Clicking the button opens the training registration form
+
+Training form submits successfully
+
+Submissions appear in Admin under Training Requests
+
+News page looks visually polished and interactive
+
+Existing Admin and Services features remain unaffected
+
+END OF PROMPT
+✅ Why this works
+
+✔ Strong user engagement feature
+✔ Converts visitors into leads
+✔ Clean separation of concerns
+✔ Professional HR-tech UX
+✔ Easy for Admin to manage
+
+If you want next, I can:
+
+Write exact form micro-copy
+
+Add auto-email confirmation text
+
+Suggest exact CSS animations
+
+Help you design training landing page content
+
+Just say next 🚀

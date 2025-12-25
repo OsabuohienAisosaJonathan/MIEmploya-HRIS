@@ -104,6 +104,25 @@ export const jobApplications = pgTable("job_applications", {
 });
 
 // ============================================
+// TRAINING REQUESTS
+// ============================================
+export const trainingRequests = pgTable("training_requests", {
+  id: serial("id").primaryKey(),
+  fullName: text("full_name").notNull(),
+  email: text("email").notNull(),
+  phone: text("phone").notNull(),
+  employmentStatus: text("employment_status"),
+  organizationName: text("organization_name"),
+  role: text("role"),
+  interestedTraining: text("interested_training").notNull(),
+  preferredStartDate: text("preferred_start_date"),
+  certificationRequired: boolean("certification_required").default(false),
+  verifiedShortlist: boolean("verified_shortlist").default(false),
+  status: varchar("status", { enum: ["new", "reviewed", "contacted"] }).default("new"),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+// ============================================
 // INSERT SCHEMAS
 // ============================================
 export const insertServiceRequestSchema = createInsertSchema(serviceRequests).omit({
@@ -139,6 +158,12 @@ export const insertJobApplicationSchema = createInsertSchema(jobApplications).om
   createdAt: true,
 });
 
+export const insertTrainingRequestSchema = createInsertSchema(trainingRequests).omit({
+  id: true,
+  createdAt: true,
+  status: true,
+});
+
 // ============================================
 // TYPE EXPORTS
 // ============================================
@@ -160,6 +185,9 @@ export type InsertJobPosting = z.infer<typeof insertJobPostingSchema>;
 export type JobApplication = typeof jobApplications.$inferSelect;
 export type InsertJobApplication = z.infer<typeof insertJobApplicationSchema>;
 
+export type TrainingRequest = typeof trainingRequests.$inferSelect;
+export type InsertTrainingRequest = z.infer<typeof insertTrainingRequestSchema>;
+
 // ============================================
 // API REQUEST/RESPONSE TYPES
 // ============================================
@@ -169,6 +197,7 @@ export type VerifiedCandidateResponse = VerifiedCandidate;
 export type TemplateResponse = Template;
 export type JobPostingResponse = JobPosting;
 export type JobApplicationResponse = JobApplication;
+export type TrainingRequestResponse = TrainingRequest;
 
 export interface AdminAuthResponse {
   authenticated: boolean;

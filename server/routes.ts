@@ -641,5 +641,75 @@ export async function registerRoutes(
     res.json(applications);
   });
 
+  // ============================================
+  // TRAINING REQUESTS ENDPOINTS
+  // ============================================
+  app.post("/api/training-requests", async (req, res) => {
+    try {
+      const request = await storage.createTrainingRequest({
+        fullName: req.body.fullName,
+        email: req.body.email,
+        phone: req.body.phone,
+        employmentStatus: req.body.employmentStatus || null,
+        organizationName: req.body.organizationName || null,
+        role: req.body.role || null,
+        interestedTraining: req.body.interestedTraining,
+        preferredStartDate: req.body.preferredStartDate || null,
+        certificationRequired: req.body.certificationRequired || false,
+        verifiedShortlist: req.body.verifiedShortlist || false,
+      });
+      res.status(201).json({ id: request.id, message: "Training request submitted successfully" });
+    } catch (err) {
+      res.status(500).json({ message: "Server error" });
+    }
+  });
+
+  app.get("/api/admin/training-requests", async (req, res) => {
+    const token = req.headers.authorization?.replace("Bearer ", "");
+    let authenticated = false;
+    if (token) {
+      try {
+        const decoded = Buffer.from(token, "base64").toString();
+        authenticated = decoded.startsWith("admin:");
+      } catch {
+        authenticated = false;
+      }
+    }
+    if (!authenticated) {
+      return res.status(401).json({ message: "Unauthorized" });
+    }
+    const requests = await storage.getTrainingRequests();
+    res.json(requests);
+  });
+
+  app.patch("/api/admin/training-requests/:id", async (req, res) => {
+    const token = req.headers.authorization?.replace("Bearer ", "");
+    let authenticated = false;
+    if (token) {
+      try {
+        const decoded = Buffer.from(token, "base64").toString();
+        authenticated = decoded.startsWith("admin:");
+      } catch {
+        authenticated = false;
+      }
+    }
+    if (!authenticated) {
+      return res.status(401).json({ message: "Unauthorized" });
+    }
+    try {
+      const { status } = req.body;
+      const updated = await storage.updateTrainingRequestStatus(
+        Number(req.params.id),
+        status
+      );
+      if (!updated) {
+        return res.status(404).json({ message: "Training request not found" });
+      }
+      res.json(updated);
+    } catch (err) {
+      res.status(500).json({ message: "Server error" });
+    }
+  });
+
   return httpServer;
 }
