@@ -1,5 +1,6 @@
 import { Link } from "wouter";
 import { Mail, Phone, MapPin, MessageCircle } from "lucide-react";
+import footerLogoImg from "@assets/Mi EMPLOYA LOGO4.jpg";
 import { SiInstagram, SiFacebook, SiTiktok } from "react-icons/si";
 
 const WHATSAPP_NUMBER = "2349063337173";
@@ -14,7 +15,7 @@ export function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
           <div>
             <Link href="/" data-testid="link-footer-logo">
-              <img src="/logo.png" alt="Miemploya" className="h-14 mb-4 brightness-0 invert" />
+              <img src={footerLogoImg} alt="Miemploya" className="h-14 mb-4" />
             </Link>
             <p className="text-sm text-slate-400 mb-6 leading-relaxed">
               Professional HR services and workforce solutions for organizations across Nigeria. Building smarter workforces.
