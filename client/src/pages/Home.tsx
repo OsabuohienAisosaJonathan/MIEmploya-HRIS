@@ -178,9 +178,13 @@ export default function Home() {
                 <p className="text-muted-foreground">Learn from our professional development content</p>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {videos.slice(0, 4).map((item: any) => (
-                  <Card key={item.id} className="overflow-hidden card-hover">
-                    <div className="relative bg-slate-200 dark:bg-slate-800 aspect-video">
+                {videos
+                  .filter((v: any) => v.isFavourite)
+                  .sort((a: any, b: any) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+                  .slice(0, 4)
+                  .map((item: any) => (
+                  <Card key={item.id} className="overflow-hidden card-hover" data-testid={`card-video-home-${item.id}`}>
+                    <div className="relative bg-slate-200 dark:bg-slate-800" style={{ aspectRatio: "16/5.4" }}>
                       {item.fileUrl || item.url ? (
                         <video
                           controls
@@ -191,18 +195,28 @@ export default function Home() {
                         </video>
                       ) : (
                         <div className="absolute inset-0 flex items-center justify-center">
-                          <div className="w-16 h-16 rounded-full bg-primary/90 flex items-center justify-center">
-                            <Play className="w-8 h-8 text-white ml-1" />
+                          <div className="w-12 h-12 rounded-full bg-primary/90 flex items-center justify-center">
+                            <Play className="w-6 h-6 text-white ml-1" />
                           </div>
                         </div>
                       )}
                     </div>
-                    <div className="p-5">
-                      <h3 className="font-bold">{item.title}</h3>
+                    <div className="p-4">
+                      <h3 className="font-bold text-sm line-clamp-1">{item.title}</h3>
                     </div>
                   </Card>
                 ))}
               </div>
+              {videos.length > 0 && (
+                <div className="text-center mt-10">
+                  <Link href="/videos">
+                    <Button variant="outline" size="lg" data-testid="button-view-all-videos">
+                      View All Videos
+                      <ArrowRight className="w-4 h-4 ml-2" />
+                    </Button>
+                  </Link>
+                </div>
+              )}
             </div>
           </section>
         )}

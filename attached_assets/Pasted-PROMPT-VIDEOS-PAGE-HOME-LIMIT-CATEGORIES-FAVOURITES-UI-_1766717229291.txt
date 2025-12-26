@@ -1,0 +1,150 @@
+PROMPT – VIDEOS PAGE + HOME LIMIT + CATEGORIES + FAVOURITES + UI/CSS (MIEMPLOYA HR)
+
+Implement the following changes for Training & Announcement Videos. These are UI + content-display rules and admin configuration updates. Do not break or change existing routes, APIs, database records, upload logic, or content publishing logic—only extend them.
+
+1) CREATE A DEDICATED PUBLIC PAGE: “Videos”
+
+Add a new public page titled “Videos”.
+
+All videos uploaded by Super Admin must display on this Videos page (100% of published videos).
+
+The Videos page must have a modern, dynamic UI:
+
+Card/grid layout with clean spacing
+
+Video thumbnail/preview + title + category label
+
+Hover effects: subtle lift, shadow, border glow
+
+Smooth transitions and loading skeletons (optional)
+
+Responsive: 3 columns desktop, 2 tablet, 1 mobile
+
+2) HOME PAGE: LIMIT TO 4 VIDEOS ONLY
+
+The Home page must show only 4 videos maximum.
+
+Home page video selection rule:
+
+Only “Favourite” videos are allowed to display on the Home page.
+
+If more than 4 are marked favourite, show only the most recent 4 (or latest 4 by upload date).
+
+Home page must display:
+
+Video title
+
+Video preview/thumbnail
+
+No category label on Home page (category should NOT show on Home page).
+
+Reduce the Home page video height by 40% from the current height while keeping aspect ratio (no stretching).
+
+3) ADMIN VIDEO MANAGEMENT: ADD CATEGORIES + FAVOURITE FEATURE
+
+Restructure the Admin video upload/management section to support classification and Home page selection.
+
+A) Categories (Mandatory)
+
+Add a required “Category” field when uploading/editing a video:
+
+Categories: News, Training, Vacancy, Announcement, Education
+
+Category must be stored with each video.
+
+Category label must display only on the Videos page, not on Home.
+
+B) Favourite Toggle (Mandatory)
+
+Add a “Favourite” toggle/checkbox for each video in Admin.
+
+Favourite videos are the only videos eligible for Home page display.
+
+Admin must be able to:
+
+Mark/unmark favourite
+
+See favourite status in the list/grid
+
+All published videos must still display on the Videos page regardless of favourite status.
+
+4) VIDEOS PAGE FILTERING BY CATEGORY (PUBLIC)
+
+On the Videos page:
+
+Add category filter tabs or a dropdown:
+
+All, News, Training, Vacancy, Announcement, Education
+
+When user clicks a category, show only videos in that category.
+
+If a category has no videos, show a clean empty state message.
+
+5) SCROLL-TO-TOP ON EVERY PAGE NAVIGATION (MANDATORY)
+
+Ensure that every time a user navigates to any new page, the page loads at the top (scroll position resets to top).
+This must apply to:
+
+Home → Videos
+
+Videos → other pages
+
+Any menu navigation
+
+6) CSS / UI POLISH FOR VIDEOS (NEW PAGE)
+
+Apply modern CSS enhancements:
+
+Card styling:
+
+Border-radius, soft shadow, gradient accents
+
+Hover:
+
+transform translateY(-4px), shadow deepen, subtle outline
+
+Typography:
+
+clear heading hierarchy
+
+Buttons:
+
+consistent CTA style (“View All Videos”, “Watch” if needed)
+
+Dark mode support (if already added globally):
+
+ensure videos page inherits dark mode variables properly
+
+7) CONSTRAINTS (NON-NEGOTIABLE)
+
+Do not change existing functionality, routes, or backend logic.
+
+Do not remove existing admin uploads.
+
+Do not alter publishing logic—only ensure:
+
+“Published” content displays publicly
+
+“Favourite” only controls Home page selection
+
+Ensure video URLs continue to load from bucket storage and remain stable.
+
+8) ACCEPTANCE CHECKLIST
+
+This is complete only when:
+
+“Videos” page exists and shows all published videos.
+
+Home page shows max 4 videos, favourite only, with 40% reduced height.
+
+Admin can assign video category and toggle favourite.
+
+Category labels display only on Videos page.
+
+Videos page has category filters.
+
+Navigating to any page always starts at the top.
+
+UI is modern and responsive with hover effects and clean styling.
+
+END OF PROMPT

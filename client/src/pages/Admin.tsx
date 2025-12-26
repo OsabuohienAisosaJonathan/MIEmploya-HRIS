@@ -411,6 +411,14 @@ function NewsTab({ token }: { token: string }) {
   );
 }
 
+const VIDEO_CATEGORIES = [
+  { value: "news", label: "News" },
+  { value: "training", label: "Training" },
+  { value: "vacancy", label: "Vacancy" },
+  { value: "announcement", label: "Announcement" },
+  { value: "education", label: "Education" },
+];
+
 function VideosTab({ token }: { token: string }) {
   const { data: videos, refetch, isLoading } = useQuery({
     queryKey: ["/api/content-videos", token],
@@ -421,7 +429,13 @@ function VideosTab({ token }: { token: string }) {
     enabled: !!token,
   });
 
-  const [formData, setFormData] = useState({ title: "", video: null as File | null, isPublished: false });
+  const [formData, setFormData] = useState({ 
+    title: "", 
+    video: null as File | null, 
+    category: "training" as string,
+    isFavourite: false,
+    isPublished: false 
+  });
   const [submitting, setSubmitting] = useState(false);
   const { toast } = useToast();
 
@@ -431,12 +445,18 @@ function VideosTab({ token }: { token: string }) {
       toast({ title: "Please select a video file", variant: "destructive" });
       return;
     }
+    if (!formData.category) {
+      toast({ title: "Please select a category", variant: "destructive" });
+      return;
+    }
 
     setSubmitting(true);
     try {
       const formDataObj = new FormData();
       formDataObj.append("title", formData.title);
       formDataObj.append("type", "video");
+      formDataObj.append("category", formData.category);
+      formDataObj.append("isFavourite", String(formData.isFavourite));
       formDataObj.append("isPublished", String(formData.isPublished));
       formDataObj.append("video", formData.video);
 
@@ -448,7 +468,7 @@ function VideosTab({ token }: { token: string }) {
 
       if (response.ok) {
         toast({ title: "Video added successfully" });
-        setFormData({ title: "", video: null, isPublished: false });
+        setFormData({ title: "", video: null, category: "training", isFavourite: false, isPublished: false });
         refetch();
       } else {
         const err = await response.json();
@@ -491,6 +511,23 @@ function VideosTab({ token }: { token: string }) {
     }
   };
 
+  const handleToggleFavourite = async (id: number, isFavourite: boolean) => {
+    try {
+      await fetch(`/api/content/${id}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ isFavourite: !isFavourite }),
+      });
+      refetch();
+      toast({ title: isFavourite ? "Removed from favourites" : "Added to favourites" });
+    } catch {
+      toast({ title: "Error updating video", variant: "destructive" });
+    }
+  };
+
   if (isLoading) return <div className="text-center py-8">Loading...</div>;
 
   return (
@@ -509,6 +546,20 @@ function VideosTab({ token }: { token: string }) {
             />
           </div>
           <div>
+            <label className="block text-sm font-medium mb-2">Category (Required)</label>
+            <select
+              value={formData.category}
+              onChange={(e) => setFormData({ ...formData, category: e.target.value })}
+              required
+              className="w-full border rounded px-3 py-2 bg-background"
+              data-testid="select-video-category"
+            >
+              {VIDEO_CATEGORIES.map((cat) => (
+                <option key={cat.value} value={cat.value}>{cat.label}</option>
+              ))}
+            </select>
+          </div>
+          <div>
             <label className="block text-sm font-medium mb-2">Video File (mp4, webm)</label>
             <input
               type="file"
@@ -519,17 +570,31 @@ function VideosTab({ token }: { token: string }) {
               data-testid="input-video-file"
             />
           </div>
-          <div className="flex items-center gap-2">
-            <input
-              type="checkbox"
-              id="publish-video"
-              checked={formData.isPublished}
-              onChange={(e) => setFormData({ ...formData, isPublished: e.target.checked })}
-              data-testid="checkbox-video-publish"
-            />
-            <label htmlFor="publish-video" className="text-sm font-medium cursor-pointer">
-              Publish immediately
-            </label>
+          <div className="flex flex-wrap items-center gap-6">
+            <div className="flex items-center gap-2">
+              <input
+                type="checkbox"
+                id="favourite-video"
+                checked={formData.isFavourite}
+                onChange={(e) => setFormData({ ...formData, isFavourite: e.target.checked })}
+                data-testid="checkbox-video-favourite"
+              />
+              <label htmlFor="favourite-video" className="text-sm font-medium cursor-pointer">
+                Show on Home Page (Favourite)
+              </label>
+            </div>
+            <div className="flex items-center gap-2">
+              <input
+                type="checkbox"
+                id="publish-video"
+                checked={formData.isPublished}
+                onChange={(e) => setFormData({ ...formData, isPublished: e.target.checked })}
+                data-testid="checkbox-video-publish"
+              />
+              <label htmlFor="publish-video" className="text-sm font-medium cursor-pointer">
+                Publish immediately
+              </label>
+            </div>
           </div>
           <Button type="submit" disabled={submitting} data-testid="button-add-video">
             {submitting ? "Adding..." : "Add Video"}
@@ -538,24 +603,44 @@ function VideosTab({ token }: { token: string }) {
       </Card>
 
       <Card className="p-6">
-        <h2 className="text-2xl font-bold mb-4">Published Videos</h2>
+        <h2 className="text-2xl font-bold mb-4">All Videos</h2>
         {videos && videos.length > 0 ? (
           <div className="space-y-4">
             {videos.map((item: any) => (
               <Card key={item.id} className="p-4" data-testid={`card-video-${item.id}`}>
-                <div className="flex justify-between items-start">
+                <div className="flex flex-col md:flex-row justify-between items-start gap-4">
                   <div className="flex-1">
                     <p className="font-bold">{item.title}</p>
-                    <span
-                      className={`inline-block mt-2 px-2 py-1 text-xs rounded ${
-                        item.isPublished ? "bg-green-100 text-green-800" : "bg-gray-100 text-gray-800"
-                      }`}
-                      data-testid={`status-video-${item.id}`}
-                    >
-                      {item.isPublished ? "Published" : "Draft"}
-                    </span>
+                    <div className="flex flex-wrap gap-2 mt-2">
+                      <span
+                        className={`inline-block px-2 py-1 text-xs rounded ${
+                          item.isPublished ? "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200" : "bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-200"
+                        }`}
+                        data-testid={`status-video-${item.id}`}
+                      >
+                        {item.isPublished ? "Published" : "Draft"}
+                      </span>
+                      {item.category && (
+                        <span className="inline-block px-2 py-1 text-xs rounded bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200 capitalize">
+                          {item.category}
+                        </span>
+                      )}
+                      {item.isFavourite && (
+                        <span className="inline-block px-2 py-1 text-xs rounded bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200">
+                          Home Page
+                        </span>
+                      )}
+                    </div>
                   </div>
-                  <div className="flex gap-2">
+                  <div className="flex flex-wrap gap-2">
+                    <Button
+                      variant={item.isFavourite ? "default" : "outline"}
+                      size="sm"
+                      onClick={() => handleToggleFavourite(item.id, item.isFavourite)}
+                      data-testid={`button-favourite-video-${item.id}`}
+                    >
+                      {item.isFavourite ? "Remove from Home" : "Add to Home"}
+                    </Button>
                     <Button
                       variant="outline"
                       size="sm"

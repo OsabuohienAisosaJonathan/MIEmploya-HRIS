@@ -206,7 +206,7 @@ export async function registerRoutes(
         return res.status(400).json({ message: "No file uploaded" });
       }
 
-      const { title, description, type, isPublished } = req.body;
+      const { title, description, type, category, isFavourite, isPublished } = req.body;
       
       const uploadResult = await uploadBufferToObjectStorage(
         file.buffer,
@@ -223,6 +223,8 @@ export async function registerRoutes(
         imageUrl: type === "news" ? uploadResult.url : undefined,
         fileUrl: type !== "news" ? uploadResult.url : undefined,
         filename: uploadResult.filename,
+        category: category || null,
+        isFavourite: isFavourite === "true",
         isPublished: isPublished === "true",
       });
 

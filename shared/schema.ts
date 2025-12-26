@@ -35,6 +35,8 @@ export const contentItems = pgTable("content_items", {
   fileUrl: text("file_url"),
   filename: text("filename"),
   imageUrl: text("image_url"),
+  category: varchar("category", { enum: ["news", "training", "vacancy", "announcement", "education"] }),
+  isFavourite: boolean("is_favourite").default(false),
   isPublished: boolean("is_published").default(false),
   displayOrder: serial("display_order"),
   createdAt: timestamp("created_at").defaultNow(),
