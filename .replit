@@ -45,3 +45,6 @@ ADMIN_PASSWORD = "Adminclk780424$"
 
 [objectStorage]
 defaultBucketID = "replit-objstore-887d3b3d-24e9-42e6-8903-f3eb4c3e8817"
+
+[agent]
+integrations = ["javascript_object_storage:2.0.0"]

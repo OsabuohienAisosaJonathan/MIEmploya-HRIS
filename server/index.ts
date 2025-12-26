@@ -4,6 +4,7 @@ import path from "path";
 import { registerRoutes } from "./routes";
 import { serveStatic } from "./static";
 import { createServer } from "http";
+import { registerObjectStorageRoutes } from "./replit_integrations/object_storage";
 
 const app = express();
 const httpServer = createServer(app);
@@ -24,21 +25,16 @@ app.use(
 
 app.use(express.urlencoded({ extended: false }));
 
-// Serve uploads directory for media files (images, videos, PDFs)
+// Serve uploads directory for legacy media files (backward compatibility)
 const uploadsDir = path.join(process.cwd(), "client", "public", "uploads");
 app.use("/uploads", express.static(uploadsDir));
 
-// Setup multer for file uploads
-const storage = multer.diskStorage({
-  destination: path.join(process.cwd(), "client", "public", "uploads"),
-  filename: (_req, file, cb) => {
-    const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
-    cb(null, uniqueSuffix + path.extname(file.originalname));
-  },
-});
+// Register object storage routes for serving files from cloud storage
+registerObjectStorageRoutes(app);
 
+// Setup multer with memory storage for object storage uploads
 export const upload = multer({
-  storage,
+  storage: multer.memoryStorage(),
   limits: { fileSize: 100 * 1024 * 1024 }, // 100MB
   fileFilter: (_req, file, cb) => {
     const allowed = [
@@ -48,6 +44,8 @@ export const upload = multer({
       "video/mp4",
       "video/webm",
       "application/pdf",
+      "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
     ];
     if (allowed.includes(file.mimetype)) {
       cb(null, true);

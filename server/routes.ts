@@ -4,6 +4,7 @@ import { storage } from "./storage";
 import { api } from "@shared/routes";
 import { z } from "zod";
 import { upload } from "./index";
+import { uploadBufferToObjectStorage } from "./objectStorageUpload";
 
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || "admin123";
 
@@ -206,21 +207,28 @@ export async function registerRoutes(
       }
 
       const { title, description, type, isPublished } = req.body;
-      const fileUrl = `/uploads/${file.filename}`;
+      
+      const uploadResult = await uploadBufferToObjectStorage(
+        file.buffer,
+        file.originalname,
+        file.mimetype,
+        "content"
+      );
 
       const item = await storage.createContentItem({
         type: type || "news",
         title,
         description: description || "",
-        url: fileUrl,
-        imageUrl: type === "news" ? fileUrl : undefined,
-        fileUrl: type !== "news" ? fileUrl : undefined,
-        filename: file.filename,
+        url: uploadResult.url,
+        imageUrl: type === "news" ? uploadResult.url : undefined,
+        fileUrl: type !== "news" ? uploadResult.url : undefined,
+        filename: uploadResult.filename,
         isPublished: isPublished === "true",
       });
 
       res.status(201).json(item);
     } catch (err) {
+      console.error("Content upload error:", err);
       res.status(500).json({ message: "Server error" });
     }
   });
@@ -341,7 +349,13 @@ export async function registerRoutes(
       }
 
       const { fullName, title, company, bio, service, status } = req.body;
-      const imageUrl = `/uploads/${req.file.filename}`;
+      
+      const uploadResult = await uploadBufferToObjectStorage(
+        req.file.buffer,
+        req.file.originalname,
+        req.file.mimetype,
+        "candidates"
+      );
 
       const candidate = await storage.createVerifiedCandidate({
         fullName,
@@ -349,12 +363,13 @@ export async function registerRoutes(
         company: company || "",
         bio,
         service: service || "Candidate Verification",
-        imageUrl,
+        imageUrl: uploadResult.url,
         status: (status as "pending" | "approved" | "rejected") || "pending",
       });
 
       res.status(201).json(candidate);
     } catch (err) {
+      console.error("Candidate upload error:", err);
       res.status(500).json({ message: "Server error" });
     }
   });
@@ -435,19 +450,26 @@ export async function registerRoutes(
       }
 
       const { title, description, fileType, isPublished } = req.body;
-      const fileUrl = `/uploads/${req.file.filename}`;
+      
+      const uploadResult = await uploadBufferToObjectStorage(
+        req.file.buffer,
+        req.file.originalname,
+        req.file.mimetype,
+        "templates"
+      );
 
       const template = await storage.createTemplate({
         title,
         description: description || "",
-        filename: req.file.filename,
-        fileUrl,
+        filename: uploadResult.filename,
+        fileUrl: uploadResult.url,
         fileType: fileType as "pdf" | "docx" | "xlsx",
         isPublished: isPublished === "true",
       });
 
       res.status(201).json(template);
     } catch (err) {
+      console.error("Template upload error:", err);
       res.status(500).json({ message: "Server error" });
     }
   });
@@ -604,7 +626,14 @@ export async function registerRoutes(
       if (!req.file) {
         return res.status(400).json({ message: "CV is required" });
       }
-      const cvUrl = `/uploads/${req.file.filename}`;
+      
+      const uploadResult = await uploadBufferToObjectStorage(
+        req.file.buffer,
+        req.file.originalname,
+        req.file.mimetype,
+        "applications"
+      );
+      
       const application = await storage.createJobApplication({
         jobId: Number(req.body.jobId),
         fullName: req.body.fullName,
@@ -612,12 +641,13 @@ export async function registerRoutes(
         phone: req.body.phone,
         state: req.body.state,
         city: req.body.city,
-        cvFileName: req.file.filename,
-        cvUrl,
+        cvFileName: uploadResult.filename,
+        cvUrl: uploadResult.url,
         coverNote: req.body.coverNote || "",
       });
       res.status(201).json(application);
     } catch (err) {
+      console.error("Job application upload error:", err);
       res.status(500).json({ message: "Server error" });
     }
   });
