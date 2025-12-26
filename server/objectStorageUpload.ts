@@ -20,40 +20,53 @@ export async function uploadBufferToObjectStorage(
 
   const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
   const ext = originalFilename.includes('.') ? originalFilename.substring(originalFilename.lastIndexOf('.')) : '';
-  const filename = `${uniqueSuffix}${ext}`;
-  const objectName = `public/${folder}/${filename}`;
+  const safeFilename = `${uniqueSuffix}${ext}`;
+  const objectName = `public/${folder}/${safeFilename}`;
+
+  console.log(`[Object Storage] Starting upload: ${objectName}`);
 
   const bucket = objectStorageClient.bucket(BUCKET_ID);
   const file = bucket.file(objectName);
 
-  await file.save(buffer, {
-    contentType: mimeType,
-    metadata: {
-      cacheControl: "public, max-age=31536000",
-    },
-  });
+  try {
+    await file.save(buffer, {
+      contentType: mimeType,
+      metadata: {
+        cacheControl: "public, max-age=31536000",
+      },
+    });
 
-  const publicUrl = `https://storage.googleapis.com/${BUCKET_ID}/${objectName}`;
-  const objectPath = `/objects/${folder}/${filename}`;
+    console.log(`[Object Storage] Upload successful: ${objectName}`);
 
-  return {
-    url: publicUrl,
-    objectPath,
-    filename,
-  };
+    const servingUrl = `/storage/${folder}/${safeFilename}`;
+
+    return {
+      url: servingUrl,
+      objectPath: objectName,
+      filename: safeFilename,
+    };
+  } catch (error) {
+    console.error(`[Object Storage] Upload failed:`, error);
+    throw error;
+  }
 }
 
 export async function deleteFromObjectStorage(objectPath: string): Promise<void> {
   if (!BUCKET_ID) return;
   
   const bucket = objectStorageClient.bucket(BUCKET_ID);
-  const objectName = objectPath.startsWith('/objects/') 
-    ? `public${objectPath.replace('/objects', '')}`
-    : objectPath;
+  
+  let objectName = objectPath;
+  if (objectPath.startsWith('/storage/')) {
+    objectName = `public${objectPath.replace('/storage', '')}`;
+  } else if (objectPath.startsWith('/objects/')) {
+    objectName = `public${objectPath.replace('/objects', '')}`;
+  }
   
   try {
     await bucket.file(objectName).delete();
+    console.log(`[Object Storage] Deleted: ${objectName}`);
   } catch (err) {
-    console.error("Failed to delete from object storage:", err);
+    console.error("[Object Storage] Failed to delete:", err);
   }
 }

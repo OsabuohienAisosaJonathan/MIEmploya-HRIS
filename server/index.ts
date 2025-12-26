@@ -32,6 +32,70 @@ app.use("/uploads", express.static(uploadsDir));
 // Register object storage routes for serving files from cloud storage
 registerObjectStorageRoutes(app);
 
+// Serve public files from object storage via /storage/* route
+app.get("/storage/:folder/:filename", async (req, res) => {
+  try {
+    const { folder, filename } = req.params;
+    const bucketId = process.env.DEFAULT_OBJECT_STORAGE_BUCKET_ID;
+    
+    if (!bucketId) {
+      return res.status(500).json({ error: "Object storage not configured" });
+    }
+    
+    const { Storage } = await import("@google-cloud/storage");
+    const REPLIT_SIDECAR_ENDPOINT = "http://127.0.0.1:1106";
+    
+    const storage = new Storage({
+      credentials: {
+        audience: "replit",
+        subject_token_type: "access_token",
+        token_url: `${REPLIT_SIDECAR_ENDPOINT}/token`,
+        type: "external_account",
+        credential_source: {
+          url: `${REPLIT_SIDECAR_ENDPOINT}/credential`,
+          format: {
+            type: "json",
+            subject_token_field_name: "access_token",
+          },
+        },
+        universe_domain: "googleapis.com",
+      },
+      projectId: "",
+    });
+    
+    const bucket = storage.bucket(bucketId);
+    const objectName = `public/${folder}/${filename}`;
+    const file = bucket.file(objectName);
+    
+    const [exists] = await file.exists();
+    if (!exists) {
+      return res.status(404).json({ error: "File not found" });
+    }
+    
+    const [metadata] = await file.getMetadata();
+    
+    res.set({
+      "Content-Type": metadata.contentType || "application/octet-stream",
+      "Content-Length": metadata.size?.toString() || "",
+      "Cache-Control": "public, max-age=31536000",
+    });
+    
+    const stream = file.createReadStream();
+    stream.on("error", (err) => {
+      console.error("[Storage] Stream error:", err);
+      if (!res.headersSent) {
+        res.status(500).json({ error: "Error streaming file" });
+      }
+    });
+    stream.pipe(res);
+  } catch (error) {
+    console.error("[Storage] Error serving file:", error);
+    if (!res.headersSent) {
+      res.status(500).json({ error: "Error serving file" });
+    }
+  }
+});
+
 // Setup multer with memory storage for object storage uploads
 export const upload = multer({
   storage: multer.memoryStorage(),

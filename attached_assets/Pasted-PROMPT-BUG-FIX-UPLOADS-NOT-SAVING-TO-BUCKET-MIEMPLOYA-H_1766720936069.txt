@@ -1,0 +1,131 @@
+PROMPT – BUG FIX: UPLOADS NOT SAVING TO BUCKET (MIEMPLOYA HR)
+
+We already adjusted the Videos page and Top Verified photo display. However, the storage bucket currently contains NO uploaded photos or videos, which means uploads are not being written to the bucket.
+
+This is a critical bug. Proceed to debug, identify the root cause, and fix it. This is not a new feature.
+
+1) ISSUE SUMMARY (CONFIRMED)
+
+Admin uploads images/videos.
+
+Upload appears to work briefly in the UI.
+
+But the bucket remains empty (no objects stored).
+
+This causes media to later break on public pages.
+
+2) REQUIRED DEBUGGING STEPS (MANDATORY)
+
+Do a full trace of the upload flow for:
+
+News images
+
+Top Verified candidate photos
+
+Videos uploads
+
+Check all of the following:
+
+A) Frontend FormData Keys
+
+Confirm the frontend upload fields match the backend Multer (or upload handler) expected field names.
+
+Ensure the file input field name matches exactly what the backend expects.
+
+B) Backend Upload Handler
+
+Confirm the upload endpoint actually receives the file.
+
+Confirm the file buffer/stream is passed to bucket storage function.
+
+Confirm the bucket write call is executed (not skipped).
+
+C) Authentication / Authorization
+
+Ensure Admin token is sent correctly with upload request headers.
+
+Ensure uploads do not silently fail due to missing auth.
+
+D) Bucket Configuration
+
+Confirm the bucket name is correct (the existing bucket name).
+
+Confirm API credentials / environment variables are present.
+
+Confirm correct region/endpoint config (if applicable).
+
+Confirm bucket write permissions are enabled.
+
+E) Error Logs
+
+Add useful logging around:
+
+“Received file”
+
+“Starting bucket upload”
+
+“Bucket upload success”
+
+“Bucket upload failure”
+
+Return meaningful error messages to the admin UI.
+
+3) REQUIRED FIX (NON-NEGOTIABLE)
+
+After debugging, implement fixes so that:
+
+Every upload (image/video/pdf if used) is stored in the bucket.
+
+The backend returns a public URL (or a stable retrievable URL) after upload.
+
+The database stores ONLY that URL (not local paths).
+
+The public pages load media using the stored URL.
+
+4) REQUIRED VERIFICATION TEST (MUST PASS)
+
+After fixing, confirm ALL of these:
+
+A) Bucket Verification
+
+Upload a test image and video from Admin
+
+Confirm the objects appear in the bucket immediately
+
+B) DB Verification
+
+Confirm the DB record stores a valid URL that points to the bucket object
+
+C) Public Pages Verification
+
+Home page content displays without broken media
+
+News Feeds page shows images
+
+Videos page plays videos
+
+Top Verified shows images consistently
+
+Refreshing browser does not break media
+
+5) IMPORTANT CONSTRAINT
+
+Do not change routes, UI structure, or existing features.
+
+Only fix the upload-to-bucket bug and ensure stable rendering.
+
+Keep admin functionality intact.
+
+6) ACCEPTANCE CRITERIA
+
+This task is complete only when:
+
+Bucket actually receives uploaded images/videos
+
+Admin uploads return a stable URL
+
+DB stores bucket URL
+
+Media displays consistently on public pages even after refresh/redeploy
+
+END OF PROMPT
