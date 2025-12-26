@@ -13,6 +13,7 @@ import Contact from "@/pages/Contact";
 import Verified from "@/pages/Verified";
 import Templates from "@/pages/Templates";
 import Videos from "@/pages/Videos";
+import NewsFeeds from "@/pages/NewsFeeds";
 import Jobs from "@/pages/Jobs";
 import JobDetail from "@/pages/JobDetail";
 import NewsDetail from "@/pages/NewsDetail";
@@ -40,6 +41,7 @@ function Router() {
         <Route path="/about" component={About} />
         <Route path="/services" component={Services} />
         <Route path="/videos" component={Videos} />
+        <Route path="/news" component={NewsFeeds} />
         <Route path="/contact" component={Contact} />
         <Route path="/verified" component={Verified} />
         <Route path="/templates" component={Templates} />

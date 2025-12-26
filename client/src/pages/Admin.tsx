@@ -234,7 +234,13 @@ function NewsTab({ token }: { token: string }) {
     enabled: !!token,
   });
 
-  const [formData, setFormData] = useState({ title: "", description: "", image: null as File | null, isPublished: false });
+  const [formData, setFormData] = useState({ 
+    title: "", 
+    description: "", 
+    image: null as File | null, 
+    isFavourite: false,
+    isPublished: false 
+  });
   const [submitting, setSubmitting] = useState(false);
   const { toast } = useToast();
 
@@ -251,6 +257,7 @@ function NewsTab({ token }: { token: string }) {
       formDataObj.append("title", formData.title);
       formDataObj.append("description", formData.description || "");
       formDataObj.append("type", "news");
+      formDataObj.append("isFavourite", String(formData.isFavourite));
       formDataObj.append("isPublished", String(formData.isPublished));
       formDataObj.append("image", formData.image);
 
@@ -262,7 +269,7 @@ function NewsTab({ token }: { token: string }) {
 
       if (response.ok) {
         toast({ title: "News added successfully" });
-        setFormData({ title: "", description: "", image: null, isPublished: false });
+        setFormData({ title: "", description: "", image: null, isFavourite: false, isPublished: false });
         refetch();
       } else {
         const err = await response.json();
@@ -305,6 +312,23 @@ function NewsTab({ token }: { token: string }) {
     }
   };
 
+  const handleToggleFavourite = async (id: number, isFavourite: boolean) => {
+    try {
+      await fetch(`/api/content/${id}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ isFavourite: !isFavourite }),
+      });
+      refetch();
+      toast({ title: isFavourite ? "Removed from Home page" : "Added to Home page" });
+    } catch {
+      toast({ title: "Error updating news", variant: "destructive" });
+    }
+  };
+
   if (isLoading) return <div className="text-center py-8">Loading...</div>;
 
   return (
@@ -341,17 +365,31 @@ function NewsTab({ token }: { token: string }) {
               data-testid="input-news-image"
             />
           </div>
-          <div className="flex items-center gap-2">
-            <input
-              type="checkbox"
-              id="publish"
-              checked={formData.isPublished}
-              onChange={(e) => setFormData({ ...formData, isPublished: e.target.checked })}
-              data-testid="checkbox-news-publish"
-            />
-            <label htmlFor="publish" className="text-sm font-medium cursor-pointer">
-              Publish immediately
-            </label>
+          <div className="flex flex-wrap items-center gap-6">
+            <div className="flex items-center gap-2">
+              <input
+                type="checkbox"
+                id="favourite-news"
+                checked={formData.isFavourite}
+                onChange={(e) => setFormData({ ...formData, isFavourite: e.target.checked })}
+                data-testid="checkbox-news-favourite"
+              />
+              <label htmlFor="favourite-news" className="text-sm font-medium cursor-pointer">
+                Show on Home Page (Favourite)
+              </label>
+            </div>
+            <div className="flex items-center gap-2">
+              <input
+                type="checkbox"
+                id="publish"
+                checked={formData.isPublished}
+                onChange={(e) => setFormData({ ...formData, isPublished: e.target.checked })}
+                data-testid="checkbox-news-publish"
+              />
+              <label htmlFor="publish" className="text-sm font-medium cursor-pointer">
+                Publish immediately
+              </label>
+            </div>
           </div>
           <Button type="submit" disabled={submitting} data-testid="button-add-news">
             {submitting ? "Adding..." : "Add News"}
@@ -360,28 +398,43 @@ function NewsTab({ token }: { token: string }) {
       </Card>
 
       <Card className="p-6">
-        <h2 className="text-2xl font-bold mb-4">Published News</h2>
+        <h2 className="text-2xl font-bold mb-4">All News</h2>
         {news && news.length > 0 ? (
           <div className="space-y-4">
             {news.map((item: any) => (
               <Card key={item.id} className="p-4" data-testid={`card-news-${item.id}`}>
-                <div className="flex gap-4">
+                <div className="flex flex-col md:flex-row gap-4">
                   {item.imageUrl && (
                     <img src={item.imageUrl} alt={item.title} className="w-20 h-20 object-cover rounded" />
                   )}
                   <div className="flex-1">
                     <p className="font-bold">{item.title}</p>
-                    <p className="text-sm text-muted-foreground mt-1">{item.description}</p>
-                    <span
-                      className={`inline-block mt-2 px-2 py-1 text-xs rounded ${
-                        item.isPublished ? "bg-green-100 text-green-800" : "bg-gray-100 text-gray-800"
-                      }`}
-                      data-testid={`status-news-${item.id}`}
-                    >
-                      {item.isPublished ? "Published" : "Draft"}
-                    </span>
+                    <p className="text-sm text-muted-foreground mt-1 line-clamp-2">{item.description}</p>
+                    <div className="flex flex-wrap gap-2 mt-2">
+                      <span
+                        className={`inline-block px-2 py-1 text-xs rounded ${
+                          item.isPublished ? "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200" : "bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-200"
+                        }`}
+                        data-testid={`status-news-${item.id}`}
+                      >
+                        {item.isPublished ? "Published" : "Draft"}
+                      </span>
+                      {item.isFavourite && (
+                        <span className="inline-block px-2 py-1 text-xs rounded bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200">
+                          Home Page
+                        </span>
+                      )}
+                    </div>
                   </div>
-                  <div className="flex gap-2">
+                  <div className="flex flex-wrap gap-2">
+                    <Button
+                      variant={item.isFavourite ? "default" : "outline"}
+                      size="sm"
+                      onClick={() => handleToggleFavourite(item.id, item.isFavourite)}
+                      data-testid={`button-favourite-news-${item.id}`}
+                    >
+                      {item.isFavourite ? "Remove from Home" : "Add to Home"}
+                    </Button>
                     <Button
                       variant="outline"
                       size="sm"

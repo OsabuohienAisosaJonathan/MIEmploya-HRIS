@@ -132,39 +132,55 @@ export default function Home() {
 
         {news.length > 0 && (
           <section className="py-20 px-4 bg-muted/50">
-            <div className="container max-w-5xl mx-auto">
+            <div className="container max-w-4xl mx-auto">
               <div className="text-center mb-12">
                 <h2 className="text-3xl font-bold mb-4">Latest News</h2>
                 <p className="text-muted-foreground">Stay updated with our latest announcements</p>
               </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {news.slice(0, 4).map((item: any) => (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {news
+                  .filter((n: any) => n.isFavourite)
+                  .sort((a: any, b: any) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+                  .slice(0, 6)
+                  .map((item: any, index: number) => (
                   <Link key={item.id} href={`/news/${item.id}`}>
-                    <Card className="overflow-hidden card-hover cursor-pointer h-full" data-testid={`card-news-${item.id}`}>
-                      <div className="w-full h-[200px] md:h-[280px] bg-slate-100 dark:bg-slate-800">
+                    <Card 
+                      className="overflow-hidden card-hover cursor-pointer h-full group animate-fade-in" 
+                      style={{ animationDelay: `${index * 50}ms` }}
+                      data-testid={`card-news-${item.id}`}
+                    >
+                      <div className="w-full h-[128px] bg-slate-100 dark:bg-slate-800 overflow-hidden">
                         {item.imageUrl ? (
                           <img 
                             src={item.imageUrl} 
                             alt={item.title} 
-                            className="w-full h-full object-cover" 
+                            className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105" 
                           />
                         ) : (
                           <div className="w-full h-full flex items-center justify-center">
-                            <FileText className="w-16 h-16 text-muted-foreground/30" />
+                            <FileText className="w-10 h-10 text-muted-foreground/30" />
                           </div>
                         )}
                       </div>
-                      <div className="p-6">
-                        <h3 className="font-bold text-lg mb-3">{item.title}</h3>
-                        <p className="text-sm text-muted-foreground line-clamp-3 mb-4">{item.description}</p>
-                        <span className="text-primary font-medium text-sm flex items-center gap-1">
+                      <div className="p-4">
+                        <h3 className="font-bold text-sm mb-2 line-clamp-2 group-hover:text-primary transition-colors">{item.title}</h3>
+                        <p className="text-xs text-muted-foreground line-clamp-2 mb-3">{item.description}</p>
+                        <span className="text-primary font-medium text-xs flex items-center gap-1">
                           Read More
-                          <ArrowRight className="w-4 h-4" />
+                          <ArrowRight className="w-3 h-3" />
                         </span>
                       </div>
                     </Card>
                   </Link>
                 ))}
+              </div>
+              <div className="text-center mt-10">
+                <Link href="/news">
+                  <Button variant="outline" size="lg" data-testid="button-view-all-news">
+                    View All News
+                    <ArrowRight className="w-4 h-4 ml-2" />
+                  </Button>
+                </Link>
               </div>
             </div>
           </section>
@@ -266,7 +282,7 @@ export default function Home() {
                       <img 
                         src={c.imageUrl} 
                         alt={c.fullName} 
-                        className="w-24 h-24 rounded-full mx-auto mb-4 object-cover border-4 border-primary/20" 
+                        className="w-32 h-32 rounded-full mx-auto mb-4 object-cover border-4 border-primary/20" 
                       />
                     )}
                     <h3 className="font-bold text-lg">{c.fullName}</h3>

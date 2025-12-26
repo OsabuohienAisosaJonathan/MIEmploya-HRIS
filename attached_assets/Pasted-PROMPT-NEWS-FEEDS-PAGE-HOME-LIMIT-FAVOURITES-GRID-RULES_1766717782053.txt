@@ -1,0 +1,238 @@
+PROMPT – NEWS FEEDS PAGE + HOME LIMIT + FAVOURITES + GRID RULES + HEADER MENU REORG (MIEMPLOYA HR)
+
+Implement the following changes for Latest News and Header Navigation. These are UI + content-display rules and admin configuration updates. Do not change existing routes, APIs, database structures, upload logic, or publishing logic—only extend them safely.
+
+1) CREATE A DEDICATED PUBLIC PAGE: “News Feeds”
+
+Add a new public page titled “News Feeds”.
+
+All news feeds uploaded by Super Admin must display on this News Feeds page (100% of published news).
+
+Each news card/list item must display:
+
+Featured image (poster)
+
+Title
+
+Short preview snippet
+
+Date posted
+
+“Read More” link/button
+
+2) NEWS DETAILS VIEW (FULL CONTENT PAGE)
+
+When a user clicks a news item on Home page or News Feeds page:
+
+Open a news details view
+
+Display full image (poster) fully and clearly
+
+Display full content text (not truncated)
+
+Keep this purely public UI—Admin workflow must not change.
+
+3) HOME PAGE NEWS SECTION: LIMIT TO 6 POSTS ONLY
+
+Home page must show only 6 news posts maximum.
+
+Selection rule:
+
+Home page must display only Favourite news posts
+
+If more than 6 are marked Favourite, display the latest 6 by created date.
+
+Home page must display:
+
+News image (poster)
+
+Title
+
+Very short snippet (1–2 lines max)
+
+“Read More” CTA
+
+4) HOME PAGE NEWS GRID LAYOUT RULES (STRICT)
+
+On the Home page News section:
+
+Each row must contain 3 news cards (desktop).
+
+Maximum of 2 rows (therefore max 6).
+
+Responsive behavior:
+
+Tablet: 2 per row
+
+Mobile: 1 per row
+
+Reduce the news card media height by 20% from current height.
+
+Reduce the news card width by 40% from current layout width (tighten card width / grid container width) while maintaining alignment and avoiding overflow.
+
+Ensure posters/images display fully inside the card container without distortion:
+
+Use proper scaling (object-fit cover)
+
+Ensure no clipped/half-rendered posters
+
+(Note: Your text said “video height/width” for news; apply these size reductions to the news card featured image container since news uses images.)
+
+5) ADMIN NEWS MANAGEMENT: ADD FAVOURITE FEATURE (MATCH VIDEO LOGIC)
+
+Update Admin News upload/management to include a Favourite toggle like videos.
+
+Add a “Favourite” toggle/checkbox for each News Feed item.
+
+Favourite News = eligible for Home page display.
+
+All published News must still display on “News Feeds” page regardless of favourite status.
+
+Admin must be able to:
+
+Mark/unmark favourite
+
+See favourite status in the admin list/table
+
+6) STORAGE RULE (VERY IMPORTANT)
+
+Ensure all uploaded News images and content continue to:
+
+Upload to the bucket (persistent object storage)
+
+Save the public URL in the database
+
+Render using that URL on:
+
+Home page
+
+News Feeds page
+
+News Details page
+
+Do not revert to local file paths.
+
+7) TOP VERIFIED: INCREASE PHOTO SIZE BY 30%
+
+Increase the profile photo size on:
+
+Home page Top Verified section
+
+Top Verified page
+
+Increase by 30% while maintaining aspect ratio and clean layout.
+
+Ensure image remains crisp, circular or rounded (as designed), responsive across devices.
+
+8) HEADER REORGANISATION: MENU BUTTON + DROPDOWN LIST
+
+Restructure the header navigation to look more professional and reduce clutter.
+
+A) Always visible on header (main nav)
+
+Keep only these items visible:
+
+Home
+
+About
+
+Services
+
+B) Add a “Menu” button (dropdown)
+
+Add a Menu button on the header that opens a dropdown list containing:
+
+Top Verified
+
+Books & Templates (use this exact label)
+
+Jobs
+
+Videos
+
+News Feeds
+
+Training
+
+Contacts
+
+C) Navigation rules
+
+Do not change existing routes—link dropdown items to existing correct pages.
+
+Menu dropdown must be responsive:
+
+Desktop: dropdown panel
+
+Mobile: slide-down or modal-style menu
+
+Add hover/active states and smooth transitions.
+
+9) SCROLL-TO-TOP ON NAVIGATION (MANDATORY)
+
+Every page a user navigates to must load from the top of the page (reset scroll position).
+Apply this to all navigation paths including dropdown items.
+
+10) CSS / UI POLISH FOR NEWS PAGES
+
+Enhance UI without changing content logic:
+
+News Feeds page:
+
+Clean grid layout
+
+Consistent spacing
+
+Hover effects on cards
+
+News Details page:
+
+Large featured image (poster) with professional max height
+
+Readable typography and line spacing
+
+Add subtle animations:
+
+fade-in on load
+
+card hover lift
+
+Ensure dark mode compatibility if dark mode is enabled globally.
+
+11) CONSTRAINTS (NON-NEGOTIABLE)
+
+Do not change:
+
+Backend logic
+
+Existing routes/URLs
+
+Publishing rules
+
+Only extend:
+
+Favourite toggles
+
+Public pages
+
+UI layouts and styles
+
+12) ACCEPTANCE CHECKLIST
+
+This is complete only when:
+
+“News Feeds” page exists and shows all published news.
+
+Home page shows max 6 news posts, favourite only, in a 3x2 grid layout.
+
+Favourite feature works for news like videos.
+
+News details shows full image + full content.
+
+Bucket URLs are used consistently (no broken images).
+
+Top Verified photos are 30% larger.
+
+Header shows only Home/About/Services + Menu dropdown with listed items.
+
+Navigation always starts from top of page.

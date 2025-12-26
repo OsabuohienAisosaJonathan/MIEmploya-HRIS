@@ -30,7 +30,7 @@ export default function Verified() {
               {[1, 2, 3, 4, 5, 6].map((i) => (
                 <Card key={i} className="p-6 animate-pulse">
                   <div className="flex flex-col items-center">
-                    <div className="w-24 h-24 bg-muted rounded-full mb-4" />
+                    <div className="w-36 h-36 bg-muted rounded-full mb-4" />
                     <div className="h-5 bg-muted rounded w-32 mb-2" />
                     <div className="h-4 bg-muted rounded w-24 mb-4" />
                     <div className="h-4 bg-muted rounded w-full" />
@@ -60,11 +60,11 @@ export default function Verified() {
                         <img
                           src={candidate.imageUrl}
                           alt={candidate.fullName}
-                          className="relative w-28 h-28 rounded-full object-cover border-4 border-background shadow-xl group-hover:scale-105 transition-transform duration-300"
+                          className="relative w-36 h-36 rounded-full object-cover border-4 border-background shadow-xl group-hover:scale-105 transition-transform duration-300"
                         />
                       ) : (
-                        <div className="relative w-28 h-28 rounded-full bg-gradient-to-br from-primary/20 to-teal-500/20 flex items-center justify-center border-4 border-background shadow-xl">
-                          <User className="w-12 h-12 text-muted-foreground" />
+                        <div className="relative w-36 h-36 rounded-full bg-gradient-to-br from-primary/20 to-teal-500/20 flex items-center justify-center border-4 border-background shadow-xl">
+                          <User className="w-16 h-16 text-muted-foreground" />
                         </div>
                       )}
                       <div className="absolute -bottom-1 -right-1 w-7 h-7 bg-green-500 rounded-full flex items-center justify-center border-2 border-background">

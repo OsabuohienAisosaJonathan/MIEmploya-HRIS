@@ -87,10 +87,10 @@ export default function NewsDetail() {
         </div>
 
         <div className="container max-w-3xl mx-auto px-4 py-12">
-          <Link href="/">
-            <Button variant="ghost" size="sm" className="mb-6" data-testid="button-back-home">
+          <Link href="/news">
+            <Button variant="ghost" size="sm" className="mb-6" data-testid="button-back-news">
               <ArrowLeft className="w-4 h-4 mr-2" />
-              Back to Home
+              Back to News
             </Button>
           </Link>
 
