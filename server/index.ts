@@ -37,14 +37,14 @@ app.get("/storage/:folder/:filename", async (req, res) => {
   try {
     const { folder, filename } = req.params;
     const bucketId = process.env.DEFAULT_OBJECT_STORAGE_BUCKET_ID;
-    
+
     if (!bucketId) {
       return res.status(500).json({ error: "Object storage not configured" });
     }
-    
+
     const { Storage } = await import("@google-cloud/storage");
     const REPLIT_SIDECAR_ENDPOINT = "http://127.0.0.1:1106";
-    
+
     const storage = new Storage({
       credentials: {
         audience: "replit",
@@ -62,24 +62,24 @@ app.get("/storage/:folder/:filename", async (req, res) => {
       },
       projectId: "",
     });
-    
+
     const bucket = storage.bucket(bucketId);
     const objectName = `public/${folder}/${filename}`;
     const file = bucket.file(objectName);
-    
+
     const [exists] = await file.exists();
     if (!exists) {
       return res.status(404).json({ error: "File not found" });
     }
-    
+
     const [metadata] = await file.getMetadata();
-    
+
     res.set({
       "Content-Type": metadata.contentType || "application/octet-stream",
       "Content-Length": metadata.size?.toString() || "",
       "Cache-Control": "public, max-age=31536000",
     });
-    
+
     const stream = file.createReadStream();
     stream.on("error", (err) => {
       console.error("[Storage] Stream error:", err);
@@ -186,7 +186,7 @@ app.use((req, res, next) => {
     {
       port,
       host: "0.0.0.0",
-      reusePort: true,
+      // reusePort: true, // Not supported on Windows
     },
     () => {
       log(`serving on port ${port}`);

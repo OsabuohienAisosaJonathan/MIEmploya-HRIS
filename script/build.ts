@@ -20,10 +20,12 @@ const allowlist = [
   "multer",
   "nanoid",
   "nodemailer",
+  "nodemailer",
+  // "mysql2", // Removed to force externalization
   "openai",
   "passport",
   "passport-local",
-  "pg",
+  // "pg", // Removed
   "stripe",
   "uuid",
   "ws",

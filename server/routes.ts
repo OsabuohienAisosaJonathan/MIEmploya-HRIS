@@ -63,6 +63,7 @@ export async function registerRoutes(
           field: err.errors[0].path.join("."),
         });
       }
+      console.error("Failed to create service request:", err);
       res.status(500).json({ message: "Server error" });
     }
   });

@@ -77,11 +77,9 @@ export interface IStorage {
 
 export class DatabaseStorage implements IStorage {
   async createServiceRequest(request: InsertServiceRequest): Promise<ServiceRequest> {
-    const [created] = await db
-      .insert(serviceRequests)
-      .values(request)
-      .returning();
-    return created;
+    const [result] = await db.insert(serviceRequests).values(request);
+    const id = result.insertId;
+    return await this.getServiceRequest(id) as ServiceRequest;
   }
 
   async getServiceRequests(): Promise<ServiceRequest[]> {
@@ -100,12 +98,11 @@ export class DatabaseStorage implements IStorage {
     id: number,
     status: "pending" | "reviewed" | "approved" | "rejected"
   ): Promise<ServiceRequest | undefined> {
-    const [updated] = await db
+    await db
       .update(serviceRequests)
       .set({ status })
-      .where(eq(serviceRequests.id, id))
-      .returning();
-    return updated;
+      .where(eq(serviceRequests.id, id));
+    return await this.getServiceRequest(id);
   }
 
   async getContentItems(): Promise<ContentItem[]> {
@@ -116,10 +113,9 @@ export class DatabaseStorage implements IStorage {
   }
 
   async createContentItem(item: InsertContentItem): Promise<ContentItem> {
-    const [created] = await db
-      .insert(contentItems)
-      .values(item)
-      .returning();
+    const [result] = await db.insert(contentItems).values(item);
+    const id = result.insertId;
+    const [created] = await db.select().from(contentItems).where(eq(contentItems.id, id));
     return created;
   }
 
@@ -127,11 +123,11 @@ export class DatabaseStorage implements IStorage {
     id: number,
     item: Partial<InsertContentItem>
   ): Promise<ContentItem | undefined> {
-    const [updated] = await db
+    await db
       .update(contentItems)
       .set(item)
-      .where(eq(contentItems.id, id))
-      .returning();
+      .where(eq(contentItems.id, id));
+    const [updated] = await db.select().from(contentItems).where(eq(contentItems.id, id));
     return updated;
   }
 
@@ -153,10 +149,9 @@ export class DatabaseStorage implements IStorage {
   async createVerifiedCandidate(
     candidate: InsertVerifiedCandidate
   ): Promise<VerifiedCandidate> {
-    const [created] = await db
-      .insert(verifiedCandidates)
-      .values(candidate)
-      .returning();
+    const [result] = await db.insert(verifiedCandidates).values(candidate);
+    const id = result.insertId;
+    const [created] = await db.select().from(verifiedCandidates).where(eq(verifiedCandidates.id, id));
     return created;
   }
 
@@ -164,11 +159,11 @@ export class DatabaseStorage implements IStorage {
     id: number,
     status: "pending" | "approved" | "rejected"
   ): Promise<VerifiedCandidate | undefined> {
-    const [updated] = await db
+    await db
       .update(verifiedCandidates)
       .set({ status })
-      .where(eq(verifiedCandidates.id, id))
-      .returning();
+      .where(eq(verifiedCandidates.id, id));
+    const [updated] = await db.select().from(verifiedCandidates).where(eq(verifiedCandidates.id, id));
     return updated;
   }
 
@@ -184,19 +179,18 @@ export class DatabaseStorage implements IStorage {
   }
 
   async createTemplate(template: InsertTemplate): Promise<Template> {
-    const [created] = await db
-      .insert(templates)
-      .values(template)
-      .returning();
+    const [result] = await db.insert(templates).values(template);
+    const id = result.insertId;
+    const [created] = await db.select().from(templates).where(eq(templates.id, id));
     return created;
   }
 
   async updateTemplateStatus(id: number, isPublished: boolean): Promise<Template | undefined> {
-    const [updated] = await db
+    await db
       .update(templates)
       .set({ isPublished })
-      .where(eq(templates.id, id))
-      .returning();
+      .where(eq(templates.id, id));
+    const [updated] = await db.select().from(templates).where(eq(templates.id, id));
     return updated;
   }
 
@@ -224,28 +218,27 @@ export class DatabaseStorage implements IStorage {
   }
 
   async createJob(job: InsertJobPosting): Promise<JobPosting> {
-    const [created] = await db
-      .insert(jobPostings)
-      .values(job)
-      .returning();
+    const [result] = await db.insert(jobPostings).values(job);
+    const id = result.insertId;
+    const [created] = await db.select().from(jobPostings).where(eq(jobPostings.id, id));
     return created;
   }
 
   async updateJobStatus(id: number, isPublished: boolean): Promise<JobPosting | undefined> {
-    const [updated] = await db
+    await db
       .update(jobPostings)
       .set({ isPublished })
-      .where(eq(jobPostings.id, id))
-      .returning();
+      .where(eq(jobPostings.id, id));
+    const [updated] = await db.select().from(jobPostings).where(eq(jobPostings.id, id));
     return updated;
   }
 
   async updateJob(id: number, data: Partial<InsertJobPosting>): Promise<JobPosting | undefined> {
-    const [updated] = await db
+    await db
       .update(jobPostings)
       .set(data)
-      .where(eq(jobPostings.id, id))
-      .returning();
+      .where(eq(jobPostings.id, id));
+    const [updated] = await db.select().from(jobPostings).where(eq(jobPostings.id, id));
     return updated;
   }
 
@@ -254,10 +247,9 @@ export class DatabaseStorage implements IStorage {
   }
 
   async createJobApplication(app: InsertJobApplication): Promise<JobApplication> {
-    const [created] = await db
-      .insert(jobApplications)
-      .values(app)
-      .returning();
+    const [result] = await db.insert(jobApplications).values(app);
+    const id = result.insertId;
+    const [created] = await db.select().from(jobApplications).where(eq(jobApplications.id, id));
     return created;
   }
 
@@ -266,10 +258,9 @@ export class DatabaseStorage implements IStorage {
   }
 
   async createTrainingRequest(request: InsertTrainingRequest): Promise<TrainingRequest> {
-    const [created] = await db
-      .insert(trainingRequests)
-      .values(request)
-      .returning();
+    const [result] = await db.insert(trainingRequests).values(request);
+    const id = result.insertId;
+    const [created] = await db.select().from(trainingRequests).where(eq(trainingRequests.id, id));
     return created;
   }
 
@@ -281,11 +272,11 @@ export class DatabaseStorage implements IStorage {
     id: number,
     status: "new" | "reviewed" | "contacted"
   ): Promise<TrainingRequest | undefined> {
-    const [updated] = await db
+    await db
       .update(trainingRequests)
       .set({ status })
-      .where(eq(trainingRequests.id, id))
-      .returning();
+      .where(eq(trainingRequests.id, id));
+    const [updated] = await db.select().from(trainingRequests).where(eq(trainingRequests.id, id));
     return updated;
   }
 }

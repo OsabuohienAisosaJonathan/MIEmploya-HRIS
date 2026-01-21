@@ -1,72 +1,72 @@
 import { sql } from "drizzle-orm";
-import { pgTable, text, varchar, serial, timestamp, boolean, json } from "drizzle-orm/pg-core";
+import { mysqlTable, text, varchar, int, timestamp, boolean, json } from "drizzle-orm/mysql-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 
 // ============================================
 // SERVICE REQUESTS TABLE
 // ============================================
-export const serviceRequests = pgTable("service_requests", {
-  id: serial("id").primaryKey(),
-  title: varchar("title").notNull(),
+export const serviceRequests = mysqlTable("service_requests", {
+  id: int("id").primaryKey().autoincrement(),
+  title: varchar("title", { length: 255 }).notNull(),
   fullName: text("full_name").notNull(),
   email: text("email").notNull(),
   phone: text("phone").notNull(),
   state: text("state").notNull(),
   city: text("city").notNull(),
-  userStatus: varchar("user_status", { enum: ["employer", "candidate"] }).notNull(),
+  userStatus: varchar("user_status", { length: 50, enum: ["employer", "candidate"] }).notNull(),
   organizationName: text("organization_name"),
   service: text("service").notNull(),
   description: text("description").notNull(),
   documents: json("documents").$type<Array<{ id: string; filename: string; url: string; uploadedAt: string }>>().default([]),
-  status: varchar("status", { enum: ["pending", "reviewed", "approved", "rejected"] }).default("pending"),
+  status: varchar("status", { length: 50, enum: ["pending", "reviewed", "approved", "rejected"] }).default("pending"),
   createdAt: timestamp("created_at").defaultNow(),
 });
 
 // ============================================
 // CONTENT (VIDEOS, PDFs, NEWS, EVENTS)
 // ============================================
-export const contentItems = pgTable("content_items", {
-  id: serial("id").primaryKey(),
-  type: varchar("type", { enum: ["video", "pdf", "news", "event"] }).notNull(),
+export const contentItems = mysqlTable("content_items", {
+  id: int("id").primaryKey().autoincrement(),
+  type: varchar("type", { length: 50, enum: ["video", "pdf", "news", "event"] }).notNull(),
   title: text("title").notNull(),
   description: text("description"),
   url: text("url"),
   fileUrl: text("file_url"),
   filename: text("filename"),
   imageUrl: text("image_url"),
-  category: varchar("category", { enum: ["news", "training", "vacancy", "announcement", "education"] }),
+  category: varchar("category", { length: 50, enum: ["news", "training", "vacancy", "announcement", "education"] }),
   isFavourite: boolean("is_favourite").default(false),
   isPublished: boolean("is_published").default(false),
-  displayOrder: serial("display_order"),
+  displayOrder: int("display_order"),
   createdAt: timestamp("created_at").defaultNow(),
 });
 
 // ============================================
 // VERIFIED CANDIDATES
 // ============================================
-export const verifiedCandidates = pgTable("verified_candidates", {
-  id: serial("id").primaryKey(),
+export const verifiedCandidates = mysqlTable("verified_candidates", {
+  id: int("id").primaryKey().autoincrement(),
   fullName: text("full_name").notNull(),
   title: text("title").notNull(),
   company: text("company"),
   service: text("service").notNull(),
   bio: text("bio"),
   imageUrl: text("image_url"),
-  status: varchar("status", { enum: ["pending", "approved", "rejected"] }).default("pending"),
+  status: varchar("status", { length: 50, enum: ["pending", "approved", "rejected"] }).default("pending"),
   createdAt: timestamp("created_at").defaultNow(),
 });
 
 // ============================================
 // TEMPLATES
 // ============================================
-export const templates = pgTable("templates", {
-  id: serial("id").primaryKey(),
+export const templates = mysqlTable("templates", {
+  id: int("id").primaryKey().autoincrement(),
   title: text("title").notNull(),
   description: text("description"),
   filename: text("filename").notNull(),
   fileUrl: text("file_url").notNull(),
-  fileType: varchar("file_type", { enum: ["pdf", "docx", "xlsx"] }).notNull(),
+  fileType: varchar("file_type", { length: 10, enum: ["pdf", "docx", "xlsx"] }).notNull(),
   isPublished: boolean("is_published").default(false),
   createdAt: timestamp("created_at").defaultNow(),
 });
@@ -74,8 +74,8 @@ export const templates = pgTable("templates", {
 // ============================================
 // JOB POSTINGS
 // ============================================
-export const jobPostings = pgTable("job_postings", {
-  id: serial("id").primaryKey(),
+export const jobPostings = mysqlTable("job_postings", {
+  id: int("id").primaryKey().autoincrement(),
   title: text("title").notNull(),
   company: text("company").notNull(),
   description: text("description").notNull(),
@@ -91,9 +91,9 @@ export const jobPostings = pgTable("job_postings", {
 // ============================================
 // JOB APPLICATIONS
 // ============================================
-export const jobApplications = pgTable("job_applications", {
-  id: serial("id").primaryKey(),
-  jobId: serial("job_id").notNull(),
+export const jobApplications = mysqlTable("job_applications", {
+  id: int("id").primaryKey().autoincrement(),
+  jobId: int("job_id").notNull(),
   fullName: text("full_name").notNull(),
   email: text("email").notNull(),
   phone: text("phone").notNull(),
@@ -108,8 +108,8 @@ export const jobApplications = pgTable("job_applications", {
 // ============================================
 // TRAINING REQUESTS
 // ============================================
-export const trainingRequests = pgTable("training_requests", {
-  id: serial("id").primaryKey(),
+export const trainingRequests = mysqlTable("training_requests", {
+  id: int("id").primaryKey().autoincrement(),
   fullName: text("full_name").notNull(),
   email: text("email").notNull(),
   phone: text("phone").notNull(),
@@ -120,7 +120,7 @@ export const trainingRequests = pgTable("training_requests", {
   preferredStartDate: text("preferred_start_date"),
   certificationRequired: boolean("certification_required").default(false),
   verifiedShortlist: boolean("verified_shortlist").default(false),
-  status: varchar("status", { enum: ["new", "reviewed", "contacted"] }).default("new"),
+  status: varchar("status", { length: 50, enum: ["new", "reviewed", "contacted"] }).default("new"),
   createdAt: timestamp("created_at").defaultNow(),
 });
 
