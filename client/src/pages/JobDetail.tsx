@@ -1,3 +1,4 @@
+import { API_BASE_URL } from "@/lib/config";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { useParams, useLocation } from "wouter";
 import { useState } from "react";
@@ -29,7 +30,7 @@ export default function JobDetail() {
   const { data: job, isLoading } = useQuery({
     queryKey: [`/api/jobs/${id}`],
     queryFn: () =>
-      fetch(`/api/jobs/${id}`)
+      fetch(`${API_BASE_URL}/api/jobs/${id}`)
         .then((r) => (r.ok ? r.json() : null))
         .catch(() => null),
   });
@@ -53,7 +54,7 @@ export default function JobDetail() {
       formDataObj.append("coverNote", formData.coverNote || "");
       formDataObj.append("cv", formData.cv);
 
-      const response = await fetch("/api/jobs/apply", {
+      const response = await fetch(`${API_BASE_URL}/api/jobs/apply`, {
         method: "POST",
         body: formDataObj,
       });

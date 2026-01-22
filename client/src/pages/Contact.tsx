@@ -11,6 +11,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useState } from "react";
 import { Phone, Mail, MapPin, MessageCircle } from "lucide-react";
 import { SiInstagram, SiFacebook, SiTiktok } from "react-icons/si";
+import { API_BASE_URL } from "@/lib/config";
 
 const SERVICES = [
   "HR Consultancy",
@@ -48,12 +49,16 @@ export default function Contact() {
     description: "",
   });
 
+  // ... imports
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
 
     try {
-      const response = await fetch("/api/requests", {
+      // Use API_BASE_URL or fallback to relative path
+      const url = `${API_BASE_URL}/api/requests`;
+      const response = await fetch(url, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -159,7 +164,7 @@ export default function Contact() {
                 <MessageCircle className="w-5 h-5" />
                 Chat with Miemploya HR on WhatsApp
               </a>
-              
+
               <h3 className="font-semibold mb-3">Follow Us</h3>
               <div className="flex items-center gap-4">
                 <a

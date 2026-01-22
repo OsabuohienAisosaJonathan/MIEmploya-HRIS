@@ -1,3 +1,4 @@
+import { API_BASE_URL } from "@/lib/config";
 import { useQuery } from "@tanstack/react-query";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
@@ -25,14 +26,14 @@ export default function Videos() {
 
   const { data: content = [], isLoading } = useQuery({
     queryKey: ["/api/content"],
-    queryFn: () => fetch("/api/content").then((r) => {
+    queryFn: () => fetch(`${API_BASE_URL}/api/content`).then((r) => {
       if (!r.ok) return [];
       return r.json();
     }).catch(() => []),
   });
 
-  const videos = Array.isArray(content) 
-    ? content.filter((c: any) => c.type === "video" && c.isPublished) 
+  const videos = Array.isArray(content)
+    ? content.filter((c: any) => c.type === "video" && c.isPublished)
     : [];
 
   const filteredVideos = selectedCategory === "all"
@@ -89,13 +90,13 @@ export default function Videos() {
                 <Film className="w-16 h-16 mx-auto text-muted-foreground/30 mb-4" />
                 <h3 className="text-xl font-semibold mb-2">No Videos Found</h3>
                 <p className="text-muted-foreground">
-                  {selectedCategory === "all" 
-                    ? "No videos have been published yet." 
+                  {selectedCategory === "all"
+                    ? "No videos have been published yet."
                     : `No videos in the "${selectedCategory}" category.`}
                 </p>
                 {selectedCategory !== "all" && (
-                  <Button 
-                    variant="outline" 
+                  <Button
+                    variant="outline"
                     className="mt-4"
                     onClick={() => setSelectedCategory("all")}
                   >
@@ -106,8 +107,8 @@ export default function Videos() {
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {filteredVideos.map((item: any) => (
-                  <Card 
-                    key={item.id} 
+                  <Card
+                    key={item.id}
                     className="overflow-hidden group transition-all duration-300 hover:shadow-lg hover:-translate-y-1"
                     data-testid={`card-video-${item.id}`}
                   >

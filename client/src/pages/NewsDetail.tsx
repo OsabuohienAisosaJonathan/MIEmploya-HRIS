@@ -1,3 +1,4 @@
+import { API_BASE_URL } from "@/lib/config";
 import { useQuery } from "@tanstack/react-query";
 import { useParams, Link } from "wouter";
 import { Header } from "@/components/Header";
@@ -12,14 +13,14 @@ export default function NewsDetail() {
 
   const { data: content = [], isLoading } = useQuery({
     queryKey: ["/api/content"],
-    queryFn: () => fetch("/api/content").then((r) => {
+    queryFn: () => fetch(`${API_BASE_URL}/api/content`).then((r) => {
       if (!r.ok) return [];
       return r.json();
     }).catch(() => []),
   });
 
-  const newsItem = Array.isArray(content) 
-    ? content.find((c: any) => c.id === Number(newsId) && c.type === "news") 
+  const newsItem = Array.isArray(content)
+    ? content.find((c: any) => c.id === Number(newsId) && c.type === "news")
     : null;
 
   if (isLoading) {
@@ -58,12 +59,12 @@ export default function NewsDetail() {
     );
   }
 
-  const formattedDate = newsItem.createdAt 
+  const formattedDate = newsItem.createdAt
     ? new Date(newsItem.createdAt).toLocaleDateString('en-US', {
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric'
-      })
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    })
     : null;
 
   return (
@@ -72,9 +73,9 @@ export default function NewsDetail() {
       <div className="min-h-screen">
         <div className="w-full h-[250px] md:h-[400px] lg:h-[500px] bg-slate-100 dark:bg-slate-800 relative">
           {newsItem.imageUrl ? (
-            <img 
-              src={newsItem.imageUrl} 
-              alt={newsItem.title} 
+            <img
+              src={newsItem.imageUrl}
+              alt={newsItem.title}
               className="w-full h-full object-cover object-center"
               data-testid="img-news-featured"
             />
@@ -107,7 +108,7 @@ export default function NewsDetail() {
             )}
 
             <Card className="p-6 md:p-8">
-              <div 
+              <div
                 className="prose prose-slate dark:prose-invert max-w-none text-foreground leading-relaxed"
                 data-testid="text-news-content"
               >
@@ -125,8 +126,8 @@ export default function NewsDetail() {
           <div className="mt-12 pt-8 border-t">
             <h3 className="font-semibold text-lg mb-4">Share this article</h3>
             <div className="flex flex-wrap gap-3">
-              <Button 
-                variant="outline" 
+              <Button
+                variant="outline"
                 size="sm"
                 onClick={() => {
                   const url = window.location.href;
@@ -137,8 +138,8 @@ export default function NewsDetail() {
               >
                 Share on WhatsApp
               </Button>
-              <Button 
-                variant="outline" 
+              <Button
+                variant="outline"
                 size="sm"
                 onClick={() => {
                   navigator.clipboard.writeText(window.location.href);

@@ -1,3 +1,4 @@
+import { API_BASE_URL } from "@/lib/config";
 import { useQuery } from "@tanstack/react-query";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
@@ -17,7 +18,7 @@ const SERVICES = [
 export default function Home() {
   const { data: content = [] } = useQuery({
     queryKey: ["/api/content"],
-    queryFn: () => fetch("/api/content").then((r) => {
+    queryFn: () => fetch(`${API_BASE_URL}/api/content`).then((r) => {
       if (!r.ok) return [];
       return r.json();
     }).catch(() => []),
@@ -25,7 +26,7 @@ export default function Home() {
 
   const { data: candidates = [] } = useQuery({
     queryKey: ["/api/verified-candidates"],
-    queryFn: () => fetch("/api/verified-candidates").then((r) => {
+    queryFn: () => fetch(`${API_BASE_URL}/api/verified-candidates`).then((r) => {
       if (!r.ok) return [];
       return r.json();
     }).catch(() => []),
@@ -110,8 +111,8 @@ export default function Home() {
             </div>
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
               {SERVICES.map((service, index) => (
-                <Card 
-                  key={service} 
+                <Card
+                  key={service}
                   className="p-4 card-hover text-center"
                   style={{ animationDelay: `${index * 50}ms` }}
                 >
@@ -143,36 +144,36 @@ export default function Home() {
                   .sort((a: any, b: any) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
                   .slice(0, 6)
                   .map((item: any, index: number) => (
-                  <Link key={item.id} href={`/news/${item.id}`}>
-                    <Card 
-                      className="overflow-hidden card-hover cursor-pointer h-full group animate-fade-in" 
-                      style={{ animationDelay: `${index * 50}ms` }}
-                      data-testid={`card-news-${item.id}`}
-                    >
-                      <div className="w-full h-[128px] bg-slate-100 dark:bg-slate-800 overflow-hidden">
-                        {item.imageUrl ? (
-                          <img 
-                            src={item.imageUrl} 
-                            alt={item.title} 
-                            className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105" 
-                          />
-                        ) : (
-                          <div className="w-full h-full flex items-center justify-center">
-                            <FileText className="w-10 h-10 text-muted-foreground/30" />
-                          </div>
-                        )}
-                      </div>
-                      <div className="p-4">
-                        <h3 className="font-bold text-sm mb-2 line-clamp-2 group-hover:text-primary transition-colors">{item.title}</h3>
-                        <p className="text-xs text-muted-foreground line-clamp-2 mb-3">{item.description}</p>
-                        <span className="text-primary font-medium text-xs flex items-center gap-1">
-                          Read More
-                          <ArrowRight className="w-3 h-3" />
-                        </span>
-                      </div>
-                    </Card>
-                  </Link>
-                ))}
+                    <Link key={item.id} href={`/news/${item.id}`}>
+                      <Card
+                        className="overflow-hidden card-hover cursor-pointer h-full group animate-fade-in"
+                        style={{ animationDelay: `${index * 50}ms` }}
+                        data-testid={`card-news-${item.id}`}
+                      >
+                        <div className="w-full h-[128px] bg-slate-100 dark:bg-slate-800 overflow-hidden">
+                          {item.imageUrl ? (
+                            <img
+                              src={item.imageUrl}
+                              alt={item.title}
+                              className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                            />
+                          ) : (
+                            <div className="w-full h-full flex items-center justify-center">
+                              <FileText className="w-10 h-10 text-muted-foreground/30" />
+                            </div>
+                          )}
+                        </div>
+                        <div className="p-4">
+                          <h3 className="font-bold text-sm mb-2 line-clamp-2 group-hover:text-primary transition-colors">{item.title}</h3>
+                          <p className="text-xs text-muted-foreground line-clamp-2 mb-3">{item.description}</p>
+                          <span className="text-primary font-medium text-xs flex items-center gap-1">
+                            Read More
+                            <ArrowRight className="w-3 h-3" />
+                          </span>
+                        </div>
+                      </Card>
+                    </Link>
+                  ))}
               </div>
               <div className="text-center mt-10">
                 <Link href="/news">
@@ -199,29 +200,29 @@ export default function Home() {
                   .sort((a: any, b: any) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
                   .slice(0, 4)
                   .map((item: any) => (
-                  <Card key={item.id} className="overflow-hidden card-hover" data-testid={`card-video-home-${item.id}`}>
-                    <div className="relative bg-slate-200 dark:bg-slate-800" style={{ aspectRatio: "16/5.4" }}>
-                      {item.fileUrl || item.url ? (
-                        <video
-                          controls
-                          className="w-full h-full object-cover"
-                        >
-                          <source src={item.fileUrl || item.url} type="video/mp4" />
-                          Your browser does not support the video tag.
-                        </video>
-                      ) : (
-                        <div className="absolute inset-0 flex items-center justify-center">
-                          <div className="w-12 h-12 rounded-full bg-primary/90 flex items-center justify-center">
-                            <Play className="w-6 h-6 text-white ml-1" />
+                    <Card key={item.id} className="overflow-hidden card-hover" data-testid={`card-video-home-${item.id}`}>
+                      <div className="relative bg-slate-200 dark:bg-slate-800" style={{ aspectRatio: "16/5.4" }}>
+                        {item.fileUrl || item.url ? (
+                          <video
+                            controls
+                            className="w-full h-full object-cover"
+                          >
+                            <source src={item.fileUrl || item.url} type="video/mp4" />
+                            Your browser does not support the video tag.
+                          </video>
+                        ) : (
+                          <div className="absolute inset-0 flex items-center justify-center">
+                            <div className="w-12 h-12 rounded-full bg-primary/90 flex items-center justify-center">
+                              <Play className="w-6 h-6 text-white ml-1" />
+                            </div>
                           </div>
-                        </div>
-                      )}
-                    </div>
-                    <div className="p-4">
-                      <h3 className="font-bold text-sm line-clamp-1">{item.title}</h3>
-                    </div>
-                  </Card>
-                ))}
+                        )}
+                      </div>
+                      <div className="p-4">
+                        <h3 className="font-bold text-sm line-clamp-1">{item.title}</h3>
+                      </div>
+                    </Card>
+                  ))}
               </div>
               {videos.length > 0 && (
                 <div className="text-center mt-10">
@@ -279,10 +280,10 @@ export default function Home() {
                 {approvedCandidates.slice(0, 6).map((c: any) => (
                   <Card key={c.id} className="p-6 text-center card-hover">
                     {c.imageUrl && (
-                      <img 
-                        src={c.imageUrl} 
-                        alt={c.fullName} 
-                        className="w-32 h-32 rounded-full mx-auto mb-4 object-cover border-4 border-primary/20" 
+                      <img
+                        src={c.imageUrl}
+                        alt={c.fullName}
+                        className="w-32 h-32 rounded-full mx-auto mb-4 object-cover border-4 border-primary/20"
                       />
                     )}
                     <h3 className="font-bold text-lg">{c.fullName}</h3>

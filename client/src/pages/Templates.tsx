@@ -1,3 +1,4 @@
+import { API_BASE_URL } from "@/lib/config";
 import { useQuery } from "@tanstack/react-query";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
@@ -25,7 +26,7 @@ export default function Templates() {
   const { data: templates = [], isLoading } = useQuery({
     queryKey: ["/api/templates"],
     queryFn: () =>
-      fetch("/api/templates")
+      fetch(`${API_BASE_URL}/api/templates`)
         .then((r) => (r.ok ? r.json() : []))
         .catch(() => []),
   });
@@ -70,12 +71,12 @@ export default function Templates() {
                   data-testid={`card-template-${template.id}`}
                 >
                   <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-teal-500/5 opacity-0 group-hover:opacity-100 transition-opacity rounded-lg pointer-events-none" />
-                  
+
                   <div className="relative flex items-start gap-4">
                     <div className="flex-shrink-0 w-14 h-14 rounded-lg bg-muted flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
                       {getFileIcon(template.fileType)}
                     </div>
-                    
+
                     <div className="flex-1 min-w-0">
                       <h3 className="text-lg font-bold mb-2 group-hover:text-primary transition-colors line-clamp-2">
                         {template.title}
@@ -92,12 +93,12 @@ export default function Templates() {
                       </div>
                     </div>
                   </div>
-                  
+
                   <div className="mt-4 pt-4 border-t flex justify-end">
                     <a href={template.fileUrl} download>
-                      <Button 
-                        variant="default" 
-                        size="sm" 
+                      <Button
+                        variant="default"
+                        size="sm"
                         className="group/btn bg-gradient-to-r from-primary to-teal-600 hover:from-primary/90 hover:to-teal-600/90 shadow-lg shadow-primary/20"
                         data-testid={`button-download-template-${template.id}`}
                       >

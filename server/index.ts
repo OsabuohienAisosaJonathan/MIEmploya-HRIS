@@ -6,8 +6,15 @@ import { serveStatic } from "./static";
 import { createServer } from "http";
 import { registerObjectStorageRoutes } from "./replit_integrations/object_storage";
 
+import cors from "cors";
+
 const app = express();
 const httpServer = createServer(app);
+
+app.use(cors({
+  origin: true, // Allow all origins for now (or specify ["https://miemploya.com", "http://localhost:5000"])
+  credentials: true,
+}));
 
 declare module "http" {
   interface IncomingMessage {

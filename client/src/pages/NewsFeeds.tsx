@@ -1,3 +1,4 @@
+import { API_BASE_URL } from "@/lib/config";
 import { useQuery } from "@tanstack/react-query";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
@@ -9,16 +10,16 @@ import { format } from "date-fns";
 export default function NewsFeeds() {
   const { data: content = [], isLoading } = useQuery({
     queryKey: ["/api/content"],
-    queryFn: () => fetch("/api/content").then((r) => {
+    queryFn: () => fetch(`${API_BASE_URL}/api/content`).then((r) => {
       if (!r.ok) return [];
       return r.json();
     }).catch(() => []),
   });
 
-  const news = Array.isArray(content) 
+  const news = Array.isArray(content)
     ? content
-        .filter((c: any) => c.type === "news" && c.isPublished)
-        .sort((a: any, b: any) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+      .filter((c: any) => c.type === "news" && c.isPublished)
+      .sort((a: any, b: any) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
     : [];
 
   return (
@@ -53,17 +54,17 @@ export default function NewsFeeds() {
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {news.map((item: any, index: number) => (
                   <Link key={item.id} href={`/news/${item.id}`}>
-                    <Card 
+                    <Card
                       className="overflow-hidden card-hover cursor-pointer h-full group animate-fade-in"
                       style={{ animationDelay: `${index * 50}ms` }}
                       data-testid={`card-news-feed-${item.id}`}
                     >
                       <div className="relative w-full h-48 bg-slate-100 dark:bg-slate-800 overflow-hidden">
                         {item.imageUrl ? (
-                          <img 
-                            src={item.imageUrl} 
-                            alt={item.title} 
-                            className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105" 
+                          <img
+                            src={item.imageUrl}
+                            alt={item.title}
+                            className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
                           />
                         ) : (
                           <div className="w-full h-full flex items-center justify-center">

@@ -1,3 +1,4 @@
+import { API_BASE_URL } from "@/lib/config";
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import { useLocation } from "wouter";
@@ -13,7 +14,7 @@ export default function Jobs() {
   const { data: jobs = [], isLoading } = useQuery({
     queryKey: ["/api/jobs"],
     queryFn: () =>
-      fetch("/api/jobs")
+      fetch(`${API_BASE_URL}/api/jobs`)
         .then((r) => (r.ok ? r.json() : []))
         .catch(() => []),
   });
@@ -91,7 +92,7 @@ export default function Jobs() {
                 >
                   <div className="absolute inset-0 bg-gradient-to-r from-primary/5 via-transparent to-teal-500/5 opacity-0 group-hover:opacity-100 transition-opacity rounded-lg pointer-events-none" />
                   <div className="absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b from-primary to-teal-500 rounded-l-lg opacity-0 group-hover:opacity-100 transition-opacity" />
-                  
+
                   <div className="relative flex flex-col md:flex-row md:justify-between md:items-start gap-4">
                     <div className="flex-1">
                       <h3 className="text-xl font-bold mb-2 group-hover:text-primary transition-colors">
@@ -119,9 +120,9 @@ export default function Jobs() {
                         )}
                       </div>
                     </div>
-                    <Button 
-                      variant="default" 
-                      size="sm" 
+                    <Button
+                      variant="default"
+                      size="sm"
                       className="group/btn bg-gradient-to-r from-primary to-teal-600 hover:from-primary/90 hover:to-teal-600/90 shadow-lg shadow-primary/20 whitespace-nowrap"
                       data-testid={`button-view-job-${job.id}`}
                     >
@@ -139,7 +140,7 @@ export default function Jobs() {
               </div>
               <h3 className="text-xl font-semibold mb-2">No Jobs Available</h3>
               <p className="text-muted-foreground">
-                {searchTitle || searchLocation 
+                {searchTitle || searchLocation
                   ? "No jobs match your search criteria. Try adjusting your filters."
                   : "Check back soon for new opportunities!"}
               </p>

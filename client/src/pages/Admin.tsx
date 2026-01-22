@@ -1,3 +1,4 @@
+import { API_BASE_URL } from "@/lib/config";
 import { useState, useEffect } from "react";
 import { useLocation } from "wouter";
 import { useToast } from "@/hooks/use-toast";
@@ -25,7 +26,7 @@ export default function Admin() {
     e.preventDefault();
     setLoading(true);
     try {
-      const response = await fetch("/api/admin/login", {
+      const response = await fetch(`${API_BASE_URL}/api/admin/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ password }),
@@ -150,7 +151,7 @@ function ServiceRequestsTab({ token }: { token: string }) {
   const { data: requests, refetch, isLoading } = useQuery({
     queryKey: ["/api/requests", token],
     queryFn: () =>
-      fetch("/api/requests", {
+      fetch(`${API_BASE_URL}/api/requests`, {
         headers: { Authorization: `Bearer ${token}` },
       }).then((r) => r.json()),
     enabled: !!token,
@@ -160,7 +161,7 @@ function ServiceRequestsTab({ token }: { token: string }) {
 
   const handleStatusChange = async (id: number, newStatus: string) => {
     try {
-      await fetch(`/api/requests/${id}`, {
+      await fetch(`${API_BASE_URL}/api/requests/${id}`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
@@ -228,18 +229,18 @@ function NewsTab({ token }: { token: string }) {
   const { data: news, refetch, isLoading } = useQuery({
     queryKey: ["/api/content-news", token],
     queryFn: () =>
-      fetch("/api/content?type=news", {
+      fetch(`${API_BASE_URL}/api/content?type=news`, {
         headers: { Authorization: `Bearer ${token}` },
       }).then((r) => r.json()),
     enabled: !!token,
   });
 
-  const [formData, setFormData] = useState({ 
-    title: "", 
-    description: "", 
-    image: null as File | null, 
+  const [formData, setFormData] = useState({
+    title: "",
+    description: "",
+    image: null as File | null,
     isFavourite: false,
-    isPublished: false 
+    isPublished: false
   });
   const [submitting, setSubmitting] = useState(false);
   const { toast } = useToast();
@@ -261,7 +262,7 @@ function NewsTab({ token }: { token: string }) {
       formDataObj.append("isPublished", String(formData.isPublished));
       formDataObj.append("image", formData.image);
 
-      const response = await fetch("/api/content/upload", {
+      const response = await fetch(`${API_BASE_URL}/api/content/upload`, {
         method: "POST",
         headers: { Authorization: `Bearer ${token}` },
         body: formDataObj,
@@ -284,7 +285,7 @@ function NewsTab({ token }: { token: string }) {
 
   const handleDelete = async (id: number) => {
     try {
-      await fetch(`/api/content/${id}`, {
+      await fetch(`${API_BASE_URL}/api/content/${id}`, {
         method: "DELETE",
         headers: { Authorization: `Bearer ${token}` },
       });
@@ -297,7 +298,7 @@ function NewsTab({ token }: { token: string }) {
 
   const handleTogglePublish = async (id: number, isPublished: boolean) => {
     try {
-      await fetch(`/api/content/${id}`, {
+      await fetch(`${API_BASE_URL}/api/content/${id}`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
@@ -314,7 +315,7 @@ function NewsTab({ token }: { token: string }) {
 
   const handleToggleFavourite = async (id: number, isFavourite: boolean) => {
     try {
-      await fetch(`/api/content/${id}`, {
+      await fetch(`${API_BASE_URL}/api/content/${id}`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
@@ -412,9 +413,8 @@ function NewsTab({ token }: { token: string }) {
                     <p className="text-sm text-muted-foreground mt-1 line-clamp-2">{item.description}</p>
                     <div className="flex flex-wrap gap-2 mt-2">
                       <span
-                        className={`inline-block px-2 py-1 text-xs rounded ${
-                          item.isPublished ? "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200" : "bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-200"
-                        }`}
+                        className={`inline-block px-2 py-1 text-xs rounded ${item.isPublished ? "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200" : "bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-200"
+                          }`}
                         data-testid={`status-news-${item.id}`}
                       >
                         {item.isPublished ? "Published" : "Draft"}
@@ -476,18 +476,18 @@ function VideosTab({ token }: { token: string }) {
   const { data: videos, refetch, isLoading } = useQuery({
     queryKey: ["/api/content-videos", token],
     queryFn: () =>
-      fetch("/api/content?type=video", {
+      fetch(`${API_BASE_URL}/api/content?type=video`, {
         headers: { Authorization: `Bearer ${token}` },
       }).then((r) => r.json()),
     enabled: !!token,
   });
 
-  const [formData, setFormData] = useState({ 
-    title: "", 
-    video: null as File | null, 
+  const [formData, setFormData] = useState({
+    title: "",
+    video: null as File | null,
     category: "training" as string,
     isFavourite: false,
-    isPublished: false 
+    isPublished: false
   });
   const [submitting, setSubmitting] = useState(false);
   const { toast } = useToast();
@@ -513,7 +513,7 @@ function VideosTab({ token }: { token: string }) {
       formDataObj.append("isPublished", String(formData.isPublished));
       formDataObj.append("video", formData.video);
 
-      const response = await fetch("/api/content/upload", {
+      const response = await fetch(`${API_BASE_URL}/api/content/upload`, {
         method: "POST",
         headers: { Authorization: `Bearer ${token}` },
         body: formDataObj,
@@ -536,7 +536,7 @@ function VideosTab({ token }: { token: string }) {
 
   const handleDelete = async (id: number) => {
     try {
-      await fetch(`/api/content/${id}`, {
+      await fetch(`${API_BASE_URL}/api/content/${id}`, {
         method: "DELETE",
         headers: { Authorization: `Bearer ${token}` },
       });
@@ -549,7 +549,7 @@ function VideosTab({ token }: { token: string }) {
 
   const handleTogglePublish = async (id: number, isPublished: boolean) => {
     try {
-      await fetch(`/api/content/${id}`, {
+      await fetch(`${API_BASE_URL}/api/content/${id}`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
@@ -566,7 +566,7 @@ function VideosTab({ token }: { token: string }) {
 
   const handleToggleFavourite = async (id: number, isFavourite: boolean) => {
     try {
-      await fetch(`/api/content/${id}`, {
+      await fetch(`${API_BASE_URL}/api/content/${id}`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
@@ -666,9 +666,8 @@ function VideosTab({ token }: { token: string }) {
                     <p className="font-bold">{item.title}</p>
                     <div className="flex flex-wrap gap-2 mt-2">
                       <span
-                        className={`inline-block px-2 py-1 text-xs rounded ${
-                          item.isPublished ? "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200" : "bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-200"
-                        }`}
+                        className={`inline-block px-2 py-1 text-xs rounded ${item.isPublished ? "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200" : "bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-200"
+                          }`}
                         data-testid={`status-video-${item.id}`}
                       >
                         {item.isPublished ? "Published" : "Draft"}
@@ -727,7 +726,7 @@ function TemplatesTab({ token }: { token: string }) {
   const { data: templates, refetch, isLoading } = useQuery({
     queryKey: ["/api/templates", token],
     queryFn: () =>
-      fetch("/api/templates/all", {
+      fetch(`${API_BASE_URL}/api/templates/all`, {
         headers: { Authorization: `Bearer ${token}` },
       }).then((r) => r.json()),
     enabled: !!token,
@@ -759,7 +758,7 @@ function TemplatesTab({ token }: { token: string }) {
       formDataObj.append("isPublished", String(formData.isPublished));
       formDataObj.append("file", formData.file);
 
-      const response = await fetch("/api/templates/upload", {
+      const response = await fetch(`${API_BASE_URL}/api/templates/upload`, {
         method: "POST",
         headers: { Authorization: `Bearer ${token}` },
         body: formDataObj,
@@ -788,7 +787,7 @@ function TemplatesTab({ token }: { token: string }) {
 
   const handleDelete = async (id: number) => {
     try {
-      await fetch(`/api/templates/${id}`, {
+      await fetch(`${API_BASE_URL}/api/templates/${id}`, {
         method: "DELETE",
         headers: { Authorization: `Bearer ${token}` },
       });
@@ -801,7 +800,7 @@ function TemplatesTab({ token }: { token: string }) {
 
   const handleTogglePublish = async (id: number, isPublished: boolean) => {
     try {
-      await fetch(`/api/templates/${id}`, {
+      await fetch(`${API_BASE_URL}/api/templates/${id}`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
@@ -897,9 +896,8 @@ function TemplatesTab({ token }: { token: string }) {
                         {item.fileType.toUpperCase()}
                       </span>
                       <span
-                        className={`inline-block px-2 py-1 text-xs rounded ${
-                          item.isPublished ? "bg-green-100 text-green-800" : "bg-gray-100 text-gray-800"
-                        }`}
+                        className={`inline-block px-2 py-1 text-xs rounded ${item.isPublished ? "bg-green-100 text-green-800" : "bg-gray-100 text-gray-800"
+                          }`}
                         data-testid={`status-template-${item.id}`}
                       >
                         {item.isPublished ? "Published" : "Draft"}
@@ -940,7 +938,7 @@ function JobsTab({ token }: { token: string }) {
   const { data: jobs, refetch, isLoading } = useQuery({
     queryKey: ["/api/admin/jobs", token],
     queryFn: () =>
-      fetch("/api/admin/jobs", {
+      fetch(`${API_BASE_URL}/api/admin/jobs`, {
         headers: { Authorization: `Bearer ${token}` },
       }).then((r) => r.json()),
     enabled: !!token,
@@ -996,9 +994,9 @@ function JobsTab({ token }: { token: string }) {
     e.preventDefault();
     setSubmitting(true);
     try {
-      const url = editingId ? `/api/admin/jobs/${editingId}` : "/api/admin/jobs";
+      const url = editingId ? `${API_BASE_URL}/api/admin/jobs/${editingId}` : `${API_BASE_URL}/api/admin/jobs`;
       const method = editingId ? "PATCH" : "POST";
-      
+
       const response = await fetch(url, {
         method,
         headers: {
@@ -1025,7 +1023,7 @@ function JobsTab({ token }: { token: string }) {
 
   const handleDelete = async (id: number) => {
     try {
-      await fetch(`/api/admin/jobs/${id}`, {
+      await fetch(`${API_BASE_URL}/api/admin/jobs/${id}`, {
         method: "DELETE",
         headers: { Authorization: `Bearer ${token}` },
       });
@@ -1038,7 +1036,7 @@ function JobsTab({ token }: { token: string }) {
 
   const handleTogglePublish = async (id: number, isPublished: boolean) => {
     try {
-      await fetch(`/api/admin/jobs/${id}`, {
+      await fetch(`${API_BASE_URL}/api/admin/jobs/${id}`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
@@ -1186,9 +1184,8 @@ function JobsTab({ token }: { token: string }) {
                         </span>
                       )}
                       <span
-                        className={`inline-block px-2 py-1 text-xs rounded ${
-                          job.isPublished ? "bg-green-100 text-green-800" : "bg-gray-100 text-gray-800"
-                        }`}
+                        className={`inline-block px-2 py-1 text-xs rounded ${job.isPublished ? "bg-green-100 text-green-800" : "bg-gray-100 text-gray-800"
+                          }`}
                         data-testid={`status-job-${job.id}`}
                       >
                         {job.isPublished ? "Published" : "Draft"}
@@ -1237,7 +1234,7 @@ function JobApplicationsTab({ token }: { token: string }) {
   const { data: applications, isLoading } = useQuery({
     queryKey: ["/api/admin/job-applications", token],
     queryFn: () =>
-      fetch("/api/admin/job-applications", {
+      fetch(`${API_BASE_URL}/api/admin/job-applications`, {
         headers: { Authorization: `Bearer ${token}` },
       }).then((r) => r.json()),
     enabled: !!token,
@@ -1246,7 +1243,7 @@ function JobApplicationsTab({ token }: { token: string }) {
   const { data: jobs } = useQuery({
     queryKey: ["/api/admin/jobs", token],
     queryFn: () =>
-      fetch("/api/admin/jobs", {
+      fetch(`${API_BASE_URL}/api/admin/jobs`, {
         headers: { Authorization: `Bearer ${token}` },
       }).then((r) => r.json()),
     enabled: !!token,
@@ -1326,7 +1323,7 @@ function CandidatesTab({ token }: { token: string }) {
     queryKey: ["/api/verified-candidates", token],
     queryFn: () => {
       const authHeader = token ? { Authorization: `Bearer ${token}` } : {};
-      return fetch("/api/verified-candidates", { headers: authHeader }).then((r) => r.json());
+      return fetch(`${API_BASE_URL}/api/verified-candidates`, { headers: authHeader }).then((r) => r.json());
     },
     enabled: !!token,
   });
@@ -1360,7 +1357,7 @@ function CandidatesTab({ token }: { token: string }) {
       formDataObj.append("service", "Candidate Verification");
       formDataObj.append("status", formData.status);
 
-      const response = await fetch("/api/verified-candidates/upload", {
+      const response = await fetch(`${API_BASE_URL}/api/verified-candidates/upload`, {
         method: "POST",
         headers: { Authorization: `Bearer ${token}` },
         body: formDataObj,
@@ -1389,7 +1386,7 @@ function CandidatesTab({ token }: { token: string }) {
 
   const handleStatusChange = async (id: number, newStatus: string) => {
     try {
-      await fetch(`/api/verified-candidates/${id}`, {
+      await fetch(`${API_BASE_URL}/api/verified-candidates/${id}`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
@@ -1521,7 +1518,7 @@ function TrainingRequestsTab({ token }: { token: string }) {
   const { data: requests, refetch, isLoading } = useQuery({
     queryKey: ["/api/admin/training-requests", token],
     queryFn: () =>
-      fetch("/api/admin/training-requests", {
+      fetch(`${API_BASE_URL}/api/admin/training-requests`, {
         headers: { Authorization: `Bearer ${token}` },
       }).then((r) => r.json()),
     enabled: !!token,
@@ -1531,7 +1528,7 @@ function TrainingRequestsTab({ token }: { token: string }) {
 
   const handleStatusChange = async (id: number, newStatus: string) => {
     try {
-      await fetch(`/api/admin/training-requests/${id}`, {
+      await fetch(`${API_BASE_URL}/api/admin/training-requests/${id}`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
