@@ -208,7 +208,7 @@ export async function registerRoutes(
       }
 
       const { title, description, type, category, isFavourite, isPublished } = req.body;
-      
+
       const uploadResult = await uploadBufferToObjectStorage(
         file.buffer,
         file.originalname,
@@ -294,7 +294,7 @@ export async function registerRoutes(
         authenticated = false;
       }
     }
-    
+
     const candidates = authenticated
       ? await storage.getAllVerifiedCandidates()
       : await storage.getVerifiedCandidates();
@@ -352,7 +352,7 @@ export async function registerRoutes(
       }
 
       const { fullName, title, company, bio, service, status } = req.body;
-      
+
       const uploadResult = await uploadBufferToObjectStorage(
         req.file.buffer,
         req.file.originalname,
@@ -453,7 +453,7 @@ export async function registerRoutes(
       }
 
       const { title, description, fileType, isPublished } = req.body;
-      
+
       const uploadResult = await uploadBufferToObjectStorage(
         req.file.buffer,
         req.file.originalname,
@@ -629,14 +629,14 @@ export async function registerRoutes(
       if (!req.file) {
         return res.status(400).json({ message: "CV is required" });
       }
-      
+
       const uploadResult = await uploadBufferToObjectStorage(
         req.file.buffer,
         req.file.originalname,
         req.file.mimetype,
         "applications"
       );
-      
+
       const application = await storage.createJobApplication({
         jobId: Number(req.body.jobId),
         fullName: req.body.fullName,
@@ -651,7 +651,9 @@ export async function registerRoutes(
       res.status(201).json(application);
     } catch (err) {
       console.error("Job application upload error:", err);
-      res.status(500).json({ message: "Server error" });
+      console.error("Job application upload error:", err);
+      const errorMessage = err instanceof Error ? err.message : "Server error";
+      res.status(500).json({ message: errorMessage });
     }
   });
 
