@@ -119,7 +119,7 @@ export default function Videos() {
                           className="w-full h-full object-cover"
                           poster={item.imageUrl || undefined}
                         >
-                          <source src={item.fileUrl || item.url} type="video/mp4" />
+                          <source src={item.fileUrl?.startsWith("http") ? item.fileUrl : `${API_BASE_URL}${item.fileUrl || item.url}`} type="video/mp4" />
                           Your browser does not support the video tag.
                         </video>
                       ) : (
