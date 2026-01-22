@@ -7,6 +7,13 @@ import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { queryClient } from "@/lib/queryClient";
 
@@ -158,6 +165,8 @@ function ServiceRequestsTab({ token }: { token: string }) {
   });
 
   const { toast } = useToast();
+  const [statusFilter, setStatusFilter] = useState("all");
+  const [sortOrder, setSortOrder] = useState("newest");
 
   const handleStatusChange = async (id: number, newStatus: string) => {
     try {
@@ -176,14 +185,52 @@ function ServiceRequestsTab({ token }: { token: string }) {
     }
   };
 
+  const filteredRequests = requests
+    ?.filter((req: any) => {
+      if (statusFilter !== "all" && req.status !== statusFilter) return false;
+      return true;
+    })
+    .sort((a: any, b: any) => {
+      if (sortOrder === "newest") return new Date(b.createdAt || 0).getTime() - new Date(a.createdAt || 0).getTime();
+      if (sortOrder === "oldest") return new Date(a.createdAt || 0).getTime() - new Date(b.createdAt || 0).getTime();
+      return 0;
+    });
+
   if (isLoading) return <div className="text-center py-8">Loading...</div>;
 
   return (
     <Card className="p-6">
-      <h2 className="text-2xl font-bold mb-4">Service Requests</h2>
-      {requests && requests.length > 0 ? (
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
+        <h2 className="text-2xl font-bold">Service Requests</h2>
+        <div className="flex flex-wrap gap-2">
+          <Select value={statusFilter} onValueChange={setStatusFilter}>
+            <SelectTrigger className="w-[140px]">
+              <SelectValue placeholder="Filter Status" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All Status</SelectItem>
+              <SelectItem value="pending">Pending</SelectItem>
+              <SelectItem value="reviewed">Reviewed</SelectItem>
+              <SelectItem value="approved">Approved</SelectItem>
+              <SelectItem value="rejected">Rejected</SelectItem>
+            </SelectContent>
+          </Select>
+
+          <Select value={sortOrder} onValueChange={setSortOrder}>
+            <SelectTrigger className="w-[140px]">
+              <SelectValue placeholder="Sort Order" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="newest">Newest First</SelectItem>
+              <SelectItem value="oldest">Oldest First</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+      </div>
+
+      {filteredRequests && filteredRequests.length > 0 ? (
         <div className="space-y-4">
-          {requests.map((req: any) => (
+          {filteredRequests.map((req: any) => (
             <Card key={req.id} className="p-4" data-testid={`card-request-${req.id}`}>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
                 <div>
@@ -199,7 +246,7 @@ function ServiceRequestsTab({ token }: { token: string }) {
                   <select
                     value={req.status}
                     onChange={(e) => handleStatusChange(req.id, e.target.value)}
-                    className="text-sm font-medium border rounded px-2 py-1"
+                    className="text-sm font-medium border rounded px-2 py-1 w-full"
                     data-testid={`select-status-${req.id}`}
                   >
                     <option value="pending">Pending</option>
@@ -210,7 +257,7 @@ function ServiceRequestsTab({ token }: { token: string }) {
                 </div>
                 <div>
                   <p className="text-sm text-muted-foreground">Email</p>
-                  <p className="font-medium text-sm">{req.email}</p>
+                  <p className="font-medium text-sm break-all">{req.email}</p>
                 </div>
               </div>
               <p className="text-sm text-muted-foreground mb-2">Description:</p>
@@ -219,7 +266,7 @@ function ServiceRequestsTab({ token }: { token: string }) {
           ))}
         </div>
       ) : (
-        <p className="text-muted-foreground">No requests yet.</p>
+        <p className="text-muted-foreground">No requests found.</p>
       )}
     </Card>
   );
@@ -234,6 +281,28 @@ function NewsTab({ token }: { token: string }) {
       }).then((r) => r.json()),
     enabled: !!token,
   });
+
+  const [statusFilter, setStatusFilter] = useState("all");
+  const [homeFilter, setHomeFilter] = useState("all");
+  const [sortOrder, setSortOrder] = useState("newest");
+
+  const filteredNews = news
+    ?.filter((item: any) => {
+      if (statusFilter !== "all") {
+        const isPublished = statusFilter === "published";
+        if (item.isPublished !== isPublished) return false;
+      }
+      if (homeFilter !== "all") {
+        const isFavourite = homeFilter === "favourite";
+        if (item.isFavourite !== isFavourite) return false;
+      }
+      return true;
+    })
+    .sort((a: any, b: any) => {
+      if (sortOrder === "newest") return new Date(b.createdAt || 0).getTime() - new Date(a.createdAt || 0).getTime();
+      if (sortOrder === "oldest") return new Date(a.createdAt || 0).getTime() - new Date(b.createdAt || 0).getTime();
+      return a.title.localeCompare(b.title);
+    });
 
   const [formData, setFormData] = useState({
     title: "",
@@ -399,14 +468,50 @@ function NewsTab({ token }: { token: string }) {
       </Card>
 
       <Card className="p-6">
-        <h2 className="text-2xl font-bold mb-4">All News</h2>
-        {news && news.length > 0 ? (
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
+          <h2 className="text-2xl font-bold">All News</h2>
+          <div className="flex flex-wrap gap-2">
+            <Select value={statusFilter} onValueChange={setStatusFilter}>
+              <SelectTrigger className="w-[140px]">
+                <SelectValue placeholder="Status" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Status</SelectItem>
+                <SelectItem value="published">Published</SelectItem>
+                <SelectItem value="draft">Draft</SelectItem>
+              </SelectContent>
+            </Select>
+
+            <Select value={homeFilter} onValueChange={setHomeFilter}>
+              <SelectTrigger className="w-[140px]">
+                <SelectValue placeholder="Home Page" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All News</SelectItem>
+                <SelectItem value="favourite">Home Page Only</SelectItem>
+              </SelectContent>
+            </Select>
+
+            <Select value={sortOrder} onValueChange={setSortOrder}>
+              <SelectTrigger className="w-[140px]">
+                <SelectValue placeholder="Sort Order" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="newest">Newest First</SelectItem>
+                <SelectItem value="oldest">Oldest First</SelectItem>
+                <SelectItem value="title">Title (A-Z)</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+        </div>
+
+        {filteredNews && filteredNews.length > 0 ? (
           <div className="space-y-4">
-            {news.map((item: any) => (
+            {filteredNews.map((item: any) => (
               <Card key={item.id} className="p-4" data-testid={`card-news-${item.id}`}>
                 <div className="flex flex-col md:flex-row gap-4">
                   {item.imageUrl && (
-                    <img src={item.imageUrl} alt={item.title} className="w-20 h-20 object-cover rounded" />
+                    <img src={item.imageUrl?.startsWith("http") ? item.imageUrl : `${API_BASE_URL}${item.imageUrl}`} alt={item.title} className="w-20 h-20 object-cover rounded" />
                   )}
                   <div className="flex-1">
                     <p className="font-bold">{item.title}</p>
@@ -457,7 +562,7 @@ function NewsTab({ token }: { token: string }) {
             ))}
           </div>
         ) : (
-          <p className="text-muted-foreground">No news feeds yet.</p>
+          <p className="text-muted-foreground">No news feeds found.</p>
         )}
       </Card>
     </div>
@@ -481,6 +586,25 @@ function VideosTab({ token }: { token: string }) {
       }).then((r) => r.json()),
     enabled: !!token,
   });
+
+  const [categoryFilter, setCategoryFilter] = useState("all");
+  const [statusFilter, setStatusFilter] = useState("all");
+  const [sortOrder, setSortOrder] = useState("newest");
+
+  const filteredVideos = videos
+    ?.filter((item: any) => {
+      if (categoryFilter !== "all" && item.category !== categoryFilter) return false;
+      if (statusFilter !== "all") {
+        const isPublished = statusFilter === "published";
+        if (item.isPublished !== isPublished) return false;
+      }
+      return true;
+    })
+    .sort((a: any, b: any) => {
+      if (sortOrder === "newest") return new Date(b.createdAt || 0).getTime() - new Date(a.createdAt || 0).getTime();
+      if (sortOrder === "oldest") return new Date(a.createdAt || 0).getTime() - new Date(b.createdAt || 0).getTime();
+      return a.title.localeCompare(b.title);
+    });
 
   const [formData, setFormData] = useState({
     title: "",
@@ -656,10 +780,50 @@ function VideosTab({ token }: { token: string }) {
       </Card>
 
       <Card className="p-6">
-        <h2 className="text-2xl font-bold mb-4">All Videos</h2>
-        {videos && videos.length > 0 ? (
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
+          <h2 className="text-2xl font-bold">All Videos</h2>
+          <div className="flex flex-wrap gap-2">
+            <Select value={categoryFilter} onValueChange={setCategoryFilter}>
+              <SelectTrigger className="w-[140px]">
+                <SelectValue placeholder="Category" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Caiegories</SelectItem>
+                {VIDEO_CATEGORIES.map((cat) => (
+                  <SelectItem key={cat.value} value={cat.value}>
+                    {cat.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+
+            <Select value={statusFilter} onValueChange={setStatusFilter}>
+              <SelectTrigger className="w-[140px]">
+                <SelectValue placeholder="Status" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Status</SelectItem>
+                <SelectItem value="published">Published</SelectItem>
+                <SelectItem value="draft">Draft</SelectItem>
+              </SelectContent>
+            </Select>
+
+            <Select value={sortOrder} onValueChange={setSortOrder}>
+              <SelectTrigger className="w-[140px]">
+                <SelectValue placeholder="Sort Order" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="newest">Newest First</SelectItem>
+                <SelectItem value="oldest">Oldest First</SelectItem>
+                <SelectItem value="title">Title (A-Z)</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+        </div>
+
+        {filteredVideos && filteredVideos.length > 0 ? (
           <div className="space-y-4">
-            {videos.map((item: any) => (
+            {filteredVideos.map((item: any) => (
               <Card key={item.id} className="p-4" data-testid={`card-video-${item.id}`}>
                 <div className="flex flex-col md:flex-row justify-between items-start gap-4">
                   <div className="flex-1">
@@ -715,7 +879,7 @@ function VideosTab({ token }: { token: string }) {
             ))}
           </div>
         ) : (
-          <p className="text-muted-foreground">No videos yet.</p>
+          <p className="text-muted-foreground">No videos found.</p>
         )}
       </Card>
     </div>
@@ -731,6 +895,25 @@ function TemplatesTab({ token }: { token: string }) {
       }).then((r) => r.json()),
     enabled: !!token,
   });
+
+  const [typeFilter, setTypeFilter] = useState("all");
+  const [statusFilter, setStatusFilter] = useState("all");
+  const [sortOrder, setSortOrder] = useState("newest");
+
+  const filteredTemplates = templates
+    ?.filter((item: any) => {
+      if (typeFilter !== "all" && item.fileType !== typeFilter) return false;
+      if (statusFilter !== "all") {
+        const isPublished = statusFilter === "published";
+        if (item.isPublished !== isPublished) return false;
+      }
+      return true;
+    })
+    .sort((a: any, b: any) => {
+      if (sortOrder === "newest") return new Date(b.createdAt || 0).getTime() - new Date(a.createdAt || 0).getTime();
+      if (sortOrder === "oldest") return new Date(a.createdAt || 0).getTime() - new Date(b.createdAt || 0).getTime();
+      return a.title.localeCompare(b.title);
+    });
 
   const [formData, setFormData] = useState({
     title: "",
@@ -882,10 +1065,48 @@ function TemplatesTab({ token }: { token: string }) {
       </Card>
 
       <Card className="p-6">
-        <h2 className="text-2xl font-bold mb-4">Templates</h2>
-        {templates && templates.length > 0 ? (
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
+          <h2 className="text-2xl font-bold">Templates</h2>
+          <div className="flex flex-wrap gap-2">
+            <Select value={typeFilter} onValueChange={setTypeFilter}>
+              <SelectTrigger className="w-[140px]">
+                <SelectValue placeholder="File Type" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Types</SelectItem>
+                <SelectItem value="pdf">PDF</SelectItem>
+                <SelectItem value="docx">Word (DOCX)</SelectItem>
+                <SelectItem value="xlsx">Excel (XLSX)</SelectItem>
+              </SelectContent>
+            </Select>
+
+            <Select value={statusFilter} onValueChange={setStatusFilter}>
+              <SelectTrigger className="w-[140px]">
+                <SelectValue placeholder="Status" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Status</SelectItem>
+                <SelectItem value="published">Published</SelectItem>
+                <SelectItem value="draft">Draft</SelectItem>
+              </SelectContent>
+            </Select>
+
+            <Select value={sortOrder} onValueChange={setSortOrder}>
+              <SelectTrigger className="w-[140px]">
+                <SelectValue placeholder="Sort Order" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="newest">Newest First</SelectItem>
+                <SelectItem value="oldest">Oldest First</SelectItem>
+                <SelectItem value="title">Title (A-Z)</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+        </div>
+
+        {filteredTemplates && filteredTemplates.length > 0 ? (
           <div className="space-y-4">
-            {templates.map((item: any) => (
+            {filteredTemplates.map((item: any) => (
               <Card key={item.id} className="p-4" data-testid={`card-template-${item.id}`}>
                 <div className="flex justify-between items-start">
                   <div className="flex-1">
@@ -927,7 +1148,7 @@ function TemplatesTab({ token }: { token: string }) {
             ))}
           </div>
         ) : (
-          <p className="text-muted-foreground">No templates yet.</p>
+          <p className="text-muted-foreground">No templates found.</p>
         )}
       </Card>
     </div>
@@ -943,6 +1164,28 @@ function JobsTab({ token }: { token: string }) {
       }).then((r) => r.json()),
     enabled: !!token,
   });
+
+  const [statusFilter, setStatusFilter] = useState("all");
+  const [categoryFilter, setCategoryFilter] = useState("all");
+  const [sortOrder, setSortOrder] = useState("newest");
+
+  // Derive unique categories from jobs
+  const jobCategories = Array.from(new Set(jobs?.map((j: any) => j.category).filter(Boolean))) as string[];
+
+  const filteredJobs = jobs
+    ?.filter((job: any) => {
+      if (statusFilter !== "all") {
+        const isPublished = statusFilter === "published";
+        if (job.isPublished !== isPublished) return false;
+      }
+      if (categoryFilter !== "all" && job.category !== categoryFilter) return false;
+      return true;
+    })
+    .sort((a: any, b: any) => {
+      if (sortOrder === "newest") return new Date(b.createdAt || 0).getTime() - new Date(a.createdAt || 0).getTime();
+      if (sortOrder === "oldest") return new Date(a.createdAt || 0).getTime() - new Date(b.createdAt || 0).getTime();
+      return a.title.localeCompare(b.title);
+    });
 
   const [formData, setFormData] = useState({
     title: "",
@@ -1167,10 +1410,50 @@ function JobsTab({ token }: { token: string }) {
       </Card>
 
       <Card className="p-6">
-        <h2 className="text-2xl font-bold mb-4">Job Postings</h2>
-        {jobs && jobs.length > 0 ? (
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
+          <h2 className="text-2xl font-bold">Job Postings</h2>
+          <div className="flex flex-wrap gap-2">
+            <Select value={statusFilter} onValueChange={setStatusFilter}>
+              <SelectTrigger className="w-[140px]">
+                <SelectValue placeholder="Status" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Status</SelectItem>
+                <SelectItem value="published">Published</SelectItem>
+                <SelectItem value="draft">Draft</SelectItem>
+              </SelectContent>
+            </Select>
+
+            <Select value={categoryFilter} onValueChange={setCategoryFilter}>
+              <SelectTrigger className="w-[140px]">
+                <SelectValue placeholder="Category" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Categories</SelectItem>
+                {jobCategories.map((cat) => (
+                  <SelectItem key={cat} value={cat}>
+                    {cat}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+
+            <Select value={sortOrder} onValueChange={setSortOrder}>
+              <SelectTrigger className="w-[140px]">
+                <SelectValue placeholder="Sort Order" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="newest">Newest First</SelectItem>
+                <SelectItem value="oldest">Oldest First</SelectItem>
+                <SelectItem value="title">Title (A-Z)</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+        </div>
+
+        {filteredJobs && filteredJobs.length > 0 ? (
           <div className="space-y-4">
-            {jobs.map((job: any) => (
+            {filteredJobs.map((job: any) => (
               <Card key={job.id} className="p-4" data-testid={`card-admin-job-${job.id}`}>
                 <div className="flex justify-between items-start">
                   <div className="flex-1">
@@ -1223,7 +1506,7 @@ function JobsTab({ token }: { token: string }) {
             ))}
           </div>
         ) : (
-          <p className="text-muted-foreground">No job postings yet.</p>
+          <p className="text-muted-foreground">No job postings found.</p>
         )}
       </Card>
     </div>
@@ -1254,14 +1537,52 @@ function JobApplicationsTab({ token }: { token: string }) {
     return job?.title || `Job #${jobId}`;
   };
 
+  const [searchTerm, setSearchTerm] = useState("");
+  const [sortOrder, setSortOrder] = useState("newest");
+
+  const filteredApplications = applications
+    ?.filter((app: any) => {
+      if (!searchTerm) return true;
+      const lowerTerm = searchTerm.toLowerCase();
+      return (
+        app.fullName.toLowerCase().includes(lowerTerm) ||
+        app.email.toLowerCase().includes(lowerTerm)
+      );
+    })
+    .sort((a: any, b: any) => {
+      if (sortOrder === "newest") return new Date(b.createdAt || 0).getTime() - new Date(a.createdAt || 0).getTime();
+      if (sortOrder === "oldest") return new Date(a.createdAt || 0).getTime() - new Date(b.createdAt || 0).getTime();
+      return 0;
+    });
+
   if (isLoading) return <div className="text-center py-8">Loading...</div>;
 
   return (
     <Card className="p-6">
-      <h2 className="text-2xl font-bold mb-4">Job Applications</h2>
-      {applications && applications.length > 0 ? (
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
+        <h2 className="text-2xl font-bold">Job Applications</h2>
+        <div className="flex flex-wrap gap-2 w-full md:w-auto">
+          <Input
+            placeholder="Search candidates..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="w-full md:w-[200px]"
+          />
+          <Select value={sortOrder} onValueChange={setSortOrder}>
+            <SelectTrigger className="w-[140px]">
+              <SelectValue placeholder="Sort Order" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="newest">Newest First</SelectItem>
+              <SelectItem value="oldest">Oldest First</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+      </div>
+
+      {filteredApplications && filteredApplications.length > 0 ? (
         <div className="space-y-4">
-          {applications.map((app: any) => (
+          {filteredApplications.map((app: any) => (
             <Card key={app.id} className="p-4" data-testid={`card-application-${app.id}`}>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
                 <div>
@@ -1293,7 +1614,7 @@ function JobApplicationsTab({ token }: { token: string }) {
                 <div>
                   <p className="text-sm text-muted-foreground">CV</p>
                   <a
-                    href={app.cvUrl}
+                    href={app.cvUrl?.startsWith("http") ? app.cvUrl : `${API_BASE_URL}${app.cvUrl}`}
                     download={app.cvFileName}
                     className="text-blue-600 font-medium hover:underline"
                     data-testid={`link-download-cv-${app.id}`}
@@ -1312,7 +1633,7 @@ function JobApplicationsTab({ token }: { token: string }) {
           ))}
         </div>
       ) : (
-        <p className="text-muted-foreground">No job applications yet.</p>
+        <p className="text-muted-foreground">No matching job applications found.</p>
       )}
     </Card>
   );
@@ -1327,6 +1648,20 @@ function CandidatesTab({ token }: { token: string }) {
     },
     enabled: !!token,
   });
+
+  const [statusFilter, setStatusFilter] = useState("all");
+  const [sortOrder, setSortOrder] = useState("newest");
+
+  const filteredCandidates = candidates
+    ?.filter((cand: any) => {
+      if (statusFilter !== "all" && cand.status !== statusFilter) return false;
+      return true;
+    })
+    .sort((a: any, b: any) => {
+      if (sortOrder === "newest") return new Date(b.createdAt || 0).getTime() - new Date(a.createdAt || 0).getTime();
+      if (sortOrder === "oldest") return new Date(a.createdAt || 0).getTime() - new Date(b.createdAt || 0).getTime();
+      return a.fullName.localeCompare(b.fullName);
+    });
 
   const [formData, setFormData] = useState({
     fullName: "",
@@ -1478,14 +1813,41 @@ function CandidatesTab({ token }: { token: string }) {
       </Card>
 
       <Card className="p-6">
-        <h2 className="text-2xl font-bold mb-4">Verified Candidates</h2>
-        {candidates && candidates.length > 0 ? (
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
+          <h2 className="text-2xl font-bold">Verified Candidates</h2>
+          <div className="flex flex-wrap gap-2">
+            <Select value={statusFilter} onValueChange={setStatusFilter}>
+              <SelectTrigger className="w-[140px]">
+                <SelectValue placeholder="Status" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Status</SelectItem>
+                <SelectItem value="pending">Pending</SelectItem>
+                <SelectItem value="approved">Approved</SelectItem>
+                <SelectItem value="rejected">Rejected</SelectItem>
+              </SelectContent>
+            </Select>
+
+            <Select value={sortOrder} onValueChange={setSortOrder}>
+              <SelectTrigger className="w-[140px]">
+                <SelectValue placeholder="Sort Order" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="newest">Newest First</SelectItem>
+                <SelectItem value="oldest">Oldest First</SelectItem>
+                <SelectItem value="name">Name (A-Z)</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+        </div>
+
+        {filteredCandidates && filteredCandidates.length > 0 ? (
           <div className="space-y-4">
-            {candidates.map((cand: any) => (
+            {filteredCandidates.map((cand: any) => (
               <Card key={cand.id} className="p-4" data-testid={`card-candidate-${cand.id}`}>
                 <div className="flex gap-4">
                   {cand.imageUrl && (
-                    <img src={cand.imageUrl} alt={cand.fullName} className="w-16 h-16 rounded-full object-cover" />
+                    <img src={cand.imageUrl?.startsWith("http") ? cand.imageUrl : `${API_BASE_URL}${cand.imageUrl}`} alt={cand.fullName} className="w-16 h-16 rounded-full object-cover" />
                   )}
                   <div className="flex-1">
                     <p className="font-bold">{cand.fullName}</p>
@@ -1507,7 +1869,7 @@ function CandidatesTab({ token }: { token: string }) {
             ))}
           </div>
         ) : (
-          <p className="text-muted-foreground">No candidates yet.</p>
+          <p className="text-muted-foreground">No candidates found.</p>
         )}
       </Card>
     </div>
@@ -1525,6 +1887,19 @@ function TrainingRequestsTab({ token }: { token: string }) {
   });
 
   const { toast } = useToast();
+  const [statusFilter, setStatusFilter] = useState("all");
+  const [sortOrder, setSortOrder] = useState("newest");
+
+  const filteredRequests = requests
+    ?.filter((req: any) => {
+      if (statusFilter !== "all" && req.status !== statusFilter) return false;
+      return true;
+    })
+    .sort((a: any, b: any) => {
+      if (sortOrder === "newest") return new Date(b.createdAt || 0).getTime() - new Date(a.createdAt || 0).getTime();
+      if (sortOrder === "oldest") return new Date(a.createdAt || 0).getTime() - new Date(b.createdAt || 0).getTime();
+      return 0;
+    });
 
   const handleStatusChange = async (id: number, newStatus: string) => {
     try {
@@ -1547,44 +1922,56 @@ function TrainingRequestsTab({ token }: { token: string }) {
 
   return (
     <Card className="p-6">
-      <h2 className="text-2xl font-bold mb-4">Training Requests</h2>
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
+        <h2 className="text-2xl font-bold">Training Requests</h2>
+        <div className="flex flex-wrap gap-2">
+          <Select value={statusFilter} onValueChange={setStatusFilter}>
+            <SelectTrigger className="w-[140px]">
+              <SelectValue placeholder="Status" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All Status</SelectItem>
+              <SelectItem value="new">New</SelectItem>
+              <SelectItem value="reviewed">Reviewed</SelectItem>
+              <SelectItem value="contacted">Contacted</SelectItem>
+            </SelectContent>
+          </Select>
+
+          <Select value={sortOrder} onValueChange={setSortOrder}>
+            <SelectTrigger className="w-[140px]">
+              <SelectValue placeholder="Sort Order" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="newest">Newest First</SelectItem>
+              <SelectItem value="oldest">Oldest First</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+      </div>
+
       <p className="text-muted-foreground mb-6">
         View and manage training registration requests from users.
       </p>
-      {requests && requests.length > 0 ? (
+
+      {filteredRequests && filteredRequests.length > 0 ? (
         <div className="space-y-4">
-          {requests.map((req: any) => (
+          {filteredRequests.map((req: any) => (
             <Card key={req.id} className="p-4" data-testid={`card-training-${req.id}`}>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-4">
                 <div>
-                  <p className="text-sm text-muted-foreground">Full Name</p>
+                  <p className="text-sm text-muted-foreground">Applicant</p>
                   <p className="font-medium">{req.fullName}</p>
                 </div>
                 <div>
-                  <p className="text-sm text-muted-foreground">Email</p>
-                  <p className="font-medium text-sm">{req.email}</p>
-                </div>
-                <div>
-                  <p className="text-sm text-muted-foreground">Phone</p>
-                  <p className="font-medium text-sm">{req.phone}</p>
-                </div>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
-                <div>
                   <p className="text-sm text-muted-foreground">Interested Training</p>
-                  <p className="font-medium text-primary">{req.interestedTraining}</p>
-                </div>
-                <div>
-                  <p className="text-sm text-muted-foreground">Preferred Start Date</p>
-                  <p className="font-medium">{req.preferredStartDate || "Not specified"}</p>
+                  <p className="font-medium">{req.interestedTraining}</p>
                 </div>
                 <div>
                   <p className="text-sm text-muted-foreground">Status</p>
                   <select
                     value={req.status}
                     onChange={(e) => handleStatusChange(req.id, e.target.value)}
-                    className="text-sm font-medium border rounded px-2 py-1"
+                    className="text-sm border rounded px-2 py-1"
                     data-testid={`select-training-status-${req.id}`}
                   >
                     <option value="new">New</option>
@@ -1593,37 +1980,23 @@ function TrainingRequestsTab({ token }: { token: string }) {
                   </select>
                 </div>
               </div>
-
-              {(req.employmentStatus || req.organizationName || req.role) && (
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4 pt-4 border-t">
-                  <div>
-                    <p className="text-sm text-muted-foreground">Employment Status</p>
-                    <p className="font-medium text-sm">{req.employmentStatus || "-"}</p>
-                  </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <p className="text-sm text-muted-foreground">Contact Info</p>
+                  <p className="text-sm">{req.email} • {req.phone}</p>
+                </div>
+                {req.organizationName && (
                   <div>
                     <p className="text-sm text-muted-foreground">Organization</p>
-                    <p className="font-medium text-sm">{req.organizationName || "-"}</p>
+                    <p className="text-sm">{req.organizationName} ({req.role})</p>
                   </div>
-                  <div>
-                    <p className="text-sm text-muted-foreground">Role</p>
-                    <p className="font-medium text-sm">{req.role || "-"}</p>
-                  </div>
-                </div>
-              )}
-
-              <div className="flex gap-4 pt-2">
-                <span className={`text-xs px-2 py-1 rounded ${req.certificationRequired ? "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400" : "bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-400"}`}>
-                  Certification: {req.certificationRequired ? "Yes" : "No"}
-                </span>
-                <span className={`text-xs px-2 py-1 rounded ${req.verifiedShortlist ? "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400" : "bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-400"}`}>
-                  Verified Shortlist: {req.verifiedShortlist ? "Yes" : "No"}
-                </span>
+                )}
               </div>
             </Card>
           ))}
         </div>
       ) : (
-        <p className="text-muted-foreground">No training requests yet.</p>
+        <p className="text-muted-foreground">No training requests found.</p>
       )}
     </Card>
   );
