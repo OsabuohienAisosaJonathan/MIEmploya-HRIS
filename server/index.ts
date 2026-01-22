@@ -1,6 +1,7 @@
 import express, { type Request, Response, NextFunction } from "express";
 import multer from "multer";
 import path from "path";
+import fs from "fs";
 import { registerRoutes } from "./routes";
 import { serveStatic } from "./static";
 import { createServer } from "http";
@@ -33,7 +34,6 @@ app.use(
 app.use(express.urlencoded({ extended: false }));
 
 // Serve uploads directory - prioritize dist/public/uploads for production
-const fs = await import("fs");
 let uploadsDir = path.join(process.cwd(), "dist", "public", "uploads");
 
 if (!fs.existsSync(uploadsDir)) {
