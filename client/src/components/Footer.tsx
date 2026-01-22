@@ -1,6 +1,6 @@
 import { Link } from "wouter";
 import { Mail, Phone, MapPin, MessageCircle } from "lucide-react";
-import footerLogoImg from "@assets/Mi EMPLOYA LOGO4.jpg";
+import footerLogoImg from "@assets/Mi EMPLOYA LOGO4.png";
 import { SiInstagram, SiFacebook, SiTiktok } from "react-icons/si";
 
 const WHATSAPP_NUMBER = "2349063337173";

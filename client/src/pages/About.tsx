@@ -4,7 +4,7 @@ import { Card } from "@/components/ui/card";
 import { Briefcase, BookOpen, Package, Code } from "lucide-react";
 import teamMeetingImg from "@assets/Document_from_Miemploya_(19)-min_1766649102432.png";
 import officeStaffImg from "@assets/about-office-staff.png";
-import professionalImg from "@assets/about-professional.jpg";
+import professionalImg from "@assets/about-professional.png";
 
 export default function About() {
   return (
