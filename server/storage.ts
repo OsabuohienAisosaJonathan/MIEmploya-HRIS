@@ -36,6 +36,7 @@ export interface IStorage {
 
   // Content Items
   getContentItems(): Promise<ContentItem[]>;
+  getAllContentItems(): Promise<ContentItem[]>;
   createContentItem(item: InsertContentItem): Promise<ContentItem>;
   updateContentItem(id: number, item: Partial<InsertContentItem>): Promise<ContentItem | undefined>;
   deleteContentItem(id: number): Promise<void>;
@@ -110,6 +111,10 @@ export class DatabaseStorage implements IStorage {
       .select()
       .from(contentItems)
       .where(eq(contentItems.isPublished, true));
+  }
+
+  async getAllContentItems(): Promise<ContentItem[]> {
+    return await db.select().from(contentItems);
   }
 
   async createContentItem(item: InsertContentItem): Promise<ContentItem> {

@@ -118,6 +118,8 @@ export default function Videos() {
                           controls
                           className="w-full h-full object-cover"
                           poster={item.imageUrl || undefined}
+                          controlsList="nodownload"
+                          onContextMenu={(e) => e.preventDefault()}
                         >
                           <source src={item.fileUrl?.startsWith("http") ? item.fileUrl : `${API_BASE_URL}${item.fileUrl || item.url}`} type="video/mp4" />
                           Your browser does not support the video tag.

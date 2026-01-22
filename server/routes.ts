@@ -141,7 +141,23 @@ export async function registerRoutes(
   // ============================================
   app.get(api.content.list.path, async (req, res) => {
     const type = req.query.type as string | undefined;
-    let content = await storage.getContentItems();
+
+    // Check for admin auth to decide whether to show unpublished items
+    const token = req.headers.authorization?.replace("Bearer ", "");
+    let isAdmin = false;
+    if (token) {
+      try {
+        const decoded = Buffer.from(token, "base64").toString();
+        isAdmin = decoded.startsWith("admin:");
+      } catch {
+        isAdmin = false;
+      }
+    }
+
+    let content = isAdmin
+      ? await storage.getAllContentItems()
+      : await storage.getContentItems();
+
     if (type) {
       content = content.filter((c) => c.type === type);
     }

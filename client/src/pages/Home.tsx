@@ -205,6 +205,8 @@ export default function Home() {
                         {item.fileUrl || item.url ? (
                           <video
                             controls
+                            controlsList="nodownload"
+                            onContextMenu={(e) => e.preventDefault()}
                             className="w-full h-full object-cover"
                           >
                             <source src={item.fileUrl?.startsWith("http") ? item.fileUrl : `${API_BASE_URL}${item.fileUrl || item.url}`} type="video/mp4" />
