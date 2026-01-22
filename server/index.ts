@@ -130,6 +130,7 @@ export const upload = multer({
       "video/mp4",
       "video/webm",
       "application/pdf",
+      "application/msword",
       "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
       "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
     ];

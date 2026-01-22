@@ -208,10 +208,10 @@ export default function JobDetail() {
                   </div>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium mb-2">CV (PDF)</label>
+                  <label className="block text-sm font-medium mb-2">CV (PDF, Word, or Image)</label>
                   <input
                     type="file"
-                    accept=".pdf"
+                    accept=".pdf,.doc,.docx,.jpg,.jpeg,.png,.webp"
                     onChange={(e) => setFormData({ ...formData, cv: e.target.files?.[0] || null })}
                     required
                     className="w-full border rounded px-3 py-2"
