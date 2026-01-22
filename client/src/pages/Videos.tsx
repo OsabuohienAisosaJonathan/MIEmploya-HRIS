@@ -91,8 +91,8 @@ export default function Videos() {
                 <h3 className="text-xl font-semibold mb-2">No Videos Found</h3>
                 <p className="text-muted-foreground">
                   {selectedCategory === "all"
-                    ? "No videos have been published yet."
-                    : `No videos in the "${selectedCategory}" category.`}
+                    ? "No training materials or videos found."
+                    : `No materials found in the "${selectedCategory}" category.`}
                 </p>
                 {selectedCategory !== "all" && (
                   <Button

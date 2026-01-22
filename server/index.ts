@@ -32,8 +32,23 @@ app.use(
 
 app.use(express.urlencoded({ extended: false }));
 
-// Serve uploads directory for legacy media files (backward compatibility)
-const uploadsDir = path.join(process.cwd(), "client", "public", "uploads");
+// Serve uploads directory - prioritize dist/public/uploads for production
+const fs = await import("fs");
+let uploadsDir = path.join(process.cwd(), "dist", "public", "uploads");
+
+if (!fs.existsSync(uploadsDir)) {
+  uploadsDir = path.join(process.cwd(), "public", "uploads");
+  if (!fs.existsSync(uploadsDir)) {
+    uploadsDir = path.join(process.cwd(), "client", "public", "uploads");
+  }
+}
+
+// Create directory if it doesn't exist to prevent errors
+if (!fs.existsSync(uploadsDir)) {
+  fs.mkdirSync(uploadsDir, { recursive: true });
+}
+
+console.log(`[Server] Serving uploads from: ${uploadsDir}`);
 app.use("/uploads", express.static(uploadsDir));
 
 // Register object storage routes for serving files from cloud storage
