@@ -14,16 +14,56 @@ export async function uploadBufferToObjectStorage(
   mimeType: string,
   folder: string = "uploads"
 ): Promise<UploadResult> {
-  if (!BUCKET_ID) {
-    throw new Error("Object storage not configured - DEFAULT_OBJECT_STORAGE_BUCKET_ID not set");
-  }
-
   const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
   const ext = originalFilename.includes('.') ? originalFilename.substring(originalFilename.lastIndexOf('.')) : '';
   const safeFilename = `${uniqueSuffix}${ext}`;
   const objectName = `public/${folder}/${safeFilename}`;
 
-  console.log(`[Object Storage] Starting upload: ${objectName}`);
+  console.log(`[Upload] Starting upload: ${objectName}`);
+
+  // Fallback to local storage if no Bucket ID is configured
+  if (!BUCKET_ID) {
+    console.warn("[Upload] Object storage not configured (DEFAULT_OBJECT_STORAGE_BUCKET_ID missing). Using local ephemeral storage.");
+
+    // Determining the correct path for uploads. 
+    // In production (Render), static files are likely in 'dist/public' or 'public'.
+    // We will attempt to write to 'dist/public' if it exists, otherwise 'public'.
+
+    const fs = await import("fs");
+    const path = await import("path");
+
+    // Try to find the public directory
+    let publicDir = path.join(process.cwd(), "dist", "public");
+    if (!fs.existsSync(publicDir)) {
+      publicDir = path.join(process.cwd(), "public");
+      if (!fs.existsSync(publicDir)) {
+        // Create if neither exists (e.g. fresh container)
+        fs.mkdirSync(publicDir, { recursive: true });
+      }
+    }
+
+    const targetFolder = path.join(publicDir, "uploads", folder);
+
+    if (!fs.existsSync(targetFolder)) {
+      fs.mkdirSync(targetFolder, { recursive: true });
+    }
+
+    const filePath = path.join(targetFolder, safeFilename);
+
+    // Write file
+    fs.writeFileSync(filePath, buffer);
+    console.log(`[Upload] Saved locally to: ${filePath}`);
+
+    // Return relative URL (assuming static middleware serves 'public/uploads' or 'dist/public/uploads' as root or under /uploads?)
+    // In server/static.ts, it serves 'dist/public' as root.
+    // So the URL should be /uploads/folder/filename
+
+    return {
+      url: `/uploads/${folder}/${safeFilename}`,
+      objectPath: objectName,
+      filename: safeFilename
+    };
+  }
 
   const bucket = objectStorageClient.bucket(BUCKET_ID);
   const file = bucket.file(objectName);
@@ -53,16 +93,16 @@ export async function uploadBufferToObjectStorage(
 
 export async function deleteFromObjectStorage(objectPath: string): Promise<void> {
   if (!BUCKET_ID) return;
-  
+
   const bucket = objectStorageClient.bucket(BUCKET_ID);
-  
+
   let objectName = objectPath;
   if (objectPath.startsWith('/storage/')) {
     objectName = `public${objectPath.replace('/storage', '')}`;
   } else if (objectPath.startsWith('/objects/')) {
     objectName = `public${objectPath.replace('/objects', '')}`;
   }
-  
+
   try {
     await bucket.file(objectName).delete();
     console.log(`[Object Storage] Deleted: ${objectName}`);
