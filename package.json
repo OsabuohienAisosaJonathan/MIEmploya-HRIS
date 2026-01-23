@@ -8,7 +8,9 @@
     "build": "tsx script/build.ts",
     "start": "node dist/index.cjs",
     "check": "tsc",
-    "db:push": "drizzle-kit push"
+    "db:push": "drizzle-kit push",
+    "migrate": "tsx script/migrate_postgres_to_mysql.ts",
+    "verify-db": "tsx script/verify_db.ts"
   },
   "dependencies": {
     "@google-cloud/storage": "^7.18.0",
