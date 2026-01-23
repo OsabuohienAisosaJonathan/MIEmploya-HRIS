@@ -25,20 +25,20 @@ export async function uploadBufferToObjectStorage(
   if (!BUCKET_ID) {
     console.warn("[Upload] Object storage not configured (DEFAULT_OBJECT_STORAGE_BUCKET_ID missing). Using local ephemeral storage.");
 
-    // Determining the correct path for uploads. 
-    // In production (Render), static files are likely in 'dist/public' or 'public'.
-    // We will attempt to write to 'dist/public' if it exists, otherwise 'public'.
-
     const fs = await import("fs");
     const path = await import("path");
 
     // Try to find the public directory
-    let publicDir = path.join(process.cwd(), "dist", "public");
+    // Prioritize client/public for local development
+    let publicDir = path.join(process.cwd(), "client", "public");
     if (!fs.existsSync(publicDir)) {
       publicDir = path.join(process.cwd(), "public");
       if (!fs.existsSync(publicDir)) {
-        // Create if neither exists (e.g. fresh container)
-        fs.mkdirSync(publicDir, { recursive: true });
+        publicDir = path.join(process.cwd(), "dist", "public");
+        if (!fs.existsSync(publicDir)) {
+          // Create if neither exists
+          fs.mkdirSync(publicDir, { recursive: true });
+        }
       }
     }
 
@@ -54,12 +54,11 @@ export async function uploadBufferToObjectStorage(
     fs.writeFileSync(filePath, buffer);
     console.log(`[Upload] Saved locally to: ${filePath}`);
 
-    // Return relative URL (assuming static middleware serves 'public/uploads' or 'dist/public/uploads' as root or under /uploads?)
-    // In server/static.ts, it serves 'dist/public' as root.
-    // So the URL should be /uploads/folder/filename
-
+    // Return URL consistent with server/index.ts routing
+    // If we are saving to uploads/folder/filename, and /storage maps to uploads/,
+    // then the URL should be /storage/folder/filename
     return {
-      url: `/uploads/${folder}/${safeFilename}`,
+      url: `/storage/${folder}/${safeFilename}`,
       objectPath: objectName,
       filename: safeFilename
     };
