@@ -64,7 +64,9 @@ app.use("/storage/:folder/:filename", (req, res, next) => {
   if (fs.existsSync(flatPath)) {
     return res.sendFile(flatPath);
   }
-  next();
+  // If file doesn't exist locally, return 404 immediately. 
+  // Do NOT call next(), or it will fall through to the SPA catch-all and serve index.html as the PDF.
+  res.status(404).send("File not found");
 });
 
 // Setup multer with memory storage for object storage uploads
