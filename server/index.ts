@@ -33,38 +33,53 @@ app.use(
 
 app.use(express.urlencoded({ extended: false }));
 
-// Serve uploads directory - prioritize dist/public/uploads for production
-let uploadsDir = path.join(process.cwd(), "dist", "public", "uploads");
+// Serve uploads directory - check all potential locations
+const potentialUploadDirs = [
+  path.join(process.cwd(), "dist", "public", "uploads"),
+  path.join(process.cwd(), "public", "uploads"),
+  path.join(process.cwd(), "client", "public", "uploads"),
+];
 
-if (!fs.existsSync(uploadsDir)) {
-  uploadsDir = path.join(process.cwd(), "public", "uploads");
-  if (!fs.existsSync(uploadsDir)) {
-    uploadsDir = path.join(process.cwd(), "client", "public", "uploads");
-  }
+// Filter to only existing directories
+const existingUploadDirs = potentialUploadDirs.filter(dir => fs.existsSync(dir));
+
+if (existingUploadDirs.length === 0) {
+  // Create default if none exist
+  const defaultDir = path.join(process.cwd(), "client", "public", "uploads");
+  fs.mkdirSync(defaultDir, { recursive: true });
+  existingUploadDirs.push(defaultDir);
 }
 
-// Create directory if it doesn't exist to prevent errors
-if (!fs.existsSync(uploadsDir)) {
-  fs.mkdirSync(uploadsDir, { recursive: true });
-}
+// Log identified directories
+console.log(`[Server] Serving uploads from:`, existingUploadDirs);
 
-console.log(`[Server] Serving uploads from: ${uploadsDir}`);
-app.use("/uploads", express.static(uploadsDir));
+// Register static middleware for ALL existing directories
+// This allows falling back to client/public/uploads even if dist/public/uploads exists but is missing files
+existingUploadDirs.forEach(dir => {
+  app.use("/uploads", express.static(dir));
+});
 
 // Register object storage routes for serving files from cloud storage
 registerObjectStorageRoutes(app);
 
 // Serve public files from object storage via /storage/* route - Mapped to local uploads for XAMPP/Local
-app.use("/storage", express.static(uploadsDir));
+existingUploadDirs.forEach(dir => {
+  app.use("/storage", express.static(dir));
+});
 
 // Fallback for flat file structure compatibility (if files are in uploads/ but requested as uploads/folder/file)
 app.use("/storage/:folder/:filename", (req, res, next) => {
   const { filename } = req.params;
-  const flatPath = path.join(uploadsDir, filename);
-  if (fs.existsSync(flatPath)) {
-    return res.sendFile(flatPath);
+
+  // Check all directories for the file
+  for (const dir of existingUploadDirs) {
+    const flatPath = path.join(dir, filename);
+    if (fs.existsSync(flatPath)) {
+      return res.sendFile(flatPath);
+    }
   }
-  // If file doesn't exist locally, return 404 immediately. 
+
+  // If file doesn't exist locally in any directory, return 404 immediately. 
   // Do NOT call next(), or it will fall through to the SPA catch-all and serve index.html as the PDF.
   res.status(404).send("File not found");
 });
