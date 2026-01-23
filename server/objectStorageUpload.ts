@@ -1,4 +1,14 @@
-import { objectStorageClient } from "./replit_integrations/object_storage";
+import { v2 as cloudinary } from "cloudinary";
+import { Readable } from "stream";
+
+// Configure Cloudinary
+if (process.env.CLOUDINARY_CLOUD_NAME) {
+  cloudinary.config({
+    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+    api_key: process.env.CLOUDINARY_API_KEY,
+    api_secret: process.env.CLOUDINARY_API_SECRET,
+  });
+}
 
 const BUCKET_ID = process.env.DEFAULT_OBJECT_STORAGE_BUCKET_ID;
 
@@ -21,91 +31,96 @@ export async function uploadBufferToObjectStorage(
 
   console.log(`[Upload] Starting upload: ${objectName}`);
 
-  // Fallback to local storage if no Bucket ID is configured
-  if (!BUCKET_ID) {
-    console.warn("[Upload] Object storage not configured (DEFAULT_OBJECT_STORAGE_BUCKET_ID missing). Using local ephemeral storage.");
+  // 1. Priority: Cloudinary (if configured)
+  if (process.env.CLOUDINARY_CLOUD_NAME) {
+    try {
+      return new Promise((resolve, reject) => {
+        const uploadStream = cloudinary.uploader.upload_stream(
+          {
+            folder: `miemploya/${folder}`,
+            public_id: uniqueSuffix, // Use ID without extension for Cloudinary
+            resource_type: "auto", // Auto-detect image/video/raw
+          },
+          (error, result) => {
+            if (error) {
+              console.error("[Cloudinary] Upload failed:", error);
+              reject(error);
+            } else if (result) {
+              console.log(`[Cloudinary] Upload successful: ${result.secure_url}`);
+              resolve({
+                url: result.secure_url,
+                objectPath: result.public_id,
+                filename: safeFilename,
+              });
+            } else {
+              reject(new Error("Cloudinary upload returned no result"));
+            }
+          }
+        );
 
-    const fs = await import("fs");
-    const path = await import("path");
+        // Convert buffer to stream and pipe to Cloudinary
+        const stream = Readable.from(buffer);
+        stream.pipe(uploadStream);
+      });
+    } catch (error) {
+      console.error("[Cloudinary] Unexpected error:", error);
+      throw error;
+    }
+  }
 
-    // Try to find the public directory
-    // Prioritize client/public for local development
-    let publicDir = path.join(process.cwd(), "client", "public");
+  // 2. Fallback: Local Storage (Ephemeral)
+  console.warn("[Upload] Cloudinary not configured. Using local ephemeral storage.");
+
+  const fs = await import("fs");
+  const path = await import("path");
+
+  // Try to find the public directory
+  // Prioritize client/public for local development
+  let publicDir = path.join(process.cwd(), "client", "public");
+  if (!fs.existsSync(publicDir)) {
+    publicDir = path.join(process.cwd(), "public");
     if (!fs.existsSync(publicDir)) {
-      publicDir = path.join(process.cwd(), "public");
+      publicDir = path.join(process.cwd(), "dist", "public");
       if (!fs.existsSync(publicDir)) {
-        publicDir = path.join(process.cwd(), "dist", "public");
-        if (!fs.existsSync(publicDir)) {
-          // Create if neither exists
-          fs.mkdirSync(publicDir, { recursive: true });
-        }
+        // Create if neither exists
+        fs.mkdirSync(publicDir, { recursive: true });
       }
     }
-
-    const targetFolder = path.join(publicDir, "uploads", folder);
-
-    if (!fs.existsSync(targetFolder)) {
-      fs.mkdirSync(targetFolder, { recursive: true });
-    }
-
-    const filePath = path.join(targetFolder, safeFilename);
-
-    // Write file
-    fs.writeFileSync(filePath, buffer);
-    console.log(`[Upload] Saved locally to: ${filePath}`);
-
-    // Return URL consistent with server/index.ts routing
-    // If we are saving to uploads/folder/filename, and /storage maps to uploads/,
-    // then the URL should be /storage/folder/filename
-    return {
-      url: `/storage/${folder}/${safeFilename}`,
-      objectPath: objectName,
-      filename: safeFilename
-    };
   }
 
-  const bucket = objectStorageClient.bucket(BUCKET_ID);
-  const file = bucket.file(objectName);
+  const targetFolder = path.join(publicDir, "uploads", folder);
 
-  try {
-    await file.save(buffer, {
-      contentType: mimeType,
-      metadata: {
-        cacheControl: "public, max-age=31536000",
-      },
-    });
-
-    console.log(`[Object Storage] Upload successful: ${objectName}`);
-
-    const servingUrl = `/storage/${folder}/${safeFilename}`;
-
-    return {
-      url: servingUrl,
-      objectPath: objectName,
-      filename: safeFilename,
-    };
-  } catch (error) {
-    console.error(`[Object Storage] Upload failed:`, error);
-    throw error;
+  if (!fs.existsSync(targetFolder)) {
+    fs.mkdirSync(targetFolder, { recursive: true });
   }
+
+  const filePath = path.join(targetFolder, safeFilename);
+
+  // Write file
+  fs.writeFileSync(filePath, buffer);
+  console.log(`[Upload] Saved locally to: ${filePath}`);
+
+  // Return URL consistent with server/index.ts routing
+  return {
+    url: `/storage/${folder}/${safeFilename}`,
+    objectPath: objectName,
+    filename: safeFilename
+  };
 }
 
 export async function deleteFromObjectStorage(objectPath: string): Promise<void> {
+  // 1. Cloudinary Delete
+  if (process.env.CLOUDINARY_CLOUD_NAME) {
+    try {
+      await cloudinary.uploader.destroy(objectPath);
+      console.log(`[Cloudinary] Deleted: ${objectPath}`);
+      return;
+    } catch (err) {
+      console.error("[Cloudinary] Failed to delete:", err);
+      // Don't throw, just log
+    }
+  }
+
+  // 2. Fallback legacy delete (No-op mostly as we don't track local paths perfectly here)
   if (!BUCKET_ID) return;
-
-  const bucket = objectStorageClient.bucket(BUCKET_ID);
-
-  let objectName = objectPath;
-  if (objectPath.startsWith('/storage/')) {
-    objectName = `public${objectPath.replace('/storage', '')}`;
-  } else if (objectPath.startsWith('/objects/')) {
-    objectName = `public${objectPath.replace('/objects', '')}`;
-  }
-
-  try {
-    await bucket.file(objectName).delete();
-    console.log(`[Object Storage] Deleted: ${objectName}`);
-  } catch (err) {
-    console.error("[Object Storage] Failed to delete:", err);
-  }
 }
